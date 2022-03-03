@@ -20,11 +20,6 @@ import { UserStateProps } from './user';
 
 import { SnackbarProps } from './snackbar';
 
-declare module '@mui/styles/defaultTheme' {
-    // eslint-disable-next-line @typescript-eslint/no-empty-interface
-    interface DefaultTheme extends Theme {}
-}
-
 export type ArrangementOrder = 'asc' | 'desc' | undefined;
 
 export type DateRange = { start: number | Date; end: number | Date };
