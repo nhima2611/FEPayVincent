@@ -14,6 +14,7 @@ export type KanbanColumn = {
     id: string;
     title: string;
     itemIds: string[];
+    color: string;
 };
 
 export type KanbanComment = {
@@ -23,15 +24,18 @@ export type KanbanComment = {
 };
 
 export type KanbanItem = {
-    assign?: string;
-    attachments: [];
-    commentIds?: string[];
-    description: string;
-    dueDate: Date;
     id: string;
-    image: string | false;
-    priority: 'low' | 'medium' | 'high';
-    title: string;
+    ticketID: number;
+    contractID: number;
+    refID: number;
+    createdDate: Date | string;
+    status: 'Draft' | 'New' | 'Allocated' | 'On-Hold' | 'Solve' | 'Reject' | 'Cancel';
+    partner?: string;
+    assignee?: string;
+    transactionType?: 'Repayment' | 'Disbursement';
+    issueType?: 'Cancel transaction' | 'Adjust Amount' | 'Adjust Contract Number' | 'System Issue';
+    productType?: 'Loan' | 'Card' | 'Banca';
+    requestedBy?: string;
 };
 
 export type KanbanProfile = {

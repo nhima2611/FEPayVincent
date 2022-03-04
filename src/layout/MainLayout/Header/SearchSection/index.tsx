@@ -79,9 +79,6 @@ const MobileSearch = ({ value, setValue, popupState }: Props) => {
             }
             endAdornment={
                 <InputAdornment position="end">
-                    <HeaderAvatarStyle variant="rounded">
-                        <IconAdjustmentsHorizontal stroke={1.5} size="1.3rem" />
-                    </HeaderAvatarStyle>
                     <Box sx={{ ml: 2 }}>
                         <Avatar
                             variant="rounded"
@@ -165,15 +162,9 @@ const SearchSection = () => {
                             <IconSearch stroke={1.5} size="1rem" color={theme.palette.grey[500]} />
                         </InputAdornment>
                     }
-                    endAdornment={
-                        <InputAdornment position="end">
-                            <HeaderAvatarStyle variant="rounded">
-                                <IconAdjustmentsHorizontal stroke={1.5} size="1.3rem" />
-                            </HeaderAvatarStyle>
-                        </InputAdornment>
-                    }
                     aria-describedby="search-helper-text"
                     inputProps={{ 'aria-label': 'weight' }}
+                    sx={{ height: 36 }}
                 />
             </Box>
         </>

@@ -5,8 +5,12 @@ import MainLayout from 'layout/MainLayout';
 import Loadable from 'ui-component/Loadable';
 import AuthGuard from 'utils/route-guard/AuthGuard';
 
-// sample page routing
-const SamplePage = Loadable(lazy(() => import('views/sample-page')));
+// dashboard routing
+const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
+
+// tickets routing
+const TicketsPage = Loadable(lazy(() => import('views/tickets')));
+const AppKanbanBoard = Loadable(lazy(() => import('views/tickets/kanban/Board')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -19,12 +23,18 @@ const MainRoutes = {
     ),
     children: [
         {
-            path: '/',
-            element: <SamplePage />
+            path: '/dashboard',
+            element: <DashboardDefault />
         },
         {
-            path: '/sample-page',
-            element: <SamplePage />
+            path: '/tickets/kanban',
+            element: <TicketsPage />,
+            children: [
+                {
+                    path: 'board',
+                    element: <AppKanbanBoard />
+                }
+            ]
         }
     ]
 };

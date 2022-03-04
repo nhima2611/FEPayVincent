@@ -170,6 +170,7 @@ export function getColumns() {
     return async () => {
         try {
             const response = await axios.get('/api/kanban/columns');
+            // console.log(response);
             dispatch(slice.actions.getColumnsSuccess(response.data.columns));
         } catch (error) {
             dispatch(slice.actions.hasError(error));

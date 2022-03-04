@@ -4,8 +4,10 @@ import { Theme } from '@mui/material/styles';
 export default function componentStyleOverrides(theme: Theme, borderRadius: number, outlinedFilled: boolean) {
     const mode = theme.palette.mode;
     const bgColor = mode === 'dark' ? theme.palette.dark[800] : theme.palette.grey[50];
-    const menuSelectedBack = mode === 'dark' ? theme.palette.secondary.main + 15 : theme.palette.secondary.light;
-    const menuSelected = mode === 'dark' ? theme.palette.secondary.main : theme.palette.secondary.dark;
+    // const menuSelectedBack = mode === 'dark' ? theme.palette.secondary.main + 15 : theme.palette.secondary.light;
+    const menuSelectedBack = 'transparent';
+    const menuSelected = 'green';
+    // const menuSelected = mode === 'dark' ? theme.palette.secondary.main : theme.palette.secondary.dark;
 
     return {
         MuiButton: {
@@ -281,9 +283,12 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
                 root: {
                     borderColor: mode === 'dark' ? theme.palette.text.primary + 15 : theme.palette.grey[200],
                     '&.MuiTableCell-head': {
-                        fontSize: '0.875rem',
-                        color: theme.palette.grey[600],
-                        fontWeight: 500
+                        // fontSize: '0.875rem',
+                        // color: theme.palette.grey[600],
+                        // fontWeight: 500
+                        fontSize: 10,
+                        color: 'green',
+                        fontWeight: 'bold'
                     }
                 }
             }

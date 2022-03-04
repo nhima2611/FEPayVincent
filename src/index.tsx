@@ -5,6 +5,9 @@ import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 
+// load mock apis
+import '_mockApis';
+
 // project imports
 import App from 'App';
 import { BASE_PATH } from 'config';
