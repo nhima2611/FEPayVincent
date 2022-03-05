@@ -10,7 +10,8 @@ const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')))
 
 // tickets routing
 const TicketsPage = Loadable(lazy(() => import('views/tickets')));
-const AppKanbanBoard = Loadable(lazy(() => import('views/tickets/kanban/Board')));
+const CreateTicketPage = Loadable(lazy(() => import('views/tickets/create')));
+const TicketDetailPage = Loadable(lazy(() => import('views/tickets/detail')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -27,14 +28,16 @@ const MainRoutes = {
             element: <DashboardDefault />
         },
         {
-            path: '/tickets/kanban',
-            element: <TicketsPage />,
-            children: [
-                {
-                    path: 'board',
-                    element: <AppKanbanBoard />
-                }
-            ]
+            path: '/tickets',
+            element: <TicketsPage />
+        },
+        {
+            path: '/tickets/create-ticket',
+            element: <CreateTicketPage />
+        },
+        {
+            path: `/tickets/:ticketID`,
+            element: <TicketDetailPage />
         }
     ]
 };

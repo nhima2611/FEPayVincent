@@ -29,7 +29,7 @@ const other = {
             id: 'Tickets',
             title: <FormattedMessage id="tickets" />,
             type: 'item',
-            url: '/tickets/kanban',
+            url: '/tickets',
             icon: IconTicket,
             breadcrumbs: false
             // external: true,

@@ -3,10 +3,19 @@ import { useLocation, Link, Outlet } from 'react-router-dom';
 
 // material-ui
 import { Box, Grid, Tab, Tabs } from '@mui/material';
-import { getUserStory, getUserStoryOrder, getProfiles, getComments, getItems, getColumns, getColumnsOrder } from 'store/slices/kanban';
+import {
+    getUserStory,
+    getUserStoryOrder,
+    getProfiles,
+    getComments,
+    getItems,
+    getColumns,
+    getColumnsOrder,
+    setMode
+} from 'store/slices/kanban';
 
 // project imports
-import { useDispatch } from 'store';
+import { useDispatch, useSelector } from 'store';
 import { openDrawer } from 'store/slices/menu';
 import MainCard from 'ui-component/cards/MainCard';
 import Board from './kanban/Board';
@@ -45,15 +54,15 @@ export default function KanbanPage() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const [isKanban, setIsKanban] = useState(true);
+    const { mode } = useSelector((state) => state.kanban);
 
     return (
         <Box sx={{ display: 'flex' }}>
             <Grid container>
                 <Grid item xs={12}>
                     <MainCard contentSX={{ p: 2 }}>
-                        <ActionKanban onClickTransfer={() => setIsKanban(!isKanban)} />
-                        {isKanban ? <Board /> : <ListStylePage1 />}
+                        <ActionKanban onClickTransfer={() => dispatch(setMode())} urlAddTicket="/tickets/create-ticket" />
+                        {mode === 'kanban' ? <Board /> : <ListStylePage1 />}
                     </MainCard>
                 </Grid>
             </Grid>

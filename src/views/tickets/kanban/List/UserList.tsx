@@ -32,6 +32,7 @@ import { KeyedObject, ArrangementOrder, EnhancedTableHeadProps, GetComparator, H
 import DeleteIcon from '@mui/icons-material/Delete';
 import usePagination from 'hooks/usePagination';
 import { KanbanItem } from 'types/kanban';
+import { Link } from 'react-router-dom';
 
 // table data
 type CreateDataType = {
@@ -47,9 +48,11 @@ function createData(
     contractID: number,
     refID: number,
     createdDate: any,
+    modifiedDate: any,
     status: any,
     partner: string,
     assignee?: string,
+    supporter?: string,
     transactionType?: 'Repayment' | 'Disbursement',
     issueType?: 'Cancel transaction' | 'Adjust Amount' | 'Adjust Contract Number' | 'System Issue',
     productType?: 'Loan' | 'Card' | 'Banca',
@@ -61,9 +64,11 @@ function createData(
         contractID,
         refID,
         createdDate,
+        modifiedDate,
         status,
         partner,
         assignee,
+        supporter,
         transactionType,
         issueType,
         productType,
@@ -78,9 +83,11 @@ const rows: KanbanItem[] = [
         12345,
         12345,
         '25/2/2022',
+        '27/2/2022',
         'New',
         'Payoo',
         'Nguyen Tran Thu Trang',
+        'Pham Nguyen Huong Giang',
         'Repayment',
         'Adjust Amount',
         'Loan',
@@ -92,9 +99,11 @@ const rows: KanbanItem[] = [
         12345,
         12345,
         '25/2/2022',
+        '27/2/2022',
         'New',
         'Payoo',
         'Nguyen Tran Thu Trang',
+        'Pham Nguyen Huong Giang',
         'Repayment',
         'Adjust Amount',
         'Loan',
@@ -106,9 +115,11 @@ const rows: KanbanItem[] = [
         12345,
         12345,
         '25/2/2022',
+        '27/2/2022',
         'New',
         'Payoo',
         'Nguyen Tran Thu Trang',
+        'Pham Nguyen Huong Giang',
         'Repayment',
         'Adjust Amount',
         'Loan',
@@ -120,9 +131,11 @@ const rows: KanbanItem[] = [
         12345,
         12345,
         '25/2/2022',
+        '27/2/2022',
         'New',
         'Payoo',
         'Nguyen Tran Thu Trang',
+        'Pham Nguyen Huong Giang',
         'Repayment',
         'Adjust Amount',
         'Loan',
@@ -134,9 +147,11 @@ const rows: KanbanItem[] = [
         12345,
         12345,
         '25/2/2022',
+        '27/2/2022',
         'New',
         'Payoo',
         'Nguyen Tran Thu Trang',
+        'Pham Nguyen Huong Giang',
         'Repayment',
         'Adjust Amount',
         'Loan',
@@ -148,9 +163,11 @@ const rows: KanbanItem[] = [
         12345,
         12345,
         '25/2/2022',
+        '27/2/2022',
         'New',
         'Payoo',
         'Nguyen Tran Thu Trang',
+        'Pham Nguyen Huong Giang',
         'Repayment',
         'Adjust Amount',
         'Loan',
@@ -162,9 +179,11 @@ const rows: KanbanItem[] = [
         12345,
         12345,
         '25/2/2022',
+        '27/2/2022',
         'New',
         'Payoo',
         'Nguyen Tran Thu Trang',
+        'Pham Nguyen Huong Giang',
         'Repayment',
         'Adjust Amount',
         'Loan',
@@ -176,9 +195,11 @@ const rows: KanbanItem[] = [
         12345,
         12345,
         '25/2/2022',
+        '27/2/2022',
         'New',
         'Payoo',
         'Nguyen Tran Thu Trang',
+        'Pham Nguyen Huong Giang',
         'Repayment',
         'Adjust Amount',
         'Loan',
@@ -190,9 +211,11 @@ const rows: KanbanItem[] = [
         12345,
         12345,
         '25/2/2022',
+        '27/2/2022',
         'New',
         'Payoo',
         'Nguyen Tran Thu Trang',
+        'Pham Nguyen Huong Giang',
         'Repayment',
         'Adjust Amount',
         'Loan',
@@ -204,9 +227,11 @@ const rows: KanbanItem[] = [
         12345,
         12345,
         '25/2/2022',
+        '27/2/2022',
         'New',
         'Payoo',
         'Nguyen Tran Thu Trang',
+        'Pham Nguyen Huong Giang',
         'Repayment',
         'Adjust Amount',
         'Loan',
@@ -265,6 +290,12 @@ const headCells: HeadCell[] = [
         label: 'Created Date'
     },
     {
+        id: 'ModifiedDate',
+        numeric: true,
+        disablePadding: false,
+        label: 'Modified Date'
+    },
+    {
         id: 'status',
         numeric: true,
         disablePadding: false,
@@ -281,6 +312,12 @@ const headCells: HeadCell[] = [
         numeric: true,
         disablePadding: false,
         label: 'Assignee'
+    },
+    {
+        id: 'Supporter',
+        numeric: true,
+        disablePadding: false,
+        label: 'Supporter'
     },
     {
         id: 'TransactionType',
@@ -440,12 +477,6 @@ export default function UserList() {
     const dd = usePagination(rows, PER_PAGE);
 
     return (
-        // <MainCard
-        //     border
-        //     sx={{
-        //         padding: 0
-        //     }}
-        // >
         <div>
             <EnhancedTableToolbar numSelected={selected.length} />
 
@@ -469,14 +500,16 @@ export default function UserList() {
                             return (
                                 <TableRow
                                     hover
-                                    onClick={(event) => handleClick(event, row.id)}
+                                    component={Link}
+                                    to={`/tickets/${row.id}`}
                                     role="checkbox"
                                     aria-checked={isItemSelected}
                                     tabIndex={-1}
                                     key={row.id}
                                     selected={isItemSelected}
+                                    sx={{ textDecoration: 'none' }}
                                 >
-                                    <TableCell padding="checkbox" sx={{ pl: 3 }}>
+                                    <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event: any) => handleClick(event, row.id)}>
                                         <Checkbox
                                             size="small"
                                             color="primary"
@@ -497,6 +530,9 @@ export default function UserList() {
                                         {row.createdDate}
                                     </TableCell>
                                     <TableCell sx={styles.cellText} align="center">
+                                        {row.modifiedDate}
+                                    </TableCell>
+                                    <TableCell sx={styles.cellText} align="center">
                                         {row.status}
                                     </TableCell>
                                     <TableCell sx={styles.cellText} align="center">
@@ -504,6 +540,9 @@ export default function UserList() {
                                     </TableCell>
                                     <TableCell sx={styles.cellText} align="center">
                                         {row.assignee}
+                                    </TableCell>
+                                    <TableCell sx={styles.cellText} align="center">
+                                        {row.supporter}
                                     </TableCell>
                                     <TableCell sx={styles.cellText} align="center">
                                         {row.transactionType}
@@ -534,7 +573,6 @@ export default function UserList() {
             </TableContainer>
 
             {/* table data */}
-
             <Stack sx={{ alignItems: 'center', mt: 2 }}>
                 <Pagination count={count} color="primary" page={page} onChange={handleChangePage} />
             </Stack>

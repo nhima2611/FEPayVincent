@@ -8,6 +8,7 @@ export interface KanbanStateProps {
     userStory: KanbanUserStory[];
     userStoryOrder: string[];
     error: object | string | null;
+    mode: 'kanban' | 'list';
 }
 
 export type KanbanColumn = {
@@ -36,6 +37,8 @@ export type KanbanItem = {
     issueType?: 'Cancel transaction' | 'Adjust Amount' | 'Adjust Contract Number' | 'System Issue';
     productType?: 'Loan' | 'Card' | 'Banca';
     requestedBy?: string;
+    supporter?: string;
+    modifiedDate?: Date | string;
 };
 
 export type KanbanProfile = {

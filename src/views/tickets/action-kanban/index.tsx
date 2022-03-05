@@ -8,6 +8,7 @@ import { map } from 'lodash';
 import { shouldForwardProp } from '@mui/system';
 import { IconSearch, IconPlus } from '@tabler/icons';
 import { createRef, useImperativeHandle, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const OutlineInputStyle = styled(OutlinedInput, { shouldForwardProp })(({ theme }) => ({
     width: 434,
@@ -33,7 +34,7 @@ const OutlineInputStyle = styled(OutlinedInput, { shouldForwardProp })(({ theme 
 const icons = [TransferIcon, DownloadIcon, UploadIcon, TrashIcon];
 
 export const refActionKanban = createRef();
-const ActionKanban = ({ onClickTransfer }) => {
+const ActionKanban = ({ onClickTransfer, urlAddTicket }) => {
     const theme = useTheme();
     const [toggleTransfer, setToggleTransfer] = useState(false);
 
@@ -90,6 +91,8 @@ const ActionKanban = ({ onClickTransfer }) => {
                     variant="outlined"
                     sx={{ borderColor: '#E5E5E5', color: '#008345', borderRadius: 2, height: 36, fontSize: 12, fontWeight: 'bold' }}
                     startIcon={<IconPlus color="#008345" size={18} />}
+                    component={Link}
+                    to={urlAddTicket}
                 >
                     Add Ticket
                 </Button>
