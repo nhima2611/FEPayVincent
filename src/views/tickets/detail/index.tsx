@@ -11,7 +11,7 @@ const TicketDetail = () => {
     return (
         <MainCard title="Ticket Handling" contentSX={{ paddingRight: 0, paddingBottom: `0px !important` }}>
             <Grid container spacing={2}>
-                <Grid item md={8}>
+                <Grid item xs={12} md={8}>
                     <Stack direction="row" spacing={2}>
                         <Highlighter
                             highlightStyle={{ ...styles.ticket, fontWeight: 'bold' }}
@@ -143,7 +143,7 @@ const TicketDetail = () => {
 
                     <FECommentDetail />
                 </Grid>
-                <Grid item md={4}>
+                <Grid item xs={12} md={4}>
                     <Box sx={{ borderLeft: 1, borderTop: 1, borderTopLeftRadius: 16, borderColor: '#E5E5E5' }}>
                         <Box style={{ height: 60, background: '#27AE60', borderTop: 1, borderTopLeftRadius: 14, padding: 16 }}>
                             <Typography sx={{ color: 'white' }}>Detail</Typography>

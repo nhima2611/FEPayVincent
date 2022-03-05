@@ -52,7 +52,7 @@ const FECommentDetail = () => {
                     }
                 />
             </Stack>
-            <PerfectScrollbar style={{ width: '100%', height: 'calc(100vh - 440px)', overflowX: 'hidden', minHeight: 525 }}>
+            <PerfectScrollbar style={{ width: '100%', height: 'auto', overflowX: 'hidden' }}>
                 {map(data, (item, index) => (
                     <FECommentItem key={index} item={item} />
                 ))}
