@@ -1,21 +1,20 @@
 // material-ui
-import { useTheme } from '@mui/material/styles';
+import AccountCircleTwoTone from '@mui/icons-material/AccountCircleTwoTone';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import DescriptionTwoToneIcon from '@mui/icons-material/DescriptionTwoTone';
 import { Grid, Typography, useMediaQuery } from '@mui/material';
-
-// project imports
-import MarketShareAreaChartCard from './MarketShareAreaChartCard';
-import TotalRevenueCard from './TotalRevenueCard';
-import LatestCustomerTableCard from './LatestCustomerTableCard';
+import { useTheme } from '@mui/material/styles';
+// assets
+import { IconAccessPoint, IconCircles, IconCreditCard, IconShare } from '@tabler/icons';
+import { gridSpacing } from 'store/constant';
+import HoverDataCard from 'ui-component/cards/HoverDataCard';
 import MainCard from 'ui-component/cards/MainCard';
 import RevenueCard from 'ui-component/cards/RevenueCard';
 import UserCountCard from 'ui-component/cards/UserCountCard';
-import { gridSpacing } from 'store/constant';
-
-// assets
-import { IconShare, IconAccessPoint, IconCircles, IconCreditCard } from '@tabler/icons';
-import MonetizationOnTwoToneIcon from '@mui/icons-material/MonetizationOnTwoTone';
-import AccountCircleTwoTone from '@mui/icons-material/AccountCircleTwoTone';
-import DescriptionTwoToneIcon from '@mui/icons-material/DescriptionTwoTone';
+import LatestCustomerTableCard from './LatestCustomerTableCard';
+// project imports
+import MarketShareAreaChartCard from './MarketShareAreaChartCard';
+import TotalRevenueCard from './TotalRevenueCard';
 
 // ==============================|| ANALYTICS DASHBOARD ||============================== //
 
@@ -38,13 +37,13 @@ const Analytics = () => {
                     <Grid item xs={12}>
                         <MarketShareAreaChartCard />
                     </Grid>
-                    <Grid item xs={12} lg={6}>
-                        <RevenueCard
-                            primary="Revenue"
-                            secondary="$42,562"
-                            content="$50,032 Last Month"
-                            iconPrimary={MonetizationOnTwoToneIcon}
-                            color={theme.palette.secondary.main}
+                    <Grid item xs={12} lg={3} sm={6}>
+                        <HoverDataCard
+                            title="Total Paid Users"
+                            iconPrimary={ArrowDownwardIcon}
+                            primary={7652}
+                            secondary="8% less Last 3 Months"
+                            color={theme.palette.error.main}
                         />
                     </Grid>
                     <Grid item xs={12} lg={6}>
