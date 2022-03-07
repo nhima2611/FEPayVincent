@@ -1,8 +1,7 @@
 // third-party
-import { FormattedMessage } from 'react-intl';
-
 // assets
-import { IconBrandChrome, IconHelp, IconSitemap, IconHome, IconTicket } from '@tabler/icons';
+import { IconBrandChrome, IconHelp, IconHome, IconSitemap, IconTicket } from '@tabler/icons';
+import { FormattedMessage } from 'react-intl';
 
 // constant
 const icons = {
