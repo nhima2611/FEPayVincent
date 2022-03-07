@@ -121,7 +121,7 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
         MuiOutlinedInput: {
             styleOverrides: {
                 root: {
-                    background: outlinedFilled ? bgColor : 'transparent',
+                    // background: outlinedFilled ? bgColor : 'transparent',
                     borderRadius: `${borderRadius}px`,
                     '& .MuiOutlinedInput-notchedOutline': {
                         borderColor: mode === 'dark' ? theme.palette.text.primary + 28 : theme.palette.grey[400]
@@ -135,7 +135,7 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
                 },
                 input: {
                     fontWeight: 500,
-                    background: outlinedFilled ? bgColor : 'transparent',
+                    // background: outlinedFilled ? bgColor : 'transparent',
                     padding: '15.5px 14px',
                     borderRadius: `${borderRadius}px`,
                     '&.MuiInputBase-inputSizeSmall': {

@@ -20,13 +20,19 @@ const initialState: DefaultRootStateProps['kanban'] = {
     profiles: [],
     selectedItem: false,
     userStory: [],
-    userStoryOrder: []
+    userStoryOrder: [],
+    mode: 'kanban'
 };
 
 const slice = createSlice({
     name: 'kanban',
     initialState,
     reducers: {
+        // SET MODE
+        setMode(state, action) {
+            state.mode = action.payload;
+        },
+
         // HAS ERROR
         hasError(state, action) {
             state.error = action.payload;
@@ -165,6 +171,18 @@ const slice = createSlice({
 export default slice.reducer;
 
 // ----------------------------------------------------------------------
+
+export function setMode() {
+    return (_, getState) => {
+        const { kanban } = getState();
+        try {
+            // dispatch(slice.actions.getColumnsSuccess(response.data.columns));
+            dispatch(slice.actions.setMode(kanban.mode === 'kanban' ? 'list' : 'kanban'));
+        } catch (error) {
+            // dispatch(slice.actions.hasError(error));
+        }
+    };
+}
 
 export function getColumns() {
     return async () => {
