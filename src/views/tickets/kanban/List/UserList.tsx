@@ -1,38 +1,27 @@
-import * as React from 'react';
-
+// assets
+import DeleteIcon from '@mui/icons-material/Delete';
 // material-ui
 import {
     Box,
     Checkbox,
     IconButton,
-    Paper,
     Table,
     TableBody,
     TableCell,
     TableContainer,
     TableHead,
     TablePagination,
-    TableSortLabel,
     TableRow,
+    TableSortLabel,
     Toolbar,
     Tooltip,
-    Typography,
-    Pagination,
-    Grid,
-    Stack
+    Typography
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
-
-// project imports
-import MainCard from 'ui-component/cards/MainCard';
-import SecondaryAction from 'ui-component/cards/CardSecondaryAction';
-import { KeyedObject, ArrangementOrder, EnhancedTableHeadProps, GetComparator, HeadCell } from 'types';
-
-// assets
-import DeleteIcon from '@mui/icons-material/Delete';
-import usePagination from 'hooks/usePagination';
-import { KanbanItem } from 'types/kanban';
+import * as React from 'react';
 import { Link } from 'react-router-dom';
+import { ArrangementOrder, EnhancedTableHeadProps, GetComparator, HeadCell, KeyedObject } from 'types';
+import { KanbanItem } from 'types/kanban';
 
 // table data
 type CreateDataType = {
@@ -223,9 +212,9 @@ const rows: KanbanItem[] = [
     ),
     createData(
         '55',
-        12345,
-        12345,
-        12345,
+        123452,
+        1234533,
+        123453,
         '25/2/2022',
         '27/2/2022',
         'New',
@@ -427,7 +416,7 @@ export default function UserList() {
     const [order, setOrder] = React.useState<ArrangementOrder>('asc');
     const [orderBy, setOrderBy] = React.useState<string>('calories');
     const [selected, setSelected] = React.useState<string[]>([]);
-    const [page, setPage] = React.useState(1);
+    const [page, setPage] = React.useState(0);
     const [dense] = React.useState(false);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
@@ -446,7 +435,8 @@ export default function UserList() {
         setSelected([]);
     };
 
-    const handleClick = (event: React.MouseEvent<HTMLTableRowElement> | undefined, name: string) => {
+    const handleClick = (event: any, name: string) => {
+        event.stopPropagation();
         const selectedIndex = selected.indexOf(name);
         let newSelected: string[] = [];
 
@@ -463,18 +453,19 @@ export default function UserList() {
         setSelected(newSelected);
     };
 
-    const handleChangePage = (event: any, newPage: number) => {
+    const handleChangePage = (event: React.MouseEvent<HTMLButtonElement, MouseEvent> | null, newPage: number) => {
         setPage(newPage);
-        dd.jump(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | undefined) => {
+        setRowsPerPage(parseInt(event?.target.value!, 10));
+        setPage(0);
     };
 
     const isSelected = (name: string) => selected.indexOf(name) !== -1;
 
     // Avoid a layout jump when reaching the last page with empty rows.
-    const emptyRows = page > 0 ? Math.max(0, page * 3 - rows.length) : 0;
-    const PER_PAGE = 3;
-    const count = Math.ceil(rows.length / PER_PAGE);
-    const dd = usePagination(rows, PER_PAGE);
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
     return (
         <div>
@@ -492,73 +483,75 @@ export default function UserList() {
                         rowCount={rows.length}
                     />
                     <TableBody>
-                        {stableSort(dd.currentData(), getComparator(order, orderBy)).map((row, index) => {
-                            /** Make sure no display bugs if row isn't an OrderData object */
-                            if (typeof row === 'number') return null;
-                            const isItemSelected = isSelected(row.id);
-                            const labelId = `enhanced-table-checkbox-${index}`;
-                            return (
-                                <TableRow
-                                    hover
-                                    component={Link}
-                                    to={`/tickets/${row.id}`}
-                                    role="checkbox"
-                                    aria-checked={isItemSelected}
-                                    tabIndex={-1}
-                                    key={row.id}
-                                    selected={isItemSelected}
-                                    sx={{ textDecoration: 'none' }}
-                                >
-                                    <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event: any) => handleClick(event, row.id)}>
-                                        <Checkbox
-                                            size="small"
-                                            color="primary"
-                                            checked={isItemSelected}
-                                            inputProps={{ 'aria-labelledby': labelId }}
-                                        />
-                                    </TableCell>
-                                    <TableCell sx={styles.cellText} align="left">
-                                        {row.id}
-                                    </TableCell>
-                                    <TableCell sx={styles.cellText} align="left">
-                                        {row.contractID}
-                                    </TableCell>
-                                    <TableCell sx={styles.cellText} align="left">
-                                        {row.refID}
-                                    </TableCell>
-                                    <TableCell sx={styles.cellText} align="center">
-                                        {row.createdDate}
-                                    </TableCell>
-                                    <TableCell sx={styles.cellText} align="center">
-                                        {row.modifiedDate}
-                                    </TableCell>
-                                    <TableCell sx={styles.cellText} align="center">
-                                        {row.status}
-                                    </TableCell>
-                                    <TableCell sx={styles.cellText} align="center">
-                                        {row.partner}
-                                    </TableCell>
-                                    <TableCell sx={styles.cellText} align="center">
-                                        {row.assignee}
-                                    </TableCell>
-                                    <TableCell sx={styles.cellText} align="center">
-                                        {row.supporter}
-                                    </TableCell>
-                                    <TableCell sx={styles.cellText} align="center">
-                                        {row.transactionType}
-                                    </TableCell>
-                                    <TableCell sx={styles.cellText} align="center">
-                                        {row.issueType}
-                                    </TableCell>
-                                    <TableCell sx={styles.cellText} align="center">
-                                        {row.productType}
-                                    </TableCell>
-                                    <TableCell sx={styles.cellText} align="center">
-                                        {row.requestedBy}
-                                    </TableCell>
-                                </TableRow>
-                            );
-                        })}
+                        {stableSort(rows, getComparator(order, orderBy))
+                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                            .map((row, index) => {
+                                /** Make sure no display bugs if row isn't an OrderData object */
+                                if (typeof row === 'number') return null;
+                                const isItemSelected = isSelected(row.id);
+                                const labelId = `enhanced-table-checkbox-${index}`;
+                                return (
+                                    <TableRow
+                                        hover
+                                        component={Link}
+                                        to={`/tickets/${row.id}`}
+                                        role="checkbox"
+                                        aria-checked={isItemSelected}
+                                        tabIndex={-1}
+                                        key={row.id}
+                                        selected={isItemSelected}
+                                        sx={{ textDecoration: 'none' }}
+                                    >
+                                        <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event: any) => handleClick(event, row.id)}>
+                                            <Checkbox
+                                                size="small"
+                                                color="primary"
+                                                checked={isItemSelected}
+                                                inputProps={{ 'aria-labelledby': labelId }}
+                                            />
+                                        </TableCell>
+                                        <TableCell sx={styles.cellText} align="left">
+                                            {row.id}
+                                        </TableCell>
+                                        <TableCell sx={styles.cellText} align="left">
+                                            {row.contractID}
+                                        </TableCell>
+                                        <TableCell sx={styles.cellText} align="left">
+                                            {row.refID}
+                                        </TableCell>
+                                        <TableCell sx={styles.cellText} align="center">
+                                            {row.createdDate}
+                                        </TableCell>
+                                        <TableCell sx={styles.cellText} align="center">
+                                            {row.modifiedDate}
+                                        </TableCell>
+                                        <TableCell sx={styles.cellText} align="center">
+                                            {row.status}
+                                        </TableCell>
+                                        <TableCell sx={styles.cellText} align="center">
+                                            {row.partner}
+                                        </TableCell>
+                                        <TableCell sx={styles.cellText} align="center">
+                                            {row.assignee}
+                                        </TableCell>
+                                        <TableCell sx={styles.cellText} align="center">
+                                            {row.supporter}
+                                        </TableCell>
+                                        <TableCell sx={styles.cellText} align="center">
+                                            {row.transactionType}
+                                        </TableCell>
+                                        <TableCell sx={styles.cellText} align="center">
+                                            {row.issueType}
+                                        </TableCell>
+                                        <TableCell sx={styles.cellText} align="center">
+                                            {row.productType}
+                                        </TableCell>
+                                        <TableCell sx={styles.cellText} align="center">
+                                            {row.requestedBy}
+                                        </TableCell>
+                                    </TableRow>
+                                );
+                            })}
                         {emptyRows > 0 && (
                             <TableRow
                                 style={{
@@ -573,9 +566,15 @@ export default function UserList() {
             </TableContainer>
 
             {/* table data */}
-            <Stack sx={{ alignItems: 'center', mt: 2 }}>
-                <Pagination count={count} color="primary" page={page} onChange={handleChangePage} />
-            </Stack>
+            <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
+                component="div"
+                count={rows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+            />
         </div>
     );
 }
