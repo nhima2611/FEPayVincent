@@ -8,7 +8,7 @@ import { Box, Grid, Tab, Tabs } from '@mui/material';
 // // project imports
 import ManagementPage from './management';
 import LimitationPage from './limitation';
-// import WaitingListPage from './waitinglist';
+import WaitingListPage from './waitinglist';
 import MainCard from 'ui-component/cards/MainCard';
 import { gridSpacing } from 'store/constant';
 
@@ -112,7 +112,7 @@ const Profile1 = () => {
                         <LimitationPage />
                     </TabPanel>
                     <TabPanel value={value} index={2}>
-                        {/* <WaitingListPage /> */}
+                        <WaitingListPage />
                     </TabPanel>
                 </Grid>
             </Grid>
