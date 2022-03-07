@@ -2,7 +2,7 @@
 import { FormattedMessage } from 'react-intl';
 
 // assets
-import { IconBrandChrome, IconHelp, IconSitemap, IconHome, IconTicket } from '@tabler/icons';
+import { IconBrandChrome, IconHelp, IconSitemap, IconHome, IconTicket, IconLayout2, IconUsers } from '@tabler/icons';
 
 // constant
 const icons = {
@@ -35,25 +35,57 @@ const other = {
             // external: true,
             // target: true
         },
+
         {
-            id: 'Repayment Control',
-            title: <FormattedMessage id="Repayment Control" />,
-            type: 'item',
-            url: '/repaymentcontrol',
-            icon: IconTicket,
-            breadcrumbs: false
-            // external: true,
-            // target: true
+            id: 'menu-level',
+            title: <FormattedMessage id="menu-level" />,
+            type: 'collapse',
+            icon: IconLayout2,
+            children: [
+                {
+                    id: 'Repayment Control',
+                    title: <FormattedMessage id="Repayment Control" />,
+                    type: 'item',
+                    url: '/repaymentcontrol',
+                    icon: IconTicket,
+                    breadcrumbs: false
+                    // external: true,
+                    // target: true
+                },
+                {
+                    id: 'Repayment Control',
+                    title: <FormattedMessage id="Repayment Control" />,
+                    type: 'item',
+                    url: '/repaymentcontrol',
+                    icon: IconTicket,
+                    breadcrumbs: false
+                    // external: true,
+                    // target: true
+                },
+                {
+                    id: 'menu-level-1.2',
+                    title: (
+                        <>
+                            <FormattedMessage id="level" /> 1
+                        </>
+                    ),
+                    type: 'collapse',
+                    icon: IconUsers,
+                    children: [
+                        {
+                            id: 'menu-level-2.1',
+                            title: (
+                                <>
+                                    <FormattedMessage id="level" /> 2
+                                </>
+                            ),
+                            type: 'item',
+                            url: '#'
+                        }
+                    ]
+                }
+            ]
         }
-        // {
-        //     id: 'roadmap',
-        //     title: <FormattedMessage id="roadmap" />,
-        //     type: 'item',
-        //     url: 'https://codedthemes.gitbook.io/berry/roadmap',
-        //     icon: icons.IconSitemap,
-        //     external: true,
-        //     target: true
-        // }
     ]
 };
 
