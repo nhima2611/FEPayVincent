@@ -34,6 +34,16 @@ const other = {
             breadcrumbs: false
             // external: true,
             // target: true
+        },
+        {
+            id: 'Repayment Control',
+            title: <FormattedMessage id="Repayment Control" />,
+            type: 'item',
+            url: '/repaymentcontrol',
+            icon: IconTicket,
+            breadcrumbs: false
+            // external: true,
+            // target: true
         }
         // {
         //     id: 'roadmap',
