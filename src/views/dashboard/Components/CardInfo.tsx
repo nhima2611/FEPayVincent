@@ -10,7 +10,7 @@ import MainCard from 'ui-component/cards/MainCard';
 // ============================|| HOVER DATA CARD ||============================ //
 
 interface CardInfoProps {
-    title?: string;
+    title?: string | any;
     value?: number | any;
     percentValue?: number | any;
     yesterdayValue?: number | any;

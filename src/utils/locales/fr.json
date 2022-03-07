@@ -2,12 +2,10 @@
     "dashboard": "Tableau de bord",
     "default": ",Défaut",
     "analytics": "Analytique",
-
     "widget": "Widget",
     "statistics": "Statistiques",
     "data": "Donnés",
     "chart": "Graphique",
-
     "application": "Application",
     "users": "Utilisatrices",
     "social-profile": "Profil social",
@@ -32,7 +30,6 @@
     "product-details": "détails du produit",
     "product-list": "Liste de produits",
     "checkout": "Vérifier",
-
     "forms": "Formes",
     "components": "Composantes",
     "autocomplete": "Saisie Automatique",
@@ -67,7 +64,6 @@
     "multi-column-forms": "Formulaires multi-colonnes",
     "action-bar": "Barre d'action",
     "sticky-action-bar": "Barre d'action collante",
-
     "ui-element": "Élément UI",
     "basic": "De base",
     "basic-caption": "8+ composants de base",
@@ -88,7 +84,6 @@
     "timeline": "Chronologie",
     "toggle-button": "Bouton à bascule",
     "treeview": "Vue arborescente",
-
     "pages": "Des pages",
     "pages-caption": "Pages pré-construites",
     "authentication": "Authentification",
@@ -108,7 +103,6 @@
     "contact-us": "Nous contacter",
     "faqs": "FAQ",
     "privacy-policy": "Politique de confidentialité",
-
     "utilities": "Utilitaires",
     "typography": "Typographie",
     "color": "Couleur",
@@ -118,7 +112,6 @@
     "material-icons": "Material Icons",
     "animation": "Animation",
     "grid": "Grille",
-
     "others": "Autres",
     "menu-level": "Niveaux de menu",
     "level": "Niveau",
@@ -132,11 +125,9 @@
     "coded": "Codé",
     "c": "C",
     "outlined": "Souligné",
-
     "sample-page": "Page d'exemple",
     "documentation": "Documentation",
     "roadmap": "Feuille de route",
-
     "title": "Multi Limbaj",
     "home": "Acasă",
     "change": "Schimbați limba",
