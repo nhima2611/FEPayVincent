@@ -35,23 +35,12 @@ const other = {
             // external: true,
             // target: true
         },
-
         {
             id: 'menu-level',
             title: <FormattedMessage id="menu-level" />,
             type: 'collapse',
             icon: IconLayout2,
             children: [
-                {
-                    id: 'Repayment Control',
-                    title: <FormattedMessage id="Repayment Control" />,
-                    type: 'item',
-                    url: '/repaymentcontrol',
-                    icon: IconTicket,
-                    breadcrumbs: false
-                    // external: true,
-                    // target: true
-                },
                 {
                     id: 'Repayment Control',
                     title: <FormattedMessage id="Repayment Control" />,

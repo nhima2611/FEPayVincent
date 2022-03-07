@@ -1,6 +1,3 @@
 {
-    "recommendations": [
-        "esbenp.prettier-vscode",
-        "dsznajder.es7-react-js-snippets"
-    ]
+    "recommendations": ["esbenp.prettier-vscode", "dsznajder.es7-react-js-snippets", "wmaurer.change-case"]
 }
