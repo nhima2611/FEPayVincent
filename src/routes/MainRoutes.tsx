@@ -13,6 +13,9 @@ const TicketsPage = Loadable(lazy(() => import('views/tickets')));
 const CreateTicketPage = Loadable(lazy(() => import('views/tickets/create')));
 const TicketDetailPage = Loadable(lazy(() => import('views/tickets/detail')));
 
+// Repayment Control Routing
+const RepaymentControlPage = Loadable(lazy(() => import('views/repaymentcontrol')));
+
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -42,6 +45,10 @@ const MainRoutes = {
         {
             path: `/tickets/:ticketID`,
             element: <TicketDetailPage />
+        },
+        {
+            path: `/repaymentcontrol`,
+            element: <RepaymentControlPage />
         }
     ]
 };
