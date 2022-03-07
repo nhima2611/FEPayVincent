@@ -77,7 +77,7 @@ const MainCard = React.forwardRef(
                 {/* card content */}
                 {content && (
                     <CardContent sx={contentSX} className={contentClass}>
-                        <div>{children}</div>
+                        {children}
                     </CardContent>
                 )}
                 {!content && children}
