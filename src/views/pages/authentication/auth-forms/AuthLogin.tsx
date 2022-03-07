@@ -1,17 +1,13 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-
-// material-ui
-import { useTheme } from '@mui/material/styles';
+// assets
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import {
     Box,
     Button,
     Checkbox,
-    Divider,
     FormControl,
     FormControlLabel,
     FormHelperText,
-    Grid,
     IconButton,
     InputAdornment,
     InputLabel,
@@ -20,24 +16,23 @@ import {
     Typography,
     useMediaQuery
 } from '@mui/material';
-
-// third party
-import * as Yup from 'yup';
+// material-ui
+import { useTheme } from '@mui/material/styles';
 import { Formik } from 'formik';
-
+import useAuth from 'hooks/useAuth';
 // project imports
 import useConfig from 'hooks/useConfig';
-import useAuth from 'hooks/useAuth';
 import useScriptRef from 'hooks/useScriptRef';
+import React from 'react';
+// third party
+import ReCAPTCHA from 'react-google-recaptcha';
+import { Link } from 'react-router-dom';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-
-// assets
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
-
-import Google from 'assets/images/icons/social-google.svg';
+import * as Yup from 'yup';
 
 // ============================|| FIREBASE - LOGIN ||============================ //
+
+const recaptchaRef: any = React.createRef();
 
 const FirebaseLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
     const theme = useTheme();
@@ -66,77 +61,17 @@ const FirebaseLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
 
     return (
         <>
-            <Grid container direction="column" justifyContent="center" spacing={2}>
-                <Grid item xs={12}>
-                    <AnimateButton>
-                        <Button
-                            disableElevation
-                            fullWidth
-                            onClick={googleHandler}
-                            size="large"
-                            variant="outlined"
-                            sx={{
-                                color: 'grey.700',
-                                backgroundColor: theme.palette.mode === 'dark' ? theme.palette.dark.main : theme.palette.grey[50],
-                                borderColor: theme.palette.mode === 'dark' ? theme.palette.dark.light + 20 : theme.palette.grey[100]
-                            }}
-                        >
-                            <Box sx={{ mr: { xs: 1, sm: 2, width: 20 } }}>
-                                <img src={Google} alt="google" width={16} height={16} style={{ marginRight: matchDownSM ? 8 : 16 }} />
-                            </Box>
-                            Sign in with Google
-                        </Button>
-                    </AnimateButton>
-                </Grid>
-                <Grid item xs={12}>
-                    <Box
-                        sx={{
-                            alignItems: 'center',
-                            display: 'flex'
-                        }}
-                    >
-                        <Divider sx={{ flexGrow: 1 }} orientation="horizontal" />
-
-                        <Button
-                            variant="outlined"
-                            sx={{
-                                cursor: 'unset',
-                                m: 2,
-                                py: 0.5,
-                                px: 7,
-                                borderColor:
-                                    theme.palette.mode === 'dark'
-                                        ? `${theme.palette.dark.light + 20} !important`
-                                        : `${theme.palette.grey[100]} !important`,
-                                color: `${theme.palette.grey[900]}!important`,
-                                fontWeight: 500,
-                                borderRadius: `${borderRadius}px`
-                            }}
-                            disableRipple
-                            disabled
-                        >
-                            OR
-                        </Button>
-
-                        <Divider sx={{ flexGrow: 1 }} orientation="horizontal" />
-                    </Box>
-                </Grid>
-                <Grid item xs={12} container alignItems="center" justifyContent="center">
-                    <Box sx={{ mb: 2 }}>
-                        <Typography variant="subtitle1">Sign in with Email address</Typography>
-                    </Box>
-                </Grid>
-            </Grid>
-
             <Formik
                 initialValues={{
                     email: 'info@codedthemes.com',
                     password: '123456',
+                    token: null,
                     submit: null
                 }}
                 validationSchema={Yup.object().shape({
                     email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-                    password: Yup.string().max(255).required('Password is required')
+                    password: Yup.string().max(255).required('Password is required'),
+                    token: Yup.string().required().nullable()
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                     try {
@@ -165,7 +100,7 @@ const FirebaseLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
                     }
                 }}
             >
-                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
+                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, setValues }) => (
                     <form noValidate onSubmit={handleSubmit} {...others}>
                         <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ ...theme.typography.customInput }}>
                             <InputLabel htmlFor="outlined-adornment-email-login">Email Address / Username</InputLabel>
@@ -248,7 +183,18 @@ const FirebaseLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
                                 <FormHelperText error>{errors.submit}</FormHelperText>
                             </Box>
                         )}
-
+                        <FormControl fullWidth error={Boolean(touched.token && errors.token)} sx={{ ...theme.typography.customInput }}>
+                            <ReCAPTCHA
+                                ref={recaptchaRef}
+                                onExpired={() => (recaptchaRef.current as any)?.reset()}
+                                sitekey={process.env.REACT_APP_SITE_KEY!}
+                                onChange={(value: any) => {
+                                    setValues({ ...values, token: value });
+                                }}
+                                size="normal"
+                                style={{ margin: '0 auto', display: 'table' }}
+                            />
+                        </FormControl>
                         <Box sx={{ mt: 2 }}>
                             <AnimateButton>
                                 <Button

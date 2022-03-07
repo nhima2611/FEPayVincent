@@ -1,13 +1,12 @@
-import { useTheme, styled } from '@mui/material/styles';
 import { Box, Button, InputAdornment, OutlinedInput } from '@mui/material';
-import TransferIcon from 'assets/images/icons/transfer.svg';
-import DownloadIcon from 'assets/images/icons/download.svg';
-import UploadIcon from 'assets/images/icons/upload.svg';
-import TrashIcon from 'assets/images/icons/trash.svg';
-import { map } from 'lodash';
+import { styled, useTheme } from '@mui/material/styles';
 import { shouldForwardProp } from '@mui/system';
-import { IconSearch, IconPlus } from '@tabler/icons';
-import { createRef, useImperativeHandle, useState } from 'react';
+import { IconPlus, IconSearch } from '@tabler/icons';
+import DownloadIcon from 'assets/images/icons/download.svg';
+import TransferIcon from 'assets/images/icons/transfer.svg';
+import TrashIcon from 'assets/images/icons/trash.svg';
+import UploadIcon from 'assets/images/icons/upload.svg';
+import { map } from 'lodash';
 import { Link } from 'react-router-dom';
 
 const OutlineInputStyle = styled(OutlinedInput, { shouldForwardProp })(({ theme }) => ({
@@ -33,18 +32,9 @@ const OutlineInputStyle = styled(OutlinedInput, { shouldForwardProp })(({ theme 
 
 const icons = [TransferIcon, DownloadIcon, UploadIcon, TrashIcon];
 
-export const refActionKanban = createRef();
 const ActionKanban = ({ onClickTransfer, urlAddTicket }) => {
     const theme = useTheme();
-    const [toggleTransfer, setToggleTransfer] = useState(false);
 
-    useImperativeHandle(
-        refActionKanban,
-        () => ({
-            toggleTransfer: () => setToggleTransfer(!toggleTransfer)
-        }),
-        []
-    );
     return (
         <Box>
             <div style={{ marginLeft: 8, marginBottom: 8 }}>Kanban</div>
@@ -64,7 +54,7 @@ const ActionKanban = ({ onClickTransfer, urlAddTicket }) => {
                         key={index}
                         sx={{ minWidth: 32, padding: 0, marginX: 1, mb: 1 }}
                     >
-                        <img src={icon} />
+                        <img src={icon} alt="" />
                     </Button>
                 ))}
 
