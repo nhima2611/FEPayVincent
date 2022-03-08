@@ -9,7 +9,7 @@ const axiosServices = axios.create();
 
 // interceptor for http
 axiosServices.interceptors.response.use(
-    (response) => _.get(response, 'data'),
+    (response) => response,
     (error) => Promise.reject((error.response && error.response.data) || 'Wrong Services')
 );
 
