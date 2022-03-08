@@ -37,7 +37,8 @@ const getDragWrapper = (
     isDragging: boolean,
     draggableStyle: DraggingStyle | NotDraggingStyle | undefined,
     theme: Theme,
-    radius: string
+    radius: string,
+    columnColor?: string
 ): CSSProperties | undefined => {
     const bgcolor = theme.palette.mode === 'dark' ? theme.palette.background.paper + 90 : theme.palette.grey[50];
     return {
@@ -45,7 +46,7 @@ const getDragWrapper = (
         margin: `0 0 ${8}px 0`,
         padding: 8,
         border: '1px solid',
-        borderColor: theme.palette.mode === 'dark' ? theme.palette.background.default : theme.palette.primary[200] + 75,
+        borderColor: columnColor,
         backgroundColor: isDragging ? bgcolor : theme.palette.background.paper,
         borderRadius: radius,
         ...draggableStyle
@@ -114,7 +115,7 @@ const Items = ({ item, index, columnColor }: Props) => {
                     ref={provided.innerRef}
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
-                    style={getDragWrapper(snapshot.isDragging, provided.draggableProps.style, theme, `${borderRadius}px`)}
+                    style={getDragWrapper(snapshot.isDragging, provided.draggableProps.style, theme, `${borderRadius}px`, columnColor)}
                 >
                     <Stack direction="column" justifyContent="space-between" alignItems="flex-start" sx={{ mb: itemStory ? -0.75 : 0 }}>
                         <Highlighter

@@ -114,7 +114,6 @@
     "animation": "Animation",
     "grid": "Grid",
     "others": "Others",
-    "menu-level": "Menu Levels",
     "level": "Level",
     "menu-level-subtitle": "Sub Caption Levels",
     "menu-level-subtitle-caption": "Caption Collapse",
@@ -150,5 +149,16 @@
     "total_b1": "Total B1",
     "total_b2": "Total B2",
     "total_b3_b6": "Total B3-B6",
-    "repayment_control": "Repayment Control"
+    "repayment_control": "Repayment Control",
+    "disbursement_control": "Disbursement Control",
+    "partner_management": "Partner Management",
+    "partner_list": "Partner List",
+    "partner": "Partner",
+    "sub_partner": "Sub-Partner",
+    "pos": "POS",
+    "user_management": "User Management",
+    "user_list": "User List",
+    "role_and_privileges": "Role & Privileges",
+    "activity_logs": "Activity Logs",
+    "settings": "Settings"
 }
