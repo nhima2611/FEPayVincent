@@ -18,9 +18,9 @@ import {
 import { useDispatch, useSelector } from 'store';
 import { openDrawer } from 'store/slices/menu';
 import MainCard from 'ui-component/cards/MainCard';
-import Board from './kanban/Board';
+import Board from './board';
 import ActionKanban from './action-kanban';
-import ListStylePage1 from './kanban/List';
+import ListStylePage1 from './list';
 import { getUsersListStyle1 } from 'store/slices/user';
 
 function a11yProps(index: number) {

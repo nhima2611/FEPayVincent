@@ -36,7 +36,8 @@ const getDragWrapper = (
     draggableStyle: DraggingStyle | NotDraggingStyle | undefined,
     theme: Theme,
     radius: string,
-    color: string
+    color: string,
+    columnItems: any
 ): CSSProperties | undefined => {
     const bgcolor = theme.palette.mode === 'dark' ? theme.palette.background.default : theme.palette.primary.light;
     return {
@@ -44,12 +45,13 @@ const getDragWrapper = (
         border: '1px solid',
         borderColor: color,
         // borderColor: theme.palette.mode === 'dark' ? theme.palette.background.default : theme.palette.primary[200] + 75,
-        // backgroundColor: isDragging ? theme.palette.grey[50] : bgcolor,
+        backgroundColor: theme.palette.common.white,
         borderRadius: radius,
         userSelect: 'none',
         margin: `0 ${16}px 0 0`,
         height: '100%',
         ...draggableStyle
+        // height: columnItems.length === 4 ? '50vh' : '100%',
     };
 };
 
@@ -121,7 +123,14 @@ const Columns = ({ column, index }: Props) => {
                     ref={provided.innerRef}
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
-                    style={getDragWrapper(snapshot.isDragging, provided.draggableProps.style, theme, `${borderRadius}px`, column.color)}
+                    style={getDragWrapper(
+                        snapshot.isDragging,
+                        provided.draggableProps.style,
+                        theme,
+                        `${borderRadius}px`,
+                        column.color,
+                        columnItems
+                    )}
                 >
                     <div style={styles(column.color).line} />
                     <Droppable droppableId={column.id} type="item">

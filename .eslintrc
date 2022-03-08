@@ -16,6 +16,7 @@
         }
     },
     "rules": {
+        "no-nested-ternary": 0,
         "no-extra-boolean-cast": 0,
         "import/prefer-default-export": 0,
         "arrow-body-style": 0,
