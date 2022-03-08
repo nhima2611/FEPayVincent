@@ -31,7 +31,15 @@ const RepaymentControl = ({ data = [], dataType = [], title = 'xx' }: Props) => 
     };
 
     return (
-        <MainCard content={false}>
+        <MainCard
+            content={false}
+            boxShadow
+            shadow="0px 4px 4px rgba(0, 0, 0, 0.05)"
+            sx={{
+                boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.05)',
+                border: '1px solid #E5E5E5 !important'
+            }}
+        >
             <CardContent>
                 <Grid container spacing={gridSpacing}>
                     <Grid item xs={12}>
@@ -74,7 +82,59 @@ const RepaymentControl = ({ data = [], dataType = [], title = 'xx' }: Props) => 
                         </Grid>
                     </Grid>
                     <Grid item xs={12}>
-                        <RepaymentChart dataType={xx} />
+                        <RepaymentChart
+                            labels={xx}
+                            series={[
+                                {
+                                    name: 'Cash',
+                                    color: '#27ae60cc',
+                                    data: [
+                                        Math.floor(Math.random() * 1000000),
+                                        Math.floor(Math.random() * 1000000),
+                                        Math.floor(Math.random() * 1000000),
+                                        Math.floor(Math.random() * 1000000),
+                                        Math.floor(Math.random() * 1000000),
+                                        Math.floor(Math.random() * 1000000)
+                                    ]
+                                },
+                                {
+                                    name: 'E-Wallet',
+                                    color: '#FF0015',
+                                    data: [
+                                        Math.floor(Math.random() * 1000000),
+                                        Math.floor(Math.random() * 1000000),
+                                        Math.floor(Math.random() * 1000000),
+                                        Math.floor(Math.random() * 1000000),
+                                        Math.floor(Math.random() * 1000000),
+                                        Math.floor(Math.random() * 1000000)
+                                    ]
+                                },
+                                {
+                                    name: 'l2B/M2B',
+                                    color: '#2F80ED',
+                                    data: [
+                                        Math.floor(Math.random() * 1000000),
+                                        Math.floor(Math.random() * 1000000),
+                                        Math.floor(Math.random() * 1000000),
+                                        Math.floor(Math.random() * 1000000),
+                                        Math.floor(Math.random() * 1000000),
+                                        Math.floor(Math.random() * 1000000)
+                                    ]
+                                },
+                                {
+                                    name: 'ATM/CDM',
+                                    color: '#2f80ed99',
+                                    data: [
+                                        Math.floor(Math.random() * 1000000),
+                                        Math.floor(Math.random() * 1000000),
+                                        Math.floor(Math.random() * 1000000),
+                                        Math.floor(Math.random() * 1000000),
+                                        Math.floor(Math.random() * 1000000),
+                                        Math.floor(Math.random() * 1000000)
+                                    ]
+                                }
+                            ]}
+                        />
                     </Grid>
                     <Grid item xs={12}>
                         <RepaymentStatistic />

@@ -10,6 +10,7 @@ import React from 'react';
 import { gridSpacing } from 'store/constant';
 import MainCard from 'ui-component/cards/MainCard';
 import SkeletonPopularCard from 'ui-component/cards/Skeleton/PopularCard';
+import axiosServices from 'utils/axios';
 
 // ==============================|| DASHBOARD DEFAULT - POPULAR CARD ||============================== //
 
@@ -31,12 +32,32 @@ const ChannelDetail = ({ isLoading, title }: ChannelDetailProps) => {
         setAnchorEl(null);
     };
 
+    const featchChannelDetail = async () => {
+        try {
+            const res = await axiosServices.get('/api/dashboard/channeldetails');
+            console.log(res);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    React.useEffect(() => {
+        featchChannelDetail();
+    }, []);
+
     return (
         <>
             {isLoading ? (
                 <SkeletonPopularCard />
             ) : (
-                <MainCard content={false}>
+                <MainCard
+                    content={false}
+                    boxShadow
+                    shadow="0px 4px 4px rgba(0, 0, 0, 0.05)"
+                    sx={{
+                        boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.05)',
+                        border: '1px solid #E5E5E5 !important'
+                    }}
+                >
                     <CardContent>
                         <Grid container spacing={gridSpacing}>
                             <Grid item xs={12}>

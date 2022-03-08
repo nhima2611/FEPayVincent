@@ -1,6 +1,4 @@
-import { red } from '@mui/material/colors';
 import { Props } from 'react-apexcharts';
-import TotalRevenueCard from 'views/dashboard/Analytics/TotalRevenueCard';
 
 // ==============================|| WIDGET - REVENUE CHART ||============================== //
 

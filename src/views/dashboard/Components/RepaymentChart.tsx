@@ -1,14 +1,14 @@
 import { useTheme } from '@mui/material/styles';
-import { EChartsOption } from 'echarts';
+import { BarSeriesOption, EChartsOption } from 'echarts';
 import ReactEcharts from 'echarts-for-react';
 import React from 'react';
 
 interface Props {
-    data?: any[];
-    dataType?: any[];
+    series?: EChartsOption['series'];
+    labels?: string[];
 }
 
-const RepaymentChart = ({ data = [], dataType = [] }: Props) => {
+const RepaymentChart = ({ series, labels }: Props) => {
     const theme = useTheme();
     const option: EChartsOption = {
         grid: {
@@ -52,7 +52,7 @@ const RepaymentChart = ({ data = [], dataType = [] }: Props) => {
         },
         xAxis: {
             type: 'category',
-            data: dataType,
+            data: labels,
             nameLocation: 'start',
             axisLine: {
                 show: false
@@ -68,7 +68,6 @@ const RepaymentChart = ({ data = [], dataType = [] }: Props) => {
         },
         yAxis: {
             type: 'value',
-            // show: false,
             nameLocation: 'start',
             axisLine: {
                 show: false
@@ -85,96 +84,20 @@ const RepaymentChart = ({ data = [], dataType = [] }: Props) => {
                 fontFamily: 'roboto'
             }
         },
-        series: [
-            {
-                data: [
-                    Math.floor(Math.random() * 1000000),
-                    Math.floor(Math.random() * 1000000),
-                    Math.floor(Math.random() * 1000000),
-                    Math.floor(Math.random() * 1000000),
-                    Math.floor(Math.random() * 1000000),
-                    Math.floor(Math.random() * 1000000)
-                ],
+        series: _.map(series, (item: BarSeriesOption) => {
+            return {
                 type: 'bar',
-                name: 'Cash',
-                color: '#27ae60cc',
-                barGap: 0.1,
-                emphasis: {
-                    focus: 'series'
-                },
-                itemStyle: {
-                    borderRadius: 5,
-                    shadowColor: 'rgba(0, 0, 0, 0.5)',
-                    shadowBlur: 5
-                }
-            },
-            {
-                data: [
-                    Math.floor(Math.random() * 1000000),
-                    Math.floor(Math.random() * 1000000),
-                    Math.floor(Math.random() * 1000000),
-                    Math.floor(Math.random() * 1000000),
-                    Math.floor(Math.random() * 1000000),
-                    Math.floor(Math.random() * 1000000)
-                ],
-                type: 'bar',
-                name: 'E-Wallet',
-                barGap: 0.1,
-                color: '#FF0015',
-                emphasis: {
-                    focus: 'series'
-                },
-                itemStyle: {
-                    borderRadius: 5,
-                    shadowColor: 'rgba(0, 0, 0, 0.5)',
-                    shadowBlur: 5
-                }
-            },
-            {
-                data: [
-                    Math.floor(Math.random() * 1000000),
-                    Math.floor(Math.random() * 1000000),
-                    Math.floor(Math.random() * 1000000),
-                    Math.floor(Math.random() * 1000000),
-                    Math.floor(Math.random() * 1000000),
-                    Math.floor(Math.random() * 1000000)
-                ],
-                type: 'bar',
-                name: 'l2B/M2B',
-                barGap: 0.1,
-                color: '#2F80ED',
-                emphasis: {
-                    focus: 'series'
-                },
-                itemStyle: {
-                    borderRadius: 5,
-                    shadowColor: 'rgba(0, 0, 0, 0.5)',
-                    shadowBlur: 5
-                }
-            },
-            {
-                data: [
-                    Math.floor(Math.random() * 1000000),
-                    Math.floor(Math.random() * 1000000),
-                    Math.floor(Math.random() * 1000000),
-                    Math.floor(Math.random() * 1000000),
-                    Math.floor(Math.random() * 1000000),
-                    Math.floor(Math.random() * 1000000)
-                ],
-                type: 'bar',
-                name: 'ATM/CDM',
                 barGap: 0.1,
                 color: '#2f80ed99',
                 emphasis: {
                     focus: 'series'
                 },
                 itemStyle: {
-                    borderRadius: 5,
-                    shadowColor: 'rgba(0, 0, 0, 0.5)',
-                    shadowBlur: 5
-                }
-            }
-        ]
+                    borderRadius: 5
+                },
+                ...item
+            };
+        })
     };
     return <ReactEcharts option={option} />;
 };

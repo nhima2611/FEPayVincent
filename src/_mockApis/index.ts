@@ -13,3 +13,5 @@ import './user-profile';
 // import './contact';
 // import './cart';
 import './kanban';
+
+import './dashboard';

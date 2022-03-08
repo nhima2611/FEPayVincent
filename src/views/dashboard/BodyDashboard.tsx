@@ -2,15 +2,15 @@
 import { Grid, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import _ from 'lodash';
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { gridSpacing } from 'store/constant';
-import CardChart from './CardChart';
-import CardInfo from './CardInfo';
-import ChannelDetail from './ChannelDetail';
-import RepaymentControl from './RepaymentControl';
+import CardInfo from './components/CardInfo';
+import CardOnlineChart from './components/CardOnlineChart';
+import ChannelDetail from './components/ChannelDetail';
+import RepaymentControl from './components/RepaymentControl';
 
-const BodyDashboardDaily = () => {
+const BodyDashboard = () => {
     const theme = useTheme();
     const [isLoading, setLoading] = useState(true);
     useEffect(() => {
@@ -35,7 +35,7 @@ const BodyDashboardDaily = () => {
                         </Grid>
                     ))}
                     <Grid item xs={12} lg={3} sm={6}>
-                        <CardChart
+                        <CardOnlineChart
                             datas={[
                                 { value: Math.floor(Math.random() * 1000000), name: 'Offline' },
                                 { value: Math.floor(Math.random() * 1000000), name: 'Online' }
@@ -94,4 +94,4 @@ const BodyDashboardDaily = () => {
     );
 };
 
-export default BodyDashboardDaily;
+export default memo(BodyDashboard);

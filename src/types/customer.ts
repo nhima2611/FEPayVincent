@@ -42,3 +42,11 @@ export type ProductReview = {
     date: string;
     status: number;
 };
+
+export type ChannelDetail = {
+    name: string;
+    month: string;
+    value1: number;
+    value2: number;
+    percent: number;
+};

@@ -9,6 +9,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import '_mockApis';
 
 // project imports
+import 'utils/extensions';
 import App from 'App';
 import { BASE_PATH } from 'config';
 import { store, persister } from 'store';

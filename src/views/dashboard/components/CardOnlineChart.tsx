@@ -9,7 +9,7 @@ import MainCard from 'ui-component/cards/MainCard';
 interface Props {
     datas?: PieSeriesOption['data'];
 }
-const CardChart = ({ datas }: Props) => {
+const CardOnlineChart = ({ datas }: Props) => {
     const theme = useTheme();
     const option: EChartsOption = {
         grid: {
@@ -38,7 +38,6 @@ const CardChart = ({ datas }: Props) => {
                 },
                 label: {
                     show: true,
-                    // position: 'outside',
                     formatter: (val: any) => `${val.percent}%`,
                     color: '#333'
                 },
@@ -48,21 +47,21 @@ const CardChart = ({ datas }: Props) => {
                         fontSize: '16',
                         fontWeight: 'bold'
                     }
-                    // itemStyle: {
-                    //     shadowBlur: 10,
-                    //     shadowOffsetX: 0,
-                    //     shadowColor: 'rgba(0, 0, 0, 0.5)'
-                    // }
                 },
                 data: datas
             }
         ]
     };
     return (
-        <MainCard contentSX={{ padding: '0px 0px !important', height: '100%' }} sx={{ height: '160px' }}>
+        <MainCard
+            boxShadow
+            shadow="0px 4px 4px rgba(0, 0, 0, 0.05)"
+            contentSX={{ padding: '0px 0px !important', height: '100%' }}
+            sx={{ height: '160px', boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.05)', border: '1px solid #E5E5E5 !important' }}
+        >
             <ReactEcharts style={{ width: '100%', height: '160px' }} option={option} />
         </MainCard>
     );
 };
 
-export default CardChart;
+export default CardOnlineChart;
