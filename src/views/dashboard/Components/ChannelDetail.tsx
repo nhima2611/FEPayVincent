@@ -1,28 +1,25 @@
-import React from 'react';
-
-// material-ui
-import { useTheme } from '@mui/material/styles';
-import { Avatar, Button, CardActions, CardContent, Divider, Grid, Menu, MenuItem, Typography } from '@mui/material';
-
-// project imports
-import BajajAreaChartCard from './BajajAreaChartCard';
-import MainCard from 'ui-component/cards/MainCard';
-import SkeletonPopularCard from 'ui-component/cards/Skeleton/PopularCard';
-import { gridSpacing } from 'store/constant';
-
 // assets
 import ChevronRightOutlinedIcon from '@mui/icons-material/ChevronRightOutlined';
-import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined';
-import KeyboardArrowUpOutlinedIcon from '@mui/icons-material/KeyboardArrowUpOutlined';
 import KeyboardArrowDownOutlinedIcon from '@mui/icons-material/KeyboardArrowDownOutlined';
+import KeyboardArrowUpOutlinedIcon from '@mui/icons-material/KeyboardArrowUpOutlined';
+import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined';
+import { Avatar, Button, CardActions, CardContent, Divider, Grid, Menu, MenuItem, Typography } from '@mui/material';
+// material-ui
+import { useTheme } from '@mui/material/styles';
+import React from 'react';
+import { gridSpacing } from 'store/constant';
+import MainCard from 'ui-component/cards/MainCard';
+import SkeletonPopularCard from 'ui-component/cards/Skeleton/PopularCard';
+import axiosServices from 'utils/axios';
 
 // ==============================|| DASHBOARD DEFAULT - POPULAR CARD ||============================== //
 
-interface PopularCardProps {
+interface ChannelDetailProps {
     isLoading: boolean;
+    title?: string | any;
 }
 
-const PopularCard = ({ isLoading }: PopularCardProps) => {
+const ChannelDetail = ({ isLoading, title }: ChannelDetailProps) => {
     const theme = useTheme();
 
     const [anchorEl, setAnchorEl] = React.useState<Element | ((element: Element) => Element) | null | undefined>(null);
@@ -35,21 +32,41 @@ const PopularCard = ({ isLoading }: PopularCardProps) => {
         setAnchorEl(null);
     };
 
+    const featchChannelDetail = async () => {
+        try {
+            const res = await axiosServices.get('/api/dashboard/channeldetails');
+            console.log(res);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    React.useEffect(() => {
+        featchChannelDetail();
+    }, []);
+
     return (
         <>
             {isLoading ? (
                 <SkeletonPopularCard />
             ) : (
-                <MainCard content={false}>
+                <MainCard
+                    content={false}
+                    boxShadow
+                    shadow="0px 4px 4px rgba(0, 0, 0, 0.05)"
+                    sx={{
+                        boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.05)',
+                        border: '1px solid #E5E5E5 !important'
+                    }}
+                >
                     <CardContent>
                         <Grid container spacing={gridSpacing}>
                             <Grid item xs={12}>
                                 <Grid container alignContent="center" justifyContent="space-between">
                                     <Grid item>
-                                        <Typography variant="h4">Popular Stocks</Typography>
+                                        <Typography variant="h4">{title}</Typography>
                                     </Grid>
                                     <Grid item>
-                                        <MoreHorizOutlinedIcon
+                                        <MoreVertOutlinedIcon
                                             fontSize="small"
                                             sx={{
                                                 color: theme.palette.primary[200],
@@ -82,9 +99,7 @@ const PopularCard = ({ isLoading }: PopularCardProps) => {
                                     </Grid>
                                 </Grid>
                             </Grid>
-                            <Grid item xs={12} sx={{ pt: '16px !important' }}>
-                                <BajajAreaChartCard />
-                            </Grid>
+                            {/* <Grid item xs={12} sx={{ pt: '16px !important' }}></Grid> */}
                             <Grid item xs={12}>
                                 <Grid container direction="column">
                                     <Grid item>
@@ -305,4 +320,4 @@ const PopularCard = ({ isLoading }: PopularCardProps) => {
     );
 };
 
-export default PopularCard;
+export default ChannelDetail;

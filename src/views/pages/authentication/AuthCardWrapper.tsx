@@ -7,9 +7,14 @@ import MainCard, { MainCardProps } from 'ui-component/cards/MainCard';
 
 const AuthCardWrapper = ({ children, ...other }: MainCardProps) => (
     <MainCard
+        boxShadow
+        shadow="0px 4px 16px rgba(0, 0, 0, 0.25)"
         sx={{
-            maxWidth: { xs: 400, lg: 475 },
-            margin: { xs: 2.5, md: 3 },
+            boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.25)',
+            border: '1px solid #CCCCCC',
+            borderRadius: '24px',
+            maxWidth: { xs: 400, lg: 384 },
+            margin: { xs: 1.5, md: 3 },
             '& > *': {
                 flexGrow: 1,
                 flexBasis: '50%'

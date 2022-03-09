@@ -195,16 +195,16 @@ const FirebaseLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
                                 style={{ margin: '0 auto', display: 'table' }}
                             />
                         </FormControl>
-                        <Box sx={{ mt: 2 }}>
+                        <Box sx={{ my: 2 }}>
                             <AnimateButton>
                                 <Button
-                                    disableElevation
                                     disabled={isSubmitting}
                                     fullWidth
                                     size="large"
                                     type="submit"
                                     variant="contained"
-                                    color="secondary"
+                                    color="primary"
+                                    sx={{ borderRadius: '8px' }}
                                 >
                                     Sign in
                                 </Button>

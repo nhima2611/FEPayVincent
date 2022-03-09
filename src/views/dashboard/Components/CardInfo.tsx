@@ -1,5 +1,5 @@
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 // material-ui
 import { Box, Grid, Stack, Typography } from '@mui/material';
 // project imports
@@ -25,7 +25,15 @@ const CardInfo = ({ title, color, value, percentValue, yesterdayValue }: CardInf
         <AnimatedNumber value={val} formatValue={(res) => numeral(res).format('0,0')} duration={DURATION} />
     );
     return (
-        <MainCard contentSX={{ padding: '16px 12px !important' }}>
+        <MainCard
+            boxShadow
+            shadow="0px 4px 4px rgba(0, 0, 0, 0.05)"
+            sx={{
+                boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.05)',
+                border: '1px solid #E5E5E5 !important'
+            }}
+            contentSX={{ padding: '16px 12px !important' }}
+        >
             <Grid container justifyContent="space-between" direction="column">
                 <Grid item sm={12}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
