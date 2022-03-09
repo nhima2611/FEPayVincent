@@ -3,6 +3,7 @@ import {
     Box,
     Checkbox,
     IconButton,
+    OutlinedInput,
     Table,
     TableBody,
     TableCell,
@@ -12,13 +13,14 @@ import {
     TableRow,
     TableSortLabel,
     Toolbar,
-    Tooltip,
     Typography
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
-import { ArrangementOrder, EnhancedTableHeadProps, GetComparator, HeadCell, KeyedObject } from 'types';
-import React from 'react';
-import { lowerCase, map } from 'lodash';
+import { IconChevronDown, IconFilter } from '@tabler/icons';
+import { map } from 'lodash';
+import React, { useEffect, useState } from 'react';
+import { ArrangementOrder, EnhancedTableHeadProps, GetComparator, KeyedObject } from 'types';
+import eventEmitter from 'utils/eventEmitter';
 
 // table filter
 function descendingComparator(a: KeyedObject, b: KeyedObject, orderBy: string) {
@@ -48,15 +50,20 @@ interface Props {
     headCells: any[];
     rows: any[];
     onClickRowItem: (row: any) => void;
+    onDataFilter: (data: any) => void;
 }
 
-const FETable = ({ headCells, rows, onClickRowItem }: Props) => {
+const FETable = ({ headCells, rows, onClickRowItem, onDataFilter }: Props) => {
     const [order, setOrder] = React.useState<ArrangementOrder>('asc');
     const [orderBy, setOrderBy] = React.useState<string>('calories');
     const [selected, setSelected] = React.useState<string[]>([]);
     const [page, setPage] = React.useState(0);
     const [dense] = React.useState(false);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+    useEffect(() => {
+        eventEmitter.emit('HAS_SELECTED', { isSelected: Boolean(selected.length) });
+    }, [selected]);
 
     const handleRequestSort = (event: React.SyntheticEvent, property: string) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -121,26 +128,8 @@ const FETable = ({ headCells, rows, onClickRowItem }: Props) => {
                         onRequestSort={handleRequestSort}
                         rowCount={rows.length}
                     />
-                    <TableCell padding="checkbox" sx={{}}>
-                        <Checkbox
-                            size="small"
-                            color="primary"
-                            // indeterminate={numSelected > 0 && numSelected < rowCount}
-                            // checked={rowCount > 0 && numSelected === rowCount}
-                            // onChange={onSelectAllClick}
-                            inputProps={{ 'aria-label': 'select all desserts' }}
-                        />
-                    </TableCell>
-                    {headCells.map((headCell) => (
-                        <TableCell
-                            key={headCell.id}
-                            align="center"
-                            padding={headCell.disablePadding ? 'none' : 'normal'}
-                            sortDirection={orderBy === headCell.id ? order : false}
-                        >
-                            <input />
-                        </TableCell>
-                    ))}
+
+                    <EnhancedFilterTableHead headCells={headCells} onDataFilter={onDataFilter} />
 
                     <TableBody>
                         {stableSort(rows, getComparator(order, orderBy))
@@ -211,8 +200,50 @@ export default FETable;
 
 const styles = {
     cellText: {
-        fontSize: 10
+        fontSize: 10,
+        width: 50
     }
+};
+
+const InputItem = ({ onDataChange, headCell }) => {
+    const [input, setInput] = useState<string>('');
+
+    React.useEffect(() => {
+        if (!input.length) return;
+        onDataChange?.({ [headCell.id]: input });
+    }, [input]);
+
+    return (
+        <TableCell>
+            <OutlinedInput
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                sx={{ height: 28, fontSize: 10, borderRadius: 8 }}
+                placeholder="input"
+            />
+        </TableCell>
+    );
+};
+
+const EnhancedFilterTableHead = ({ headCells, onDataFilter }: { headCells: any[]; onDataFilter: (data: any) => void }) => {
+    const [data, setData] = useState({});
+    const onDataChange = (input: any) => setData({ ...data, ...input });
+    const onClickFilter = () => onDataFilter?.(data);
+
+    return (
+        <TableHead>
+            <TableRow>
+                <TableCell padding="checkbox">
+                    <IconButton onClick={onClickFilter}>
+                        <IconFilter color="#008345" />
+                    </IconButton>
+                </TableCell>
+                {headCells.map((headCell) => {
+                    return <InputItem headCell={headCell} onDataChange={onDataChange} key={headCell.id} />;
+                })}
+            </TableRow>
+        </TableHead>
+    );
 };
 
 // ==============================|| TABLE - HEADER TOOLBAR ||============================== //
@@ -265,7 +296,7 @@ function EnhancedTableHead({
     return (
         <TableHead>
             <TableRow>
-                <TableCell padding="checkbox" sx={{}}>
+                <TableCell padding="checkbox">
                     <Checkbox
                         size="small"
                         color="primary"
@@ -286,6 +317,7 @@ function EnhancedTableHead({
                             active={orderBy === headCell.id}
                             direction={orderBy === headCell.id ? order : 'asc'}
                             onClick={createSortHandler(headCell.id)}
+                            IconComponent={IconChevronDown}
                         >
                             {headCell.label}
                             {orderBy === headCell.id ? (

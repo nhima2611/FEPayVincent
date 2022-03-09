@@ -20,7 +20,7 @@ import { openDrawer } from 'store/slices/menu';
 import MainCard from 'ui-component/cards/MainCard';
 import Board from './board';
 import ActionKanban from './action-kanban';
-import ListStylePage1 from './list';
+import TicketList from './list';
 import { getUsersListStyle1 } from 'store/slices/user';
 
 function a11yProps(index: number) {
@@ -62,7 +62,7 @@ export default function KanbanPage() {
                 <Grid item xs={12}>
                     <MainCard contentSX={{ p: 2 }}>
                         <ActionKanban onClickTransfer={() => dispatch(setMode())} urlAddTicket="/tickets/create-ticket" />
-                        {mode === 'kanban' ? <Board /> : <ListStylePage1 />}
+                        {mode === 'kanban' ? <Board /> : <TicketList />}
                     </MainCard>
                 </Grid>
             </Grid>

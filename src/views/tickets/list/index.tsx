@@ -1,24 +1,40 @@
 import FETable from 'components/FETable';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { KanbanItem } from 'types/kanban';
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
+import eventEmitter from 'utils/eventEmitter';
 
-const ListStylePage1 = () => {
+const TicketList = () => {
     const navi = useNavigate();
 
     const onClickRowItem = (row) => {
         navi(row.id);
     };
+
+    const onDataFilter = (data) => {
+        console.log('onDataFilter', data);
+    };
+
+    useEffect(() => {
+        eventEmitter.addListener('SEARCH_TICKET_LIST', onSearch);
+
+        return () => {
+            // eventEmitter.removeListener('SEARCH_TICKET_LIST', () => {});
+        };
+    }, []);
+
+    const onSearch = ({ value }) => console.log(value);
+
     return (
         <MainCard content={false} border={false}>
-            <FETable headCells={headCells} rows={rows} onClickRowItem={onClickRowItem} />
+            <FETable headCells={headCells} rows={rows} onClickRowItem={onClickRowItem} onDataFilter={onDataFilter} />
         </MainCard>
     );
 };
 
-export default ListStylePage1;
+export default TicketList;
 
 function createData(
     id: string,
@@ -257,7 +273,8 @@ const headCells: any[] = [
         id: 'status',
         numeric: true,
         disablePadding: false,
-        label: 'Status'
+        label: 'Status',
+        type: 'select'
     },
     {
         id: 'Partner',

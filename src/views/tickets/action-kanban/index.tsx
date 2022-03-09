@@ -7,9 +7,10 @@ import TransferIcon from 'assets/images/icons/transfer.svg';
 import TrashIcon from 'assets/images/icons/trash.svg';
 import UploadIcon from 'assets/images/icons/upload.svg';
 import { map } from 'lodash';
-import { SyntheticEvent, useState } from 'react';
+import { SyntheticEvent, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'store';
+import eventEmitter from 'utils/eventEmitter';
 
 const OutlineInputStyle = styled(OutlinedInput, { shouldForwardProp })(({ theme }) => ({
     width: 434,
@@ -47,6 +48,19 @@ const ActionKanban = ({ onClickTransfer, urlAddTicket }) => {
         setAnchorEl(null);
     };
 
+    const [value, setValue] = useState<string>('');
+    const [hasSelected, setHasSelected] = useState<boolean>(false);
+
+    useEffect(() => {
+        eventEmitter.emit('SEARCH_TICKET_LIST', { value });
+    }, [value]);
+
+    useEffect(() => {
+        eventEmitter.addListener('HAS_SELECTED', onSelectedRow);
+    }, []);
+
+    const onSelectedRow = ({ isSelected }) => setHasSelected(isSelected);
+
     const renderActionList = () => (
         <Stack direction="row" spacing={1.5} sx={{ marginBottom: 1 }}>
             {map(icons, (icon, index) => (
@@ -73,8 +87,8 @@ const ActionKanban = ({ onClickTransfer, urlAddTicket }) => {
             <Box sx={{}}>
                 <OutlineInputStyle
                     id="input-search-header"
-                    // value={'value'}
-                    // onChange={(e) => setValue(e.target.value)}
+                    value={value}
+                    onChange={(e) => setValue(e.target.value)}
                     placeholder="Search"
                     startAdornment={
                         <InputAdornment position="start">
@@ -88,9 +102,10 @@ const ActionKanban = ({ onClickTransfer, urlAddTicket }) => {
             </Box>
 
             <Button
+                disabled={Boolean(!hasSelected)}
                 variant="outlined"
                 sx={{ borderColor: '#E5E5E5', color: '#008345', borderRadius: 2, height: 36, fontSize: 12, fontWeight: 'bold' }}
-                startIcon={<IconUserPlus color="#008345" size={18} />}
+                startIcon={<IconUserPlus size={18} />}
                 onClick={handleClick}
             >
                 Assign To
