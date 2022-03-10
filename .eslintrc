@@ -16,6 +16,7 @@
         }
     },
     "rules": {
+        "react-hooks/exhaustive-deps": "off",
         "no-nested-ternary": 0,
         "no-extra-boolean-cast": 0,
         "import/prefer-default-export": 0,
