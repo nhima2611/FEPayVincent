@@ -187,7 +187,7 @@ const FirebaseLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
                             <ReCAPTCHA
                                 ref={recaptchaRef}
                                 onExpired={() => (recaptchaRef.current as any)?.reset()}
-                                sitekey={process.env.REACT_APP_SITE_KEY!}
+                                sitekey="6Lcb7MgeAAAAAB8bZdGoCps1MMat1mluOYSZFZeI"
                                 onChange={(value: any) => {
                                     setValues({ ...values, token: value });
                                 }}
