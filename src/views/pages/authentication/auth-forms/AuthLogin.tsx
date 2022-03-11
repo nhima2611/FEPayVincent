@@ -63,10 +63,11 @@ const AuthLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
                 }}
                 validationSchema={Yup.object().shape({
                     email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-                    password: Yup.string().max(255).required('Password is required')
-                    // token: Yup.string().required().nullable()
+                    password: Yup.string().max(255).required('Password is required'),
+                    token: Yup.string().required().nullable()
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
+                    console.log(1);
                     try {
                         await login(values.email, values.password);
 
@@ -75,6 +76,8 @@ const AuthLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
                             setSubmitting(false);
                         }
                     } catch (err: any) {
+                        console.log(err);
+
                         if (scriptedRef.current) {
                             setStatus({ success: false });
                             setErrors({ submit: err.message });
@@ -166,7 +169,7 @@ const AuthLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
                                 <FormHelperText error>{errors.submit}</FormHelperText>
                             </Box>
                         )}
-                        {/* <FormControl fullWidth error={Boolean(touched.token && errors.token)} sx={{ ...theme.typography.customInput }}>
+                        <FormControl fullWidth error={Boolean(touched.token && errors.token)} sx={{ ...theme.typography.customInput }}>
                             <ReCAPTCHA
                                 ref={recaptchaRef}
                                 onExpired={() => (recaptchaRef.current as any)?.reset()}
@@ -177,7 +180,7 @@ const AuthLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
                                 size="normal"
                                 style={{ margin: '0 auto', display: 'table' }}
                             />
-                        </FormControl> */}
+                        </FormControl>
                         <Box sx={{ my: 2 }}>
                             <AnimateButton>
                                 <Button
