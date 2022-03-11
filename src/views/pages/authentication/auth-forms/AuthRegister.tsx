@@ -50,11 +50,11 @@ const FirebaseRegister = ({ ...others }) => {
 
     const [strength, setStrength] = React.useState(0);
     const [level, setLevel] = React.useState<StringColorProps>();
-    const { firebaseRegister, firebaseGoogleSignIn } = useAuth();
+    // const { firebaseRegister, firebaseGoogleSignIn } = useAuth();
 
     const googleHandler = async () => {
         try {
-            await firebaseGoogleSignIn();
+            // await firebaseGoogleSignIn();
         } catch (err) {
             console.error(err);
         }
@@ -144,32 +144,33 @@ const FirebaseRegister = ({ ...others }) => {
                     email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
                     password: Yup.string().max(255).required('Password is required')
                 })}
-                onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-                    try {
-                        await firebaseRegister(values.email, values.password).then(
-                            () => {
-                                // WARNING: do not set any formik state here as formik might be already destroyed here. You may get following error by doing so.
-                                // Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application.
-                                // To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup function.
-                                // github issue: https://github.com/formium/formik/issues/2430
-                            },
-                            (err: any) => {
-                                if (scriptedRef.current) {
-                                    setStatus({ success: false });
-                                    setErrors({ submit: err.message });
-                                    setSubmitting(false);
-                                }
-                            }
-                        );
-                    } catch (err: any) {
-                        console.error(err);
-                        if (scriptedRef.current) {
-                            setStatus({ success: false });
-                            setErrors({ submit: err.message });
-                            setSubmitting(false);
-                        }
-                    }
-                }}
+                onSubmit={() => {}}
+                // onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
+                //     try {
+                //         await firebaseRegister(values.email, values.password).then(
+                //             () => {
+                //                 // WARNING: do not set any formik state here as formik might be already destroyed here. You may get following error by doing so.
+                //                 // Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application.
+                //                 // To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup function.
+                //                 // github issue: https://github.com/formium/formik/issues/2430
+                //             },
+                //             (err: any) => {
+                //                 if (scriptedRef.current) {
+                //                     setStatus({ success: false });
+                //                     setErrors({ submit: err.message });
+                //                     setSubmitting(false);
+                //                 }
+                //             }
+                //         );
+                //     } catch (err: any) {
+                //         console.error(err);
+                //         if (scriptedRef.current) {
+                //             setStatus({ success: false });
+                //             setErrors({ submit: err.message });
+                //             setSubmitting(false);
+                //         }
+                //     }
+                // }}
             >
                 {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
                     <form noValidate onSubmit={handleSubmit} {...others}>

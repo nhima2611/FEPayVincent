@@ -160,5 +160,7 @@
     "user_list": "User List",
     "role_and_privileges": "Role & Privileges",
     "activity_logs": "Activity Logs",
-    "settings": "Settings"
+    "settings": "Settings",
+    "my_tickets": "My Tickets",
+    "waiting_tickets": "Waiting Tickets"
 }

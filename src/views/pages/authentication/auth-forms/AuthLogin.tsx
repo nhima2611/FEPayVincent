@@ -41,14 +41,7 @@ const FirebaseLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
     const { borderRadius } = useConfig();
     const [checked, setChecked] = React.useState(true);
 
-    const { firebaseEmailPasswordSignIn, firebaseGoogleSignIn } = useAuth();
-    const googleHandler = async () => {
-        try {
-            await firebaseGoogleSignIn();
-        } catch (err) {
-            console.error(err);
-        }
-    };
+    const { login } = useAuth();
 
     const [showPassword, setShowPassword] = React.useState(false);
     const handleClickShowPassword = () => {
@@ -57,6 +50,25 @@ const FirebaseLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
 
     const handleMouseDownPassword = (event: React.SyntheticEvent) => {
         event.preventDefault();
+    };
+
+    const onSubmit = async (values, { setErrors, setStatus, setSubmitting }) => {
+        console.log('first');
+        try {
+            await login(values.email, values.password);
+
+            if (scriptedRef.current) {
+                setStatus({ success: true });
+                setSubmitting(false);
+            }
+        } catch (err: any) {
+            console.error(err, 'e');
+            if (scriptedRef.current) {
+                setStatus({ success: false });
+                setErrors({ submit: err.message });
+                setSubmitting(false);
+            }
+        }
     };
 
     return (
@@ -70,35 +82,10 @@ const FirebaseLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
                 }}
                 validationSchema={Yup.object().shape({
                     email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-                    password: Yup.string().max(255).required('Password is required'),
-                    token: Yup.string().required().nullable()
+                    password: Yup.string().max(255).required('Password is required')
+                    // token: Yup.string().required().nullable()
                 })}
-                onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-                    try {
-                        await firebaseEmailPasswordSignIn(values.email, values.password).then(
-                            () => {
-                                // WARNING: do not set any formik state here as formik might be already destroyed here. You may get following error by doing so.
-                                // Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application.
-                                // To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup function.
-                                // github issue: https://github.com/formium/formik/issues/2430
-                            },
-                            (err: any) => {
-                                if (scriptedRef.current) {
-                                    setStatus({ success: false });
-                                    setErrors({ submit: err.message });
-                                    setSubmitting(false);
-                                }
-                            }
-                        );
-                    } catch (err: any) {
-                        console.error(err);
-                        if (scriptedRef.current) {
-                            setStatus({ success: false });
-                            setErrors({ submit: err.message });
-                            setSubmitting(false);
-                        }
-                    }
-                }}
+                onSubmit={onSubmit}
             >
                 {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, setValues }) => (
                     <form noValidate onSubmit={handleSubmit} {...others}>
@@ -183,7 +170,7 @@ const FirebaseLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
                                 <FormHelperText error>{errors.submit}</FormHelperText>
                             </Box>
                         )}
-                        <FormControl fullWidth error={Boolean(touched.token && errors.token)} sx={{ ...theme.typography.customInput }}>
+                        {/* <FormControl fullWidth error={Boolean(touched.token && errors.token)} sx={{ ...theme.typography.customInput }}>
                             <ReCAPTCHA
                                 ref={recaptchaRef}
                                 onExpired={() => (recaptchaRef.current as any)?.reset()}
@@ -194,7 +181,7 @@ const FirebaseLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
                                 size="normal"
                                 style={{ margin: '0 auto', display: 'table' }}
                             />
-                        </FormControl>
+                        </FormControl> */}
                         <Box sx={{ my: 2 }}>
                             <AnimateButton>
                                 <Button

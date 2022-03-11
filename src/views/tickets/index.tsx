@@ -22,6 +22,8 @@ import Board from './board';
 import ActionKanban from './action-kanban';
 import TicketList from './list';
 import { getUsersListStyle1 } from 'store/slices/user';
+import { useQuery } from 'react-query';
+import ticketsServices from 'services/tickets-services';
 
 function a11yProps(index: number) {
     return {
@@ -55,6 +57,8 @@ export default function KanbanPage() {
     }, []);
 
     const { mode } = useSelector((state) => state.kanban);
+
+    // const qGetTickets = useQuery('qGetTickets', ()=> ticketsServices.getAll())
 
     return (
         <Box sx={{ display: 'flex' }}>

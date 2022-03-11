@@ -1,9 +1,11 @@
-import { Box, Divider, Grid, Stack, Typography } from '@mui/material';
+import { Box, Button, Divider, Grid, Stack, Typography } from '@mui/material';
 import Highlighter from 'react-highlight-words';
 import { useParams } from 'react-router-dom';
 import MainCard from 'ui-component/cards/MainCard';
 import FECommentDetail from './FECommentDetail';
+import FEDescriptionDetail from './FEDescriptionDetail';
 import FEItemDetail from './FEItemDetail';
+import FESelectDetail from './FESelectDetail';
 import TasksCard from './TasksCard';
 
 const TicketDetail = () => {
@@ -12,7 +14,7 @@ const TicketDetail = () => {
         <MainCard title="Ticket Handling" contentSX={{ paddingRight: 0, paddingBottom: `0px !important` }}>
             <Grid container spacing={2}>
                 <Grid item xs={12} md={8}>
-                    <Stack direction="row" spacing={2}>
+                    <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between">
                         <Highlighter
                             highlightStyle={{ ...styles.ticket, fontWeight: 'bold' }}
                             unhighlightStyle={styles.ticket}
@@ -20,27 +22,16 @@ const TicketDetail = () => {
                             autoEscape
                             textToHighlight={`Ticket ID: ${123456}`}
                         />
-                        <Highlighter
-                            highlightStyle={{ ...styles.ticket, fontWeight: 'bold' }}
-                            unhighlightStyle={styles.ticket}
-                            searchWords={['Ticket ID: ']}
-                            autoEscape
-                            textToHighlight={`Ticket ID: ${123456}`}
-                        />
-                        <Highlighter
-                            highlightStyle={{ ...styles.ticket, fontWeight: 'bold' }}
-                            unhighlightStyle={styles.ticket}
-                            searchWords={['Ticket ID: ']}
-                            autoEscape
-                            textToHighlight={`Ticket ID: ${123456}`}
-                        />
+                        <FESelectDetail title="Status" />
+                        <FESelectDetail title="Action" />
+                        <Button variant="contained">Save Changes</Button>
                     </Stack>
 
                     <Grid item xs={12} sx={{ marginY: 2 }}>
                         <Divider />
                     </Grid>
 
-                    <Stack direction="row">
+                    <Stack direction="row" justifyContent="space-between">
                         <div style={styles.flex}>
                             <Highlighter
                                 highlightStyle={{ ...styles.ticket, fontWeight: 'bold' }}
@@ -59,6 +50,9 @@ const TicketDetail = () => {
                                 textToHighlight={`Transaction Amount: ${123456}`}
                             />
                         </div>
+                    </Stack>
+
+                    <Stack direction="row" sx={{ marginY: 2 }}>
                         <div style={styles.flex}>
                             <Highlighter
                                 highlightStyle={{ ...styles.ticket, fontWeight: 'bold' }}
@@ -68,8 +62,6 @@ const TicketDetail = () => {
                                 textToHighlight={`Contract #: ${123456}`}
                             />
                         </div>
-                    </Stack>
-                    <Stack direction="row" sx={{ marginY: 2 }}>
                         <div style={styles.flex}>
                             <Highlighter
                                 highlightStyle={{ ...styles.ticket, fontWeight: 'bold' }}
@@ -79,6 +71,8 @@ const TicketDetail = () => {
                                 textToHighlight={`Product: ${'Card'}`}
                             />
                         </div>
+                    </Stack>
+                    <Stack direction="row" sx={{ marginY: 2 }}>
                         <div style={styles.flex}>
                             <Highlighter
                                 highlightStyle={{ ...styles.ticket, fontWeight: 'bold' }}
@@ -117,31 +111,19 @@ const TicketDetail = () => {
                                 textToHighlight={`Phone Number: ${123456}`}
                             />
                         </div>
-                        <div style={styles.flex} />
                     </Stack>
 
                     <Grid item xs={12} sx={{ marginY: 2 }}>
                         <Divider />
                     </Grid>
 
-                    <Stack spacing={1} direction="row">
-                        <Typography sx={{ ...styles.ticket, fontWeight: 'bold' }}>Description: </Typography>
-                        <Typography>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-                            magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                            consequat.
-                        </Typography>
-                    </Stack>
+                    <FEDescriptionDetail />
 
                     <Grid item xs={12} sx={{ marginY: 2 }}>
                         <Divider />
                     </Grid>
 
-                    <Grid item xs={12}>
-                        <Typography sx={{ ...styles.ticket, fontWeight: 'bold', color: '#27AE60' }}>Comment: </Typography>
-                    </Grid>
-
-                    <FECommentDetail />
+                    {/* <FECommentDetail /> */}
                 </Grid>
                 <Grid item xs={12} md={4}>
                     <Box sx={{ borderLeft: 1, borderTop: 1, borderTopLeftRadius: 16, borderColor: '#E5E5E5' }}>

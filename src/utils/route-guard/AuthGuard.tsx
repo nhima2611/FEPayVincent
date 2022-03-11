@@ -12,8 +12,8 @@ import { useEffect } from 'react';
  * @param {PropTypes.node} children children element/node
  */
 const AuthGuard = ({ children }: GuardProps) => {
-    const { isLoggedIn, user } = useAuth();
-    console.log(user);
+    const { isLoggedIn } = useAuth();
+    // console.log(user);
 
     const navigate = useNavigate();
 

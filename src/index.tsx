@@ -4,9 +4,10 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 // load mock apis
-import '_mockApis';
+// import '_mockApis';
 
 // project imports
 import 'utils/extensions';
@@ -22,12 +23,17 @@ import 'assets/scss/style.scss';
 
 // ==============================|| REACT DOM RENDER  ||============================== //
 
+// Create a client
+const queryClient = new QueryClient();
+
 ReactDOM.render(
     <Provider store={store}>
         <PersistGate loading={null} persistor={persister}>
             <ConfigProvider>
                 <BrowserRouter basename={BASE_PATH}>
-                    <App />
+                    <QueryClientProvider client={queryClient}>
+                        <App />
+                    </QueryClientProvider>
                 </BrowserRouter>
             </ConfigProvider>
         </PersistGate>

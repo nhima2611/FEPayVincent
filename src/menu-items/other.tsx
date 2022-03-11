@@ -109,12 +109,24 @@ const other = {
         {
             id: 'tickets',
             title: <FormattedMessage id="tickets" />,
-            type: 'item',
-            url: '/tickets',
+            type: 'collapse',
             icon: IconTicket,
-            breadcrumbs: false
-            // external: true,
-            // target: true
+            children: [
+                {
+                    id: 'my_tickets',
+                    title: <FormattedMessage id="my_tickets" />,
+                    type: 'item',
+                    url: '/tickets',
+                    breadcrumbs: false
+                },
+                {
+                    id: 'waiting_tickets',
+                    title: <FormattedMessage id="waiting_tickets" />,
+                    type: 'item',
+                    url: '/tickets',
+                    breadcrumbs: false
+                }
+            ]
         },
         {
             id: 'activity_logs',
