@@ -114,7 +114,7 @@ const ProfileSection = () => {
                 }}
                 icon={
                     <Avatar
-                        src={User1}
+                        src="https://i.pravatar.cc/300"
                         sx={{
                             ...theme.typography.mediumAvatar,
                             margin: '8px 0 8px 8px !important',
@@ -169,7 +169,7 @@ const ProfileSection = () => {
                                                 </Stack>
                                                 <Typography variant="subtitle2">Project Admin</Typography>
                                             </Stack>
-                                            <OutlinedInput
+                                            {/* <OutlinedInput
                                                 sx={{ width: '100%', pr: 1, pl: 2, my: 2 }}
                                                 id="input-search-profile"
                                                 value={value}
@@ -185,12 +185,12 @@ const ProfileSection = () => {
                                                     'aria-label': 'weight'
                                                 }}
                                             />
-                                            <Divider />
+                                            <Divider /> */}
                                         </Box>
                                         <PerfectScrollbar style={{ height: '100%', maxHeight: 'calc(100vh - 250px)', overflowX: 'hidden' }}>
                                             <Box sx={{ p: 2, pt: 0 }}>
-                                                <UpgradePlanCard />
-                                                <Divider />
+                                                {/* <UpgradePlanCard /> */}
+                                                {/* <Divider /> */}
                                                 <Card
                                                     sx={{
                                                         bgcolor:
@@ -202,7 +202,7 @@ const ProfileSection = () => {
                                                 >
                                                     <CardContent>
                                                         <Grid container spacing={3} direction="column">
-                                                            <Grid item>
+                                                            {/* <Grid item>
                                                                 <Grid item container alignItems="center" justifyContent="space-between">
                                                                     <Grid item>
                                                                         <Typography variant="subtitle1">Start DND Mode</Typography>
@@ -217,7 +217,7 @@ const ProfileSection = () => {
                                                                         />
                                                                     </Grid>
                                                                 </Grid>
-                                                            </Grid>
+                                                            </Grid> */}
                                                             <Grid item>
                                                                 <Grid item container alignItems="center" justifyContent="space-between">
                                                                     <Grid item>

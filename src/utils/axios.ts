@@ -6,8 +6,7 @@ import axios from 'axios';
 import _ from 'lodash';
 
 const axiosServices = axios.create({
-    // baseURL: 'https://payment-api2.neotime.vn'
-    baseURL: 'http://192.168.110.144:8000'
+    baseURL: process.env.REACT_APP_BASE_URL
 });
 
 // interceptor for http

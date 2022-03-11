@@ -34,7 +34,7 @@ import * as Yup from 'yup';
 
 const recaptchaRef: any = React.createRef();
 
-const FirebaseLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
+const AuthLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
     const theme = useTheme();
     const scriptedRef = useScriptRef();
     const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
@@ -52,30 +52,11 @@ const FirebaseLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
         event.preventDefault();
     };
 
-    const onSubmit = async (values, { setErrors, setStatus, setSubmitting }) => {
-        console.log('first');
-        try {
-            await login(values.email, values.password);
-
-            if (scriptedRef.current) {
-                setStatus({ success: true });
-                setSubmitting(false);
-            }
-        } catch (err: any) {
-            console.error(err, 'e');
-            if (scriptedRef.current) {
-                setStatus({ success: false });
-                setErrors({ submit: err.message });
-                setSubmitting(false);
-            }
-        }
-    };
-
     return (
         <>
             <Formik
                 initialValues={{
-                    email: 'info@codedthemes.com',
+                    email: 'admin@gmail.com',
                     password: '123456',
                     token: null,
                     submit: null
@@ -85,7 +66,22 @@ const FirebaseLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
                     password: Yup.string().max(255).required('Password is required')
                     // token: Yup.string().required().nullable()
                 })}
-                onSubmit={onSubmit}
+                onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
+                    try {
+                        await login(values.email, values.password);
+
+                        if (scriptedRef.current) {
+                            setStatus({ success: true });
+                            setSubmitting(false);
+                        }
+                    } catch (err: any) {
+                        if (scriptedRef.current) {
+                            setStatus({ success: false });
+                            setErrors({ submit: err.message });
+                            setSubmitting(false);
+                        }
+                    }
+                }}
             >
                 {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, setValues }) => (
                     <form noValidate onSubmit={handleSubmit} {...others}>
@@ -204,4 +200,4 @@ const FirebaseLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
     );
 };
 
-export default FirebaseLogin;
+export default AuthLogin;
