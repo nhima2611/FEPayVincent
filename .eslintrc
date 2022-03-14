@@ -16,6 +16,7 @@
         }
     },
     "rules": {
+        "jsx-a11y/label-has-associated-control": "off",
         "react-hooks/exhaustive-deps": "off",
         "no-nested-ternary": 0,
         "no-extra-boolean-cast": 0,

@@ -5,9 +5,7 @@ export abstract class BaseApiService {
     constructor(protected apiName: string) {}
 
     getAll(filter?: any) {
-        return axiosServices.get(`${this.apiName}`, {
-            params: { filter: JSON.stringify(filter) }
-        });
+        return axiosServices.get(`${this.apiName}?${filter}`);
     }
 
     getById(id: string, includeOption?: any) {

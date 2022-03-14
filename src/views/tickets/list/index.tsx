@@ -1,321 +1,147 @@
+import { DatePicker, LocalizationProvider } from '@mui/lab';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import { MenuItem, OutlinedInput, Select, Stack } from '@mui/material';
 import FETable from 'components/FETable';
+import { camelCase, startCase } from 'lodash';
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { KanbanItem } from 'types/kanban';
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
-import eventEmitter from 'utils/eventEmitter';
+import { issueType, lastStatusType, productTypes, requestedBy, transactionType } from '../constant';
 
-const TicketList = () => {
-    const navi = useNavigate();
+const TicketList = ({ data = [], pageCount, fetchData, loading, cols = [], onClickRowItem }) => {
+    const productsColumns = React.useMemo(
+        () =>
+            cols[0]
+                ? cols.map((key) => {
+                      // if (key === "user_id")
+                      //   return {
+                      //     Header: key,
+                      //     accessor: key,
+                      //     Cell: ({ value }) => <img src={value} />,
+                      //     maxWidth: 70,
+                      //   };,
+                      const typeSelect = ['last_status', 'transaction_type', 'issue_type', 'product_type', 'requested_by'].includes(key);
+                      const dateSelect = ['created_date', 'last_status_date'].includes(key);
+                      return {
+                          Header: startCase(camelCase(key)),
+                          accessor: key,
+                          Filter: typeSelect ? SelectColumnFilter : dateSelect ? DatePickerColumnFilter : DefaultColumnFilter
+                      };
+                  })
+                : [],
+        [cols]
+    );
 
-    const onClickRowItem = (row) => {
-        navi(row.id);
-    };
-
-    const onDataFilter = (data) => {
-        console.log('onDataFilter', data);
-    };
-
-    useEffect(() => {
-        eventEmitter.addListener('SEARCH_TICKET_LIST', onSearch);
-
-        return () => {
-            // eventEmitter.removeListener('SEARCH_TICKET_LIST', () => {});
-        };
-    }, []);
-
-    const onSearch = ({ value }) => console.log(value);
+    const productsData = React.useMemo(() => [...data], [data]);
 
     return (
         <MainCard content={false} border={false}>
-            <FETable headCells={headCells} rows={rows} onClickRowItem={onClickRowItem} onDataFilter={onDataFilter} />
+            {loading ? (
+                <div>loading...</div>
+            ) : (
+                <FETable
+                    onClickRowItem={onClickRowItem}
+                    data={productsData}
+                    columns={productsColumns}
+                    loading={loading}
+                    fetchData={fetchData}
+                    pageCount={pageCount}
+                />
+            )}
         </MainCard>
     );
 };
 
 export default TicketList;
 
-function createData(
-    id: string,
-    ticketID: number,
-    contractID: number,
-    refID: number,
-    createdDate: any,
-    modifiedDate: any,
-    status: any,
-    partner: string,
-    assignee?: string,
-    supporter?: string,
-    transactionType?: 'Repayment' | 'Disbursement',
-    issueType?: 'Cancel transaction' | 'Adjust Amount' | 'Adjust Contract Number' | 'System Issue',
-    productType?: 'Loan' | 'Card' | 'Banca',
-    requestedBy?: string
-) {
-    return {
-        id,
-        ticketID,
-        contractID,
-        refID,
-        createdDate,
-        modifiedDate,
-        status,
-        partner,
-        assignee,
-        supporter,
-        transactionType,
-        issueType,
-        productType,
-        requestedBy
+const SelectColumnFilter = ({ column: { filterValue, setFilter, id } }) => {
+    const dataSelect =
+        id === 'last_status'
+            ? lastStatusType
+            : id === 'transaction_type'
+            ? transactionType
+            : id === 'issue_type'
+            ? issueType
+            : id === 'product_type'
+            ? productTypes
+            : id === 'requested_by'
+            ? requestedBy
+            : [];
+
+    return (
+        <Select
+            id="category"
+            value={filterValue || ''}
+            onChange={(e) => {
+                setFilter(e.target.value);
+            }}
+            sx={{ height: 28, fontSize: 10, borderRadius: 8, width: '100%' }}
+        >
+            <MenuItem value="">All</MenuItem>
+            {_.map(dataSelect, (key, value) => {
+                return (
+                    <MenuItem key={value} value={value.toString()}>
+                        {key || 'N/A'}
+                    </MenuItem>
+                );
+            })}
+        </Select>
+    );
+};
+
+export const DefaultColumnFilter = ({ column: { filterValue, setFilter } }) => {
+    const onChange = (e) => {
+        setFilter(e.target.value);
     };
-}
+    return (
+        <OutlinedInput
+            value={filterValue || ''}
+            onChange={onChange}
+            sx={{ height: 28, fontSize: 10, borderRadius: 8 }}
+            placeholder="input"
+        />
+    );
+};
 
-const rows: KanbanItem[] = [
-    createData(
-        '1',
-        12345,
-        12345,
-        12345,
-        '25/2/2022',
-        '27/2/2022',
-        'New',
-        'Payoo',
-        'Nguyen Tran Thu Trang',
-        'Pham Nguyen Huong Giang',
-        'Repayment',
-        'Adjust Amount',
-        'Loan',
-        'Tran Thu Anh'
-    ),
-    createData(
-        '2',
-        12345,
-        12345,
-        12345,
-        '25/2/2022',
-        '27/2/2022',
-        'On-Hold',
-        'Payoo',
-        'Nguyen Tran Thu Trang',
-        'Pham Nguyen Huong Giang',
-        'Repayment',
-        'Adjust Amount',
-        'Loan',
-        'Tran Thu Anh'
-    ),
-    createData(
-        '3',
-        12345,
-        12345,
-        12345,
-        '25/2/2022',
-        '27/2/2022',
-        'New',
-        'Payoo',
-        'Nguyen Tran Thu Trang',
-        'Pham Nguyen Huong Giang',
-        'Repayment',
-        'Adjust Amount',
-        'Loan',
-        'Tran Thu Anh'
-    ),
-    createData(
-        '4',
-        12345,
-        12345,
-        12345,
-        '25/2/2022',
-        '27/2/2022',
-        'New',
-        'Payoo',
-        'Nguyen Tran Thu Trang',
-        'Pham Nguyen Huong Giang',
-        'Repayment',
-        'Adjust Amount',
-        'Loan',
-        'Tran Thu Anh'
-    ),
-    createData(
-        '5',
-        12345,
-        12345,
-        12345,
-        '25/2/2022',
-        '27/2/2022',
-        'New',
-        'Payoo',
-        'Nguyen Tran Thu Trang',
-        'Pham Nguyen Huong Giang',
-        'Repayment',
-        'Adjust Amount',
-        'Loan',
-        'Tran Thu Anh'
-    ),
-    createData(
-        '11',
-        12345,
-        12345,
-        12345,
-        '25/2/2022',
-        '27/2/2022',
-        'New',
-        'Payoo',
-        'Nguyen Tran Thu Trang',
-        'Pham Nguyen Huong Giang',
-        'Repayment',
-        'Adjust Amount',
-        'Loan',
-        'Tran Thu Anh'
-    ),
-    createData(
-        '22',
-        12345,
-        12345,
-        12345,
-        '25/2/2022',
-        '27/2/2022',
-        'New',
-        'Payoo',
-        'Nguyen Tran Thu Trang',
-        'Pham Nguyen Huong Giang',
-        'Repayment',
-        'Adjust Amount',
-        'Loan',
-        'Tran Thu Anh'
-    ),
-    createData(
-        '33',
-        12345,
-        12345,
-        12345,
-        '25/2/2022',
-        '27/2/2022',
-        'New',
-        'Payoo',
-        'Nguyen Tran Thu Trang',
-        'Pham Nguyen Huong Giang',
-        'Repayment',
-        'Adjust Amount',
-        'Loan',
-        'Tran Thu Anh'
-    ),
-    createData(
-        '44',
-        12345,
-        12345,
-        12345,
-        '25/2/2022',
-        '27/2/2022',
-        'New',
-        'Payoo',
-        'Nguyen Tran Thu Trang',
-        'Pham Nguyen Huong Giang',
-        'Repayment',
-        'Adjust Amount',
-        'Loan',
-        'Tran Thu Anh'
-    ),
-    createData(
-        '55',
-        123452,
-        1234533,
-        123453,
-        '25/2/2022',
-        '27/2/2022',
-        'New',
-        'Payoo',
-        'Nguyen Tran Thu Trang',
-        'Pham Nguyen Huong Giang',
-        'Repayment',
-        'Adjust Amount',
-        'Loan',
-        'Tran Thu Anh'
-    )
-];
+export const DatePickerColumnFilter = ({ column: { filterValue, setFilter } }) => {
+    useEffect(() => {
+        if (filterValue === 'Invalid date') {
+            setFilter('');
+        }
+    }, [filterValue]);
 
-// table header
-const headCells: any[] = [
-    {
-        id: 'id',
-        numeric: false,
-        label: 'ID'
-    },
-    {
-        id: 'ticketID',
-        numeric: false,
-        label: 'Ticket ID'
-    },
-    {
-        id: 'contractID',
-        numeric: true,
-        disablePadding: false,
-        label: 'Contract ID'
-    },
-    {
-        id: 'ref',
-        numeric: true,
-        disablePadding: false,
-        label: 'Ref#'
-    },
-    {
-        id: 'createdDate',
-        numeric: true,
-        disablePadding: false,
-        label: 'Created Date'
-    },
-    {
-        id: 'ModifiedDate',
-        numeric: true,
-        disablePadding: false,
-        label: 'Modified Date'
-    },
-    {
-        id: 'status',
-        numeric: true,
-        disablePadding: false,
-        label: 'Status',
-        type: 'select'
-    },
-    {
-        id: 'Partner',
-        numeric: true,
-        disablePadding: false,
-        label: 'Partner'
-    },
-    {
-        id: 'Assignee',
-        numeric: true,
-        disablePadding: false,
-        label: 'Assignee'
-    },
-    {
-        id: 'Supporter',
-        numeric: true,
-        disablePadding: false,
-        label: 'Supporter'
-    },
-    {
-        id: 'TransactionType',
-        numeric: true,
-        disablePadding: false,
-        label: 'Transaction Type'
-    },
-    {
-        id: 'IssueType',
-        numeric: true,
-        disablePadding: false,
-        label: 'Issue Type'
-    },
-    {
-        id: 'ProductType',
-        numeric: true,
-        disablePadding: false,
-        label: 'Product Type'
-    },
-    {
-        id: 'RequestedBy',
-        numeric: true,
-        disablePadding: false,
-        label: 'Requested By'
-    }
-];
+    const [focused, setFocused] = React.useState(false);
+    const onFocus = () => setFocused(true);
+    const onBlur = () => setFocused(false);
+
+    const onChange = _.debounce(
+        (newValue: Date | null) => {
+            setFilter(newValue);
+        },
+        focused ? 1500 : 0,
+        {
+            maxWait: 1500
+        }
+    );
+
+    return (
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DatePicker
+                renderInput={({ inputRef, inputProps, InputProps }) => (
+                    <Stack direction="row" alignItems="center">
+                        <input
+                            ref={inputRef}
+                            {...inputProps}
+                            style={{ height: 28, fontSize: 10, borderRadius: 8, border: '1px solid gray', padding: 4 }}
+                            onFocus={onFocus}
+                            onBlur={onBlur}
+                        />
+                        {InputProps?.endAdornment}
+                    </Stack>
+                )}
+                value={filterValue || ''}
+                onChange={onChange}
+            />
+        </LocalizationProvider>
+    );
+};

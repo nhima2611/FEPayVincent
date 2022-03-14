@@ -1,4 +1,4 @@
-// material-ui
+import React, { useContext, useState } from 'react';
 import {
     Box,
     Checkbox,
@@ -8,6 +8,7 @@ import {
     TableBody,
     TableCell,
     TableContainer,
+    TableFooter,
     TableHead,
     TablePagination,
     TableRow,
@@ -15,180 +16,317 @@ import {
     Toolbar,
     Typography
 } from '@mui/material';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { visuallyHidden } from '@mui/utils';
-import { IconChevronDown, IconFilter } from '@tabler/icons';
-import { map } from 'lodash';
-import React, { useEffect, useState } from 'react';
-import { ArrangementOrder, EnhancedTableHeadProps, GetComparator, KeyedObject } from 'types';
+
+import { useTable, usePagination, useRowSelect, useSortBy, useFilters } from 'react-table';
+import { IconFilter } from '@tabler/icons';
+import { STATUS } from 'constants/status';
+import { getColorAndNameStatus, issueType, lastStatusType, productTypes, requestedBy, transactionType } from 'views/tickets/constant';
+import { DefaultColumnFilter } from 'views/tickets/list';
+import TableContext from 'contexts/TableContext';
 import eventEmitter from 'utils/eventEmitter';
+// import { initialState, reducer } from 'views/tickets';
 
-// table filter
-function descendingComparator(a: KeyedObject, b: KeyedObject, orderBy: string) {
-    if (b[orderBy] < a[orderBy]) {
-        return -1;
-    }
-    if (b[orderBy] > a[orderBy]) {
-        return 1;
-    }
-    return 0;
-}
+const FETable = ({ data, columns, fetchData, pageCount: controlledPageCount, loading, onClickRowItem }) => {
+    const filterTypes = React.useMemo(
+        () => ({
+            // Add a new fuzzyTextFilterFn filter type.
+            //   fuzzyText: fuzzyTextFilterFn,
+            // Or, override the default text filter to use
+            // "startWith"
+            text: (rows, id, filterValue) => {
+                return rows.filter((row) => {
+                    const rowValue = row.values[id];
+                    return rowValue !== undefined ? String(rowValue).toLowerCase().startsWith(String(filterValue).toLowerCase()) : true;
+                });
+            }
+        }),
+        []
+    );
 
-const getComparator: GetComparator = (order, orderBy) =>
-    order === 'desc' ? (a, b) => descendingComparator(a, b, orderBy) : (a, b) => -descendingComparator(a, b, orderBy);
+    const [{ queryPageIndex, queryPageSize, totalCount }, dispatch] = useContext(TableContext);
 
-function stableSort(array: any[], comparator: (a: KeyedObject, b: KeyedObject) => number) {
-    const stabilizedThis = array.map((el, index) => [el, index]);
-    stabilizedThis.sort((a, b) => {
-        const order = comparator(a[0] as any, b[0] as any);
-        if (order !== 0) return order;
-        return (a[1] as number) - (b[1] as number);
-    });
-    return stabilizedThis.map((el) => el[0]);
-}
+    const {
+        getTableProps,
+        getTableBodyProps,
+        headerGroups,
+        prepareRow,
+        page, // Instead of using 'rows', we'll use page,
+        // which has only the rows for the active page
 
-interface Props {
-    headCells: any[];
-    rows: any[];
-    onClickRowItem: (row: any) => void;
-    onDataFilter: (data: any) => void;
-}
-
-const FETable = ({ headCells, rows, onClickRowItem, onDataFilter }: Props) => {
-    const [order, setOrder] = React.useState<ArrangementOrder>('asc');
-    const [orderBy, setOrderBy] = React.useState<string>('calories');
-    const [selected, setSelected] = React.useState<string[]>([]);
-    const [page, setPage] = React.useState(0);
-    const [dense] = React.useState(false);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
-    useEffect(() => {
-        eventEmitter.emit('HAS_SELECTED', { isSelected: Boolean(selected.length) });
-    }, [selected]);
-
-    const handleRequestSort = (event: React.SyntheticEvent, property: string) => {
-        const isAsc = orderBy === property && order === 'asc';
-        setOrder(isAsc ? 'desc' : 'asc');
-        setOrderBy(property);
-    };
-
-    const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (event.target.checked) {
-            const newSelectedId: string[] = rows.map((n) => n.id);
-            setSelected(newSelectedId);
-            return;
+        // The rest of these things are super handy, too ;)
+        canPreviousPage,
+        canNextPage,
+        pageOptions,
+        pageCount,
+        gotoPage,
+        nextPage,
+        previousPage,
+        setPageSize,
+        selectedFlatRows,
+        toggleAllPageRowsSelected,
+        state: { pageIndex, pageSize, sortBy, filters, selectedRowIds }
+    } = useTable(
+        {
+            columns,
+            data,
+            initialState: {
+                pageIndex: queryPageIndex,
+                pageSize: queryPageSize
+            },
+            manualSortBy: true,
+            disableSortRemove: true,
+            manualPagination: true,
+            manualFilters: true,
+            pageCount: totalCount,
+            filterTypes,
+            autoResetSelectedRows: false,
+            getRowId: (row) => row.ticket_id
+        },
+        useFilters,
+        useSortBy,
+        usePagination,
+        useRowSelect,
+        (hooks) => {
+            hooks.visibleColumns.push((columnss) => [
+                // Let's make a column for selection
+                {
+                    id: 'selection',
+                    // The header can use the table's getToggleAllRowsSelectedProps method
+                    // to render a checkbox
+                    Header: ({ getToggleAllPageRowsSelectedProps }) => (
+                        <div>
+                            <IndeterminateCheckbox {...getToggleAllPageRowsSelectedProps()} />
+                        </div>
+                    ),
+                    // The cell can use the individual row's getToggleRowSelectedProps method
+                    // to the render a checkbox
+                    Cell: ({ row }) => (
+                        <div>
+                            <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+                        </div>
+                    )
+                },
+                ...columnss
+            ]);
         }
-        setSelected([]);
-    };
+    );
 
-    const handleClick = (event: any, name: string) => {
-        event.stopPropagation();
-        const selectedIndex = selected.indexOf(name);
-        let newSelected: string[] = [];
-
-        if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, name);
-        } else if (selectedIndex === 0) {
-            newSelected = newSelected.concat(selected.slice(1));
-        } else if (selectedIndex === selected.length - 1) {
-            newSelected = newSelected.concat(selected.slice(0, -1));
-        } else if (selectedIndex > 0) {
-            newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
+    const handleDeselectAllRow = (flag: boolean) => {
+        if (flag) {
+            toggleAllPageRowsSelected(false);
         }
-
-        setSelected(newSelected);
     };
 
-    const handleChangePage = (event: React.MouseEvent<HTMLButtonElement, MouseEvent> | null, newPage: number) => {
-        setPage(newPage);
+    React.useEffect(() => {
+        eventEmitter.addListener('DESELECT_ALL_ROWS', handleDeselectAllRow);
+    }, []);
+
+    React.useEffect(() => {
+        dispatch({ type: 'PAGE_SIZE_CHANGED', payload: pageSize });
+        gotoPage(0);
+    }, [pageSize, gotoPage]);
+
+    React.useEffect(() => {
+        if (controlledPageCount) {
+            dispatch({
+                type: 'TOTAL_COUNT_CHANGED',
+                payload: controlledPageCount
+            });
+        }
+    }, [controlledPageCount]);
+
+    React.useEffect(() => {
+        if (selectedRowIds) {
+            dispatch({
+                type: 'SELECTED_CHANGE',
+                payload: selectedRowIds
+            });
+        }
+    }, [selectedRowIds]);
+
+    React.useEffect(() => {
+        if (sortBy) {
+            dispatch({
+                type: 'SORT_BY_OBJECT_CHANGED',
+                payload: sortBy
+            });
+        }
+    }, [sortBy]);
+
+    React.useEffect(() => {
+        if (filters) {
+            dispatch({
+                type: 'FILTERS_CHANGED',
+                payload: filters
+            });
+        }
+    }, [filters]);
+
+    const handleChangePage = (event, newPage) => {
+        gotoPage(newPage);
+        dispatch({ type: 'PAGE_CHANGED', payload: newPage });
     };
 
-    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | undefined) => {
-        setRowsPerPage(parseInt(event?.target.value!, 10));
-        setPage(0);
+    const handleChangeRowsPerPage = (event) => {
+        setPageSize(Number(event.target.value));
     };
-
-    const isSelected = (name: string) => selected.indexOf(name) !== -1;
 
     // Avoid a layout jump when reaching the last page with empty rows.
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    const emptyRows = pageIndex > 0 ? Math.max(0, (1 + pageIndex) * pageSize - pageOptions.length) : 0;
+
+    const [dense] = React.useState(false);
+
+    const renderNotfound = () => (
+        <TableRow>
+            <TableCell sx={{ textAlign: 'center' }} colSpan={columns.length + 1}>
+                Search Not Found
+            </TableCell>
+        </TableRow>
+    );
 
     return (
         <div>
-            <EnhancedTableToolbar numSelected={selected.length} />
-
-            {/* table */}
-            <TableContainer>
+            <TableContainer {...getTableProps()}>
                 <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'}>
-                    <EnhancedTableHead
-                        headCells={headCells}
-                        numSelected={selected.length}
-                        order={order}
-                        orderBy={orderBy}
-                        onSelectAllClick={handleSelectAllClick}
-                        onRequestSort={handleRequestSort}
-                        rowCount={rows.length}
-                    />
-
-                    <EnhancedFilterTableHead headCells={headCells} onDataFilter={onDataFilter} />
-
-                    <TableBody>
-                        {stableSort(rows, getComparator(order, orderBy))
-                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            .map((row, index) => {
-                                /** Make sure no display bugs if row isn't an OrderData object */
-                                if (typeof row === 'number') return null;
-                                const isItemSelected = isSelected(row.id);
-                                const labelId = `enhanced-table-checkbox-${index}`;
-                                return (
-                                    <TableRow
-                                        hover
-                                        onClick={() => onClickRowItem(row)}
-                                        role="checkbox"
-                                        aria-checked={isItemSelected}
-                                        tabIndex={-1}
-                                        key={row.id}
-                                        selected={isItemSelected}
-                                        sx={{ textDecoration: 'none', cursor: 'pointer' }}
+                    <TableHead>
+                        {headerGroups.map((headerGroup) => (
+                            <TableRow {...headerGroup.getHeaderGroupProps()}>
+                                {headerGroup.headers.map((column) => (
+                                    <TableCell
+                                        {...(column.id === 'selection'
+                                            ? column.getHeaderProps()
+                                            : column.getHeaderProps(column.getSortByToggleProps()))}
+                                        sx={{ minWidth: 110 }}
                                     >
-                                        <TableCell padding="checkbox" onClick={(event: any) => handleClick(event, row.id)}>
-                                            <Checkbox
-                                                size="small"
-                                                color="primary"
-                                                checked={isItemSelected}
-                                                inputProps={{ 'aria-labelledby': labelId }}
-                                            />
+                                        <TableSortLabel
+                                            active={column.isSorted}
+                                            direction={column.isSortedDesc ? 'desc' : 'asc'}
+                                            IconComponent={ArrowDropDownIcon}
+                                        >
+                                            {column.render('Header')}
+                                            {column.id !== 'selection' ? (
+                                                <Box component="span" sx={visuallyHidden}>
+                                                    {column.isSortedDesc ? 'sorted descending' : 'sorted ascending'}
+                                                </Box>
+                                            ) : null}
+                                        </TableSortLabel>
+                                    </TableCell>
+                                ))}
+                            </TableRow>
+                        ))}
+                    </TableHead>
+
+                    <TableHead>
+                        {headerGroups.map((headerGroup) => (
+                            <TableRow {...headerGroup.getHeaderGroupProps()}>
+                                {headerGroup.headers.map((column) => {
+                                    if (column.id === 'selection')
+                                        return (
+                                            <TableCell {...column.getHeaderProps()}>
+                                                <IconButton disabled>
+                                                    <IconFilter color="#008345" />
+                                                </IconButton>
+                                            </TableCell>
+                                        );
+                                    return (
+                                        <TableCell {...column.getHeaderProps()} sx={{ minWidth: 110 }}>
+                                            {column.canFilter ? column.render('Filter') : null}
                                         </TableCell>
-                                        {map(row, (item: any, i: number) => {
-                                            const color = item === 'New' ? 'red' : item === 'On-Hold' ? 'green' : '';
+                                    );
+                                })}
+                            </TableRow>
+                        ))}
+                    </TableHead>
+
+                    <TableBody {...getTableBodyProps()}>
+                        {!Boolean(data.length) && renderNotfound()}
+
+                        {page.map((row, i) => {
+                            prepareRow(row);
+                            return (
+                                <TableRow
+                                    hover
+                                    {...row.getRowProps()}
+                                    onClick={() => onClickRowItem(row)}
+                                    sx={{ textDecoration: 'none', cursor: 'pointer' }}
+                                >
+                                    {row.cells.map((cell) => {
+                                        const isDateType = ['created_date', 'last_status_date'].includes(cell.column?.id);
+                                        const isStatusType = ['last_status'].includes(cell.column?.id);
+                                        const isTransactionType = ['transaction_type'].includes(cell.column?.id);
+                                        const isIssueType = ['issue_type'].includes(cell.column?.id);
+                                        const isProductType = ['product_type'].includes(cell.column?.id);
+                                        const isRequestedByType = ['requested_by'].includes(cell.column?.id);
+
+                                        if (isDateType)
                                             return (
-                                                <TableCell sx={{ ...styles.cellText, color }} key={i}>
-                                                    {item}
+                                                <TableCell {...cell.getCellProps()} sx={{ ...styles.cellText }}>
+                                                    {moment(cell.value).format('DD/MM/YYYY')}
                                                 </TableCell>
                                             );
-                                        })}
-                                    </TableRow>
-                                );
-                            })}
+                                        if (isTransactionType)
+                                            return (
+                                                <TableCell {...cell.getCellProps()} sx={{ ...styles.cellText }}>
+                                                    {_.get(transactionType, [cell.value])}
+                                                </TableCell>
+                                            );
+                                        if (isIssueType)
+                                            return (
+                                                <TableCell {...cell.getCellProps()} sx={{ ...styles.cellText }}>
+                                                    {_.get(issueType, [cell.value])}
+                                                </TableCell>
+                                            );
+                                        if (isProductType)
+                                            return (
+                                                <TableCell {...cell.getCellProps()} sx={{ ...styles.cellText }}>
+                                                    {_.get(productTypes, [cell.value])}
+                                                </TableCell>
+                                            );
+                                        if (isRequestedByType)
+                                            return (
+                                                <TableCell {...cell.getCellProps()} sx={{ ...styles.cellText }}>
+                                                    {_.get(requestedBy, [cell.value])}
+                                                </TableCell>
+                                            );
+                                        if (isStatusType)
+                                            return (
+                                                <TableCell
+                                                    {...cell.getCellProps()}
+                                                    sx={{ ...styles.cellText, color: getColorAndNameStatus(cell.value)?.color }}
+                                                >
+                                                    {_.get(lastStatusType, [cell.value])}
+                                                </TableCell>
+                                            );
+                                        return (
+                                            <TableCell {...cell.getCellProps()} sx={{ ...styles.cellText }}>
+                                                {cell.render('Cell')}
+                                            </TableCell>
+                                        );
+                                    })}
+                                </TableRow>
+                            );
+                        })}
+
                         {emptyRows > 0 && (
                             <TableRow
                                 style={{
                                     height: (dense ? 33 : 53) * emptyRows
                                 }}
                             >
-                                <TableCell colSpan={6} />
+                                <TableCell colSpan={columns.length + 1} />
                             </TableRow>
                         )}
                     </TableBody>
                 </Table>
             </TableContainer>
-
-            {/* table data */}
             <TablePagination
-                rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={rows.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
+                rowsPerPageOptions={[10, 15, 20]}
+                count={pageOptions.length}
+                rowsPerPage={pageSize}
+                page={pageIndex}
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
@@ -198,137 +336,31 @@ const FETable = ({ headCells, rows, onClickRowItem, onDataFilter }: Props) => {
 
 export default FETable;
 
+const IndeterminateCheckbox = React.forwardRef(({ indeterminate, ...rest }: { indeterminate: any }, ref) => {
+    const defaultRef = React.useRef<any>();
+    const resolvedRef: any = ref || defaultRef;
+
+    React.useEffect(() => {
+        resolvedRef.current.indeterminate = indeterminate;
+    }, [resolvedRef, indeterminate]);
+
+    return (
+        <>
+            <Checkbox
+                ref={resolvedRef}
+                {...rest}
+                size="small"
+                onClick={(event) => {
+                    event.stopPropagation();
+                }}
+            />
+        </>
+    );
+});
+
 const styles = {
     cellText: {
         fontSize: 10,
         width: 50
     }
 };
-
-const InputItem = ({ onDataChange, headCell }) => {
-    const [input, setInput] = useState<string>('');
-
-    React.useEffect(() => {
-        if (!input.length) return;
-        onDataChange?.({ [headCell.id]: input });
-    }, [input]);
-
-    return (
-        <TableCell>
-            <OutlinedInput
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                sx={{ height: 28, fontSize: 10, borderRadius: 8 }}
-                placeholder="input"
-            />
-        </TableCell>
-    );
-};
-
-const EnhancedFilterTableHead = ({ headCells, onDataFilter }: { headCells: any[]; onDataFilter: (data: any) => void }) => {
-    const [data, setData] = useState({});
-    const onDataChange = (input: any) => setData({ ...data, ...input });
-    const onClickFilter = () => onDataFilter?.(data);
-
-    return (
-        <TableHead>
-            <TableRow>
-                <TableCell padding="checkbox">
-                    <IconButton onClick={onClickFilter}>
-                        <IconFilter color="#008345" />
-                    </IconButton>
-                </TableCell>
-                {headCells.map((headCell) => {
-                    return <InputItem headCell={headCell} onDataChange={onDataChange} key={headCell.id} />;
-                })}
-            </TableRow>
-        </TableHead>
-    );
-};
-
-// ==============================|| TABLE - HEADER TOOLBAR ||============================== //
-
-const EnhancedTableToolbar = ({ numSelected }: { numSelected: number }) => (
-    <Toolbar
-        sx={{
-            p: 0,
-            pl: 1,
-            pr: 1,
-            ...(numSelected > 0 && {
-                color: (theme) => theme.palette.secondary.main
-            })
-        }}
-    >
-        <Typography variant="h6" id="tableTitle">
-            My Ticket List - {numSelected} Selected
-        </Typography>
-
-        <Box sx={{ flexGrow: 1 }} />
-        {/* {numSelected > 0 && (
-            <Tooltip title="Delete">
-                <IconButton size="large">
-                    <DeleteIcon />
-                </IconButton>
-            </Tooltip>
-        )} */}
-    </Toolbar>
-);
-
-// ==============================|| TABLE - HEADER ||============================== //
-
-interface TableDataEnhancedTableHead extends EnhancedTableHeadProps {
-    headCells: any[];
-}
-
-function EnhancedTableHead({
-    onSelectAllClick,
-    order,
-    orderBy,
-    numSelected,
-    rowCount,
-    onRequestSort,
-    headCells
-}: TableDataEnhancedTableHead) {
-    const createSortHandler = (property: string) => (event: React.SyntheticEvent) => {
-        onRequestSort(event, property);
-    };
-
-    return (
-        <TableHead>
-            <TableRow>
-                <TableCell padding="checkbox">
-                    <Checkbox
-                        size="small"
-                        color="primary"
-                        indeterminate={numSelected > 0 && numSelected < rowCount}
-                        checked={rowCount > 0 && numSelected === rowCount}
-                        onChange={onSelectAllClick}
-                        inputProps={{ 'aria-label': 'select all desserts' }}
-                    />
-                </TableCell>
-                {headCells.map((headCell) => (
-                    <TableCell
-                        key={headCell.id}
-                        align="center"
-                        padding={headCell.disablePadding ? 'none' : 'normal'}
-                        sortDirection={orderBy === headCell.id ? order : false}
-                    >
-                        <TableSortLabel
-                            active={orderBy === headCell.id}
-                            direction={orderBy === headCell.id ? order : 'asc'}
-                            onClick={createSortHandler(headCell.id)}
-                            IconComponent={IconChevronDown}
-                        >
-                            {headCell.label}
-                            {orderBy === headCell.id ? (
-                                <Box component="span" sx={visuallyHidden}>
-                                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                                </Box>
-                            ) : null}
-                        </TableSortLabel>
-                    </TableCell>
-                ))}
-            </TableRow>
-        </TableHead>
-    );
-}

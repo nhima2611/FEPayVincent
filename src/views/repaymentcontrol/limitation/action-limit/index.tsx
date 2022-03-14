@@ -1,43 +1,14 @@
-import {
-    Box,
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle,
-    Divider,
-    Grid,
-    InputAdornment,
-    InputLabel,
-    MenuItem,
-    OutlinedInput,
-    Paper,
-    PaperProps,
-    Select,
-    SelectChangeEvent,
-    Stack,
-    TextField,
-    Typography
-} from '@mui/material';
-import TransferIcon from 'assets/images/icons/transfer.svg';
-import DownloadIcon from 'assets/images/icons/download.svg';
-import UploadIcon from 'assets/images/icons/upload.svg';
-import TrashIcon from 'assets/images/icons/trash.svg';
-import { map } from 'lodash';
-import { padding, shouldForwardProp } from '@mui/system';
-import { IconSearch, IconPlus } from '@tabler/icons';
-import React, { createRef, useImperativeHandle, useState } from 'react';
-import { Link } from 'react-router-dom';
-import * as yup from 'yup';
-import { Draggable } from 'react-beautiful-dnd';
-import { LocalizationProvider } from '@mui/lab';
-import FEDropDown from 'views/tickets/create/FEDropDown';
-import MainCard from 'ui-component/cards/MainCard';
-import FETextField from 'views/tickets/create/FETextField';
+import { Box, Button, Dialog, Grid, InputAdornment, InputLabel, OutlinedInput, Stack, TextField } from '@mui/material';
+import { styled, Theme, useTheme } from '@mui/material/styles';
+import { shouldForwardProp } from '@mui/system';
+import { IconPlus, IconSearch } from '@tabler/icons';
 import { useFormik } from 'formik';
-import { Theme, useTheme, styled } from '@mui/material/styles';
-import product from 'store/slices/product';
+import { map } from 'lodash';
+import React, { createRef, useImperativeHandle, useState } from 'react';
+import MainCard from 'ui-component/cards/MainCard';
+import FEDropDown from 'views/tickets/create/FEDropDown';
+import FETextField from 'views/tickets/create/FETextField';
+import * as yup from 'yup';
 import { partner, productName, subPartner } from './data';
 
 const validationSchema = yup.object({
@@ -79,8 +50,6 @@ const OutlineInputStyle = styled(OutlinedInput, { shouldForwardProp })(({ theme 
         background: theme.palette.mode === 'dark' ? theme.palette.dark[800] : '#fff'
     }
 }));
-
-const icons = [TransferIcon, DownloadIcon, UploadIcon, TrashIcon];
 
 function getStyles(name: string, provinceName: readonly string[], theme: Theme) {
     return {
@@ -128,7 +97,7 @@ const ActionLimitation = ({ onClickTransfer, urlAddTicket }) => {
     return (
         <Box>
             <Box sx={{ display: 'flex' }}>
-                {map(icons, (icon, index) => (
+                {map([], (icon, index) => (
                     <Button
                         onClick={() => {
                             switch (index) {

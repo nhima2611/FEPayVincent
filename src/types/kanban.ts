@@ -2,7 +2,7 @@ export interface KanbanStateProps {
     columns: KanbanColumn[];
     columnsOrder: string[];
     comments: KanbanComment[];
-    items: KanbanItem[];
+    items: any[];
     profiles: KanbanProfile[];
     selectedItem: string | false;
     userStory: KanbanUserStory[];

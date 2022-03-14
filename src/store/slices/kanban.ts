@@ -8,6 +8,7 @@ import { dispatch } from '../index';
 // types
 import { DefaultRootStateProps } from 'types';
 import { KanbanColumn, KanbanComment, KanbanItem, KanbanUserStory } from 'types/kanban';
+import { columnsData, columnsOrderData } from 'views/tickets/constant';
 
 // ----------------------------------------------------------------------
 
@@ -21,7 +22,7 @@ const initialState: DefaultRootStateProps['kanban'] = {
     selectedItem: false,
     userStory: [],
     userStoryOrder: [],
-    mode: 'kanban'
+    mode: 'list'
 };
 
 const slice = createSlice({
@@ -184,12 +185,15 @@ export function setMode() {
     };
 }
 
-export function getColumns() {
+export function getColumns(d?: any) {
     return async () => {
         try {
-            const response = await axios.get('/api/kanban/columns');
+            // const response = await axios.get('/api/kanban/columns');
             // console.log(response);
-            dispatch(slice.actions.getColumnsSuccess(response.data.columns));
+            const dd = _.map(columnsData, (item) => {
+                return { ...item, itemIds: d[item.title] || [] };
+            });
+            dispatch(slice.actions.getColumnsSuccess(dd));
         } catch (error) {
             dispatch(slice.actions.hasError(error));
         }
@@ -199,8 +203,8 @@ export function getColumns() {
 export function getColumnsOrder() {
     return async () => {
         try {
-            const response = await axios.get('/api/kanban/columns-order');
-            dispatch(slice.actions.getColumnsOrderSuccess(response.data.columnsOrder));
+            // const response = await axios.get('/api/kanban/columns-order');
+            dispatch(slice.actions.getColumnsOrderSuccess(columnsOrderData));
         } catch (error) {
             dispatch(slice.actions.hasError(error));
         }
@@ -229,11 +233,11 @@ export function getProfiles() {
     };
 }
 
-export function getItems() {
+export function getItems(data: any[]) {
     return async () => {
         try {
-            const response = await axios.get('/api/kanban/items');
-            dispatch(slice.actions.getItemsSuccess(response.data.items));
+            // const response = await axios.get('/api/kanban/items');
+            dispatch(slice.actions.getItemsSuccess(data));
         } catch (error) {
             dispatch(slice.actions.hasError(error));
         }
@@ -287,8 +291,8 @@ export function editColumn(column: KanbanColumn, columns: KanbanColumn[]) {
 export function updateColumnOrder(columnsOrder: string[]) {
     return async () => {
         try {
-            const response = await axios.post('/api/kanban/update-column-order', { columnsOrder });
-            dispatch(slice.actions.updateColumnOrderSuccess(response.data));
+            // const response = await axios.post('/api/kanban/update-column-order', { columnsOrder });
+            dispatch(slice.actions.updateColumnOrderSuccess({ columnsOrder }));
         } catch (error) {
             dispatch(slice.actions.hasError(error));
         }

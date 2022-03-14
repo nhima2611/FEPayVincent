@@ -23,9 +23,12 @@ import MenuBookTwoToneIcon from '@mui/icons-material/MenuBookTwoTone';
 // types
 import { DefaultRootStateProps } from 'types';
 import { KanbanItem } from 'types/kanban';
+import { TicketItem } from 'types/ticket';
+import { lastStatusType } from '../constant';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
-    item: KanbanItem;
+    item: TicketItem;
     index: number;
     columnColor?: string;
 }
@@ -59,12 +62,10 @@ const Items = ({ item, index, columnColor }: Props) => {
     const theme = useTheme();
     const dispatch = useDispatch();
     // const backProfile = item.image && backImage(`./${item.image}`).default;
-
     const { borderRadius } = useConfig();
     const kanban = useSelector((state: DefaultRootStateProps) => state.kanban);
     const { userStory, items, columns } = kanban;
-
-    const itemStory = userStory.filter((story) => story?.itemIds?.filter((itemId) => itemId === item.id)[0])[0];
+    const itemStory = userStory.filter((story) => story?.itemIds?.filter((itemId) => itemId === item.ticket_id.toString())[0])[0];
 
     const handlerDetails = (id: string) => {
         dispatch(selectItem(id));
@@ -83,7 +84,7 @@ const Items = ({ item, index, columnColor }: Props) => {
     const handleModalClose = (status: boolean) => {
         setOpen(false);
         if (status) {
-            dispatch(deleteItem(item.id, items, columns, userStory));
+            dispatch(deleteItem('', items, columns, userStory));
             dispatch(
                 openSnackbar({
                     open: true,
@@ -108,8 +109,14 @@ const Items = ({ item, index, columnColor }: Props) => {
         setOpenStoryDrawer((prevState) => !prevState);
     };
 
+    const navi = useNavigate();
+
+    const onClickRowItem = (id: string) => {
+        navi(id);
+    };
+
     return (
-        <Draggable key={item.id} draggableId={item.id} index={index}>
+        <Draggable key={item.ticket_id.toString()} draggableId={item.ticket_id.toString()} index={index} isDragDisabled>
             {(provided, snapshot) => (
                 <div
                     ref={provided.innerRef}
@@ -117,41 +124,47 @@ const Items = ({ item, index, columnColor }: Props) => {
                     {...provided.dragHandleProps}
                     style={getDragWrapper(snapshot.isDragging, provided.draggableProps.style, theme, `${borderRadius}px`, columnColor)}
                 >
-                    <Stack direction="column" justifyContent="space-between" alignItems="flex-start" sx={{ mb: itemStory ? -0.75 : 0 }}>
+                    <Stack
+                        onClick={() => onClickRowItem(item.ticket_id.toString())}
+                        direction="column"
+                        justifyContent="space-between"
+                        alignItems="flex-start"
+                        sx={{ mb: itemStory ? -0.75 : 0 }}
+                    >
                         <Highlighter
                             highlightStyle={{ ...styles.ticket, fontWeight: 'bold' }}
                             unhighlightStyle={styles.ticket}
                             searchWords={['Ticket ID: ']}
                             autoEscape
-                            textToHighlight={`Ticket ID: ${item.ticketID}`}
+                            textToHighlight={`Ticket ID: ${item.ticket_id}`}
                         />
                         <Highlighter
                             highlightStyle={{ ...styles.ticket, fontWeight: 'bold' }}
                             unhighlightStyle={styles.ticket}
                             searchWords={['Contract ID: ']}
                             autoEscape
-                            textToHighlight={`Contract ID: ${item.contractID}`}
+                            textToHighlight={`Contract ID: ${item.contract_id}`}
                         />
                         <Highlighter
                             highlightStyle={{ ...styles.ticket, fontWeight: 'bold' }}
                             unhighlightStyle={styles.ticket}
                             searchWords={['Ref#: ']}
                             autoEscape
-                            textToHighlight={`Ref#: ${item.refID}`}
+                            textToHighlight={`Ref#: ${item.ref_number}`}
                         />
                         <Highlighter
                             highlightStyle={{ ...styles.ticket, fontWeight: 'bold' }}
                             unhighlightStyle={styles.ticket}
                             searchWords={['Created Date: ']}
                             autoEscape
-                            textToHighlight={`Created Date: ${item.createdDate}`}
+                            textToHighlight={`Created Date: ${moment(item.created_date).format('DD/MM/YYYY')}`}
                         />
                         <Highlighter
                             highlightStyle={{ ...styles.ticket, fontWeight: 'bold' }}
                             unhighlightStyle={{ ...styles.ticket, color: columnColor }}
                             searchWords={['Status: ']}
                             autoEscape
-                            textToHighlight={`Status: ${item.status}`}
+                            textToHighlight={`Status: ${_.get(lastStatusType, [item.last_status])}`}
                         />
                     </Stack>
                 </div>

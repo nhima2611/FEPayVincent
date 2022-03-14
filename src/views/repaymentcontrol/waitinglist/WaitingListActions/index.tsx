@@ -2,14 +2,9 @@ import { Box, Button, InputAdornment, OutlinedInput } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
 import { shouldForwardProp } from '@mui/system';
 import { IconPlus, IconSearch } from '@tabler/icons';
-import DownloadIcon from 'assets/images/icons/download.svg';
-import TransferIcon from 'assets/images/icons/transfer.svg';
-import TrashIcon from 'assets/images/icons/trash.svg';
-import UploadIcon from 'assets/images/icons/upload.svg';
 import { map } from 'lodash';
 import { createRef, useImperativeHandle, useState } from 'react';
 import { Link } from 'react-router-dom';
-import FormControlSelect from 'ui-component/extended/Form/FormControlSelect';
 
 const OutlineInputStyle = styled(OutlinedInput, { shouldForwardProp })(({ theme }) => ({
     width: 434,
@@ -60,8 +55,6 @@ const currencies = [
     }
 ];
 
-const icons = [TransferIcon, DownloadIcon, UploadIcon, TrashIcon];
-
 export const refActionKanban = createRef();
 const WaitingListActions = ({ onClickTransfer, urlAddTicket }) => {
     const theme = useTheme();
@@ -78,7 +71,7 @@ const WaitingListActions = ({ onClickTransfer, urlAddTicket }) => {
         <Box>
             <div style={{ marginLeft: 8, marginBottom: 8, color: '#008345' }}>Waiting List</div>
             <Box sx={{ display: 'flex' }}>
-                {map(icons, (icon, index) => (
+                {map([], (icon, index) => (
                     <Button
                         onClick={() => {
                             switch (index) {

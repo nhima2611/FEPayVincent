@@ -90,7 +90,7 @@ const Columns = ({ column, index }: Props) => {
 
     const { borderRadius } = useConfig();
     const { items, columns, columnsOrder } = useSelector((state: DefaultRootStateProps) => state.kanban);
-    const columnItems = column.itemIds.map((itemId) => items.filter((item) => item.id === itemId)[0]);
+    const columnItems = column.itemIds.map((itemId) => items.filter((item) => item.ticket_id === itemId)[0]);
 
     const handleColumnDelete = () => {
         setOpen(true);
