@@ -1,4 +1,4 @@
-import { Grid, Stack, Typography, useMediaQuery } from '@mui/material';
+import { Divider, Grid, Stack, Typography, useMediaQuery } from '@mui/material';
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import useAuth from 'hooks/useAuth';
@@ -20,11 +20,11 @@ const Login = () => {
 
     return (
         <AuthWrapper1>
-            <Grid container direction="column" justifyContent="flex-end" sx={{ minHeight: '86vh', borderRadius: '24px' }}>
+            <Grid container direction="column" justifyContent="center" sx={{ minHeight: '100vh', borderRadius: '24px' }}>
                 <Grid item sx={{ m: { xs: 1, sm: 3 }, mb: 0 }}>
                     <AuthCardWrapper>
                         <Grid container spacing={2} alignItems="center" justifyContent="center">
-                            <Grid item sx={{ my: 1 }}>
+                            <Grid item sx={{ mb: 1 }}>
                                 <Link to="#">
                                     <Logo />
                                 </Link>
@@ -54,6 +54,21 @@ const Login = () => {
                             </Grid>
                             <Grid item xs={12}>
                                 <AuthLogin />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Divider />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Grid item container direction="column" alignItems="center" xs={12}>
+                                    <Typography
+                                        component={Link}
+                                        to={isLoggedIn ? '' : '/register'}
+                                        variant="subtitle1"
+                                        sx={{ textDecoration: 'none' }}
+                                    >
+                                        Don&apos;t have account?
+                                    </Typography>
+                                </Grid>
                             </Grid>
                         </Grid>
                     </AuthCardWrapper>

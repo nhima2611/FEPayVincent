@@ -27,6 +27,7 @@ import React from 'react';
 // third party
 import ReCAPTCHA from 'react-google-recaptcha';
 import { Link } from 'react-router-dom';
+import toastService from 'services/core/toast.service';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import * as Yup from 'yup';
 
@@ -67,9 +68,19 @@ const AuthLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
                     token: Yup.string().required().nullable()
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-                    console.log(1);
                     try {
-                        await login(values.email, values.password);
+                        login(values.email, values.password)
+                            .then((res) => {
+                                console.log(res);
+                            })
+                            .catch((err) => {
+                                console.log(err);
+                                toastService.showError({
+                                    title: err.status,
+                                    text: err.message,
+                                    position: 'center-start'
+                                });
+                            });
 
                         if (scriptedRef.current) {
                             setStatus({ success: true });
@@ -173,7 +184,7 @@ const AuthLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
                             <ReCAPTCHA
                                 ref={recaptchaRef}
                                 onExpired={() => (recaptchaRef.current as any)?.reset()}
-                                sitekey="6Lcb7MgeAAAAAB8bZdGoCps1MMat1mluOYSZFZeI"
+                                sitekey={process.env.REACT_APP_SITE_KEY!}
                                 onChange={(value: any) => {
                                     setValues({ ...values, token: value });
                                 }}

@@ -1,11 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
-
-// material-ui
-import { useTheme } from '@mui/material/styles';
 import {
     Avatar,
-    Box,
     Button,
     CardActions,
     Chip,
@@ -15,53 +9,60 @@ import {
     Paper,
     Popper,
     Stack,
-    TextField,
-    Typography,
+    Tab,
+    Tabs,
     useMediaQuery
 } from '@mui/material';
-
+import Box from '@mui/material/Box';
+// material-ui
+import { useTheme } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
+// assets
+import { IconBell } from '@tabler/icons';
+import PropTypes from 'prop-types';
+import * as React from 'react';
+import { useEffect, useRef, useState } from 'react';
 // third-party
 import PerfectScrollbar from 'react-perfect-scrollbar';
-
+import { Link } from 'react-router-dom';
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
 import Transitions from 'ui-component/extended/Transitions';
 import NotificationList from './NotificationList';
 
-// assets
-import { IconBell } from '@tabler/icons';
-
-// notification status options
-const status = [
-    {
-        value: 'all',
-        label: 'All Notification'
-    },
-    {
-        value: 'new',
-        label: 'New'
-    },
-    {
-        value: 'unread',
-        label: 'Unread'
-    },
-    {
-        value: 'other',
-        label: 'Other'
-    }
-];
-
 // ==============================|| NOTIFICATION ||============================== //
+
+function TabPanel(props) {
+    const { children, value, index, ...other } = props;
+
+    return (
+        <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
+            {value === index && (
+                <Box sx={{ p: 3 }}>
+                    <Typography>{children}</Typography>
+                </Box>
+            )}
+        </div>
+    );
+}
+
+TabPanel.propTypes = {
+    children: PropTypes.node,
+    index: PropTypes.number.isRequired,
+    value: PropTypes.number.isRequired
+};
+
+function a11yProps(index) {
+    return {
+        id: `simple-tab-${index}`,
+        'aria-controls': `simple-tabpanel-${index}`
+    };
+}
 
 const NotificationSection = () => {
     const theme = useTheme();
     const matchesXs = useMediaQuery(theme.breakpoints.down('md'));
-
     const [open, setOpen] = useState(false);
-    const [value, setValue] = useState('');
-    /**
-     * anchorRef is used on different componets and specifying one type leads to other components throwing an error
-     * */
     const anchorRef = useRef<any>(null);
 
     const handleToggle = () => {
@@ -83,8 +84,10 @@ const NotificationSection = () => {
         prevOpen.current = open;
     }, [open]);
 
-    const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement> | undefined) => {
-        event?.target.value && setValue(event?.target.value);
+    const [tabValue, setTabValue] = useState(0);
+
+    const handleChangeTab = (event, newValue) => {
+        setTabValue(newValue);
     };
 
     return (
@@ -150,10 +153,10 @@ const NotificationSection = () => {
                                                 <Grid container alignItems="center" justifyContent="space-between" sx={{ pt: 2, px: 2 }}>
                                                     <Grid item>
                                                         <Stack direction="row" spacing={2}>
-                                                            <Typography variant="subtitle1">All Notification</Typography>
+                                                            <Typography variant="subtitle1">Notification</Typography>
                                                             <Chip
                                                                 size="small"
-                                                                label="01"
+                                                                label="04"
                                                                 sx={{
                                                                     color: theme.palette.background.default,
                                                                     bgcolor: theme.palette.warning.dark
@@ -174,39 +177,38 @@ const NotificationSection = () => {
                                                 >
                                                     <Grid container direction="column" spacing={2}>
                                                         <Grid item xs={12}>
-                                                            <Box sx={{ px: 2, pt: 0.25 }}>
-                                                                <TextField
-                                                                    id="outlined-select-currency-native"
-                                                                    select
-                                                                    fullWidth
-                                                                    value={value}
-                                                                    onChange={handleChange}
-                                                                    SelectProps={{
-                                                                        native: true
-                                                                    }}
-                                                                >
-                                                                    {status.map((option) => (
-                                                                        <option key={option.value} value={option.value}>
-                                                                            {option.label}
-                                                                        </option>
-                                                                    ))}
-                                                                </TextField>
+                                                            <Box sx={{ width: '100%' }}>
+                                                                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                                                                    <Tabs
+                                                                        value={tabValue}
+                                                                        onChange={handleChangeTab}
+                                                                        aria-label="basic tabs example"
+                                                                    >
+                                                                        <Tab label="All" {...a11yProps(0)} />
+                                                                        <Tab label="Unread" {...a11yProps(1)} />
+                                                                    </Tabs>
+                                                                </Box>
+                                                                <TabPanel value={tabValue} index={0}>
+                                                                    <NotificationList />
+                                                                </TabPanel>
+                                                                <TabPanel value={tabValue} index={1}>
+                                                                    <NotificationList />
+                                                                </TabPanel>
                                                             </Box>
                                                         </Grid>
                                                         <Grid item xs={12} p={0}>
                                                             <Divider sx={{ my: 0 }} />
                                                         </Grid>
                                                     </Grid>
-                                                    <NotificationList />
                                                 </PerfectScrollbar>
                                             </Grid>
                                         </Grid>
-                                        <Divider />
+                                        {/* <Divider />
                                         <CardActions sx={{ p: 1.25, justifyContent: 'center' }}>
                                             <Button size="small" disableElevation>
                                                 View All
                                             </Button>
-                                        </CardActions>
+                                        </CardActions> */}
                                     </MainCard>
                                 )}
                             </Paper>
