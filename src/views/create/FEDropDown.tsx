@@ -5,9 +5,9 @@ import React from 'react';
 interface Props {
     formik: any;
     title: string;
-    data?: any[];
+    data?: any;
 }
-const FEDropDown = ({ formik, title = '', data = [] }: Props) => {
+const FEDropDown = ({ formik, title = '', data = {} }: Props) => {
     return (
         <Stack>
             <InputLabel sx={{ color: '#4C4C4C', fontWeight: 'bold', marginBottom: 1 }}>{title}</InputLabel>

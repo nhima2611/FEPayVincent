@@ -21,6 +21,8 @@ import { ConfigProvider } from 'contexts/ConfigContext';
 // style + assets
 import 'assets/scss/style.scss';
 
+import 'react-toastify/dist/ReactToastify.css';
+
 // ==============================|| REACT DOM RENDER  ||============================== //
 
 // Create a client

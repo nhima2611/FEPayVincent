@@ -16,9 +16,9 @@ import MainCard from 'ui-component/cards/MainCard';
 import eventEmitter from 'utils/eventEmitter';
 import toastify from 'utils/toastify';
 import Board from 'components/kanban';
-import TicketList from './list';
+import WaitingTicketList from './list';
 
-export default function TicketPage() {
+export default function WaitingTicketPage() {
     const dispatchs = useDispatch();
     const [{ queryPageIndex, queryPageSize, sortByObject, filters, selectedIds, resetState }, dispatch] = useContext(TableContext);
 
@@ -54,11 +54,11 @@ export default function TicketPage() {
         data: dataTable,
         refetch: refetchTable
     } = useQuery(
-        ['my_tickets_table', queryPageIndex, queryPageSize, searchTerm, sortByObject, filters],
+        ['waiting_tickets_table', queryPageIndex, queryPageSize, searchTerm, sortByObject, filters],
         () => {
             const page_size = `per_page=${queryPageSize}&page=${queryPageIndex + 1}`;
             const search = searchTerm?.length === 0 ? '' : `&keyword=${searchTerm}`;
-            const view_type = `view_type=${0}`;
+            const view_type = `view_type=${1}`;
             const sortByProps = Boolean(sortByObject.length)
                 ? `&order_by=${sortByObject[0]?.id ?? 'ticket_id'}&sorted_by=${sortByObject[0]?.desc ? 'desc' : 'asc'}`
                 : '';
@@ -197,7 +197,7 @@ export default function TicketPage() {
                         {mode === 'kanban' ? (
                             <Board />
                         ) : (
-                            <TicketList
+                            <WaitingTicketList
                                 onClickRowItem={onClickRowItem}
                                 loading={isLoading}
                                 data={dataTable?.data?.data}

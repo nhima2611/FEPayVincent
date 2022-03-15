@@ -283,12 +283,10 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
                 root: {
                     borderColor: mode === 'dark' ? theme.palette.text.primary + 15 : theme.palette.grey[200],
                     '&.MuiTableCell-head': {
-                        // fontSize: '0.875rem',
+                        fontSize: '0.875rem',
                         // color: theme.palette.grey[600],
-                        // fontWeight: 500
-                        fontSize: 10,
-                        color: 'green',
-                        fontWeight: 'bold'
+                        fontWeight: 500,
+                        color: 'green'
                     }
                 }
             }
