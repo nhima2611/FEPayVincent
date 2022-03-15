@@ -123,7 +123,7 @@ const other = {
                     id: 'waiting_tickets',
                     title: <FormattedMessage id="waiting_tickets" />,
                     type: 'item',
-                    url: '/tickets',
+                    url: '/waiting-tickets',
                     breadcrumbs: false
                 }
             ]

@@ -1,30 +1,54 @@
-import { DatePicker, LocalizationProvider } from '@mui/lab';
+import { DatePicker, LocalizationProvider, DesktopDatePicker } from '@mui/lab';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import { MenuItem, OutlinedInput, Select, Stack } from '@mui/material';
+import { MenuItem, OutlinedInput, Select, Stack, TextField } from '@mui/material';
 import FETable from 'components/FETable';
 import { camelCase, startCase } from 'lodash';
 import React, { useEffect } from 'react';
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
-import { issueType, lastStatusType, productTypes, requestedBy, transactionType } from '../constant';
+import { getColorAndNameStatus, issueType, lastStatusType, productTypes, requestedBy, transactionType } from 'constants/tickets';
 
-const TicketList = ({ data = [], pageCount, fetchData, loading, cols = [], onClickRowItem }) => {
+const renderValue = (key: string, value: any) => {
+    const isDateType = ['created_date', 'last_status_date'].includes(key);
+    const isStatusType = ['last_status'].includes(key);
+    const isTransactionType = ['transaction_type'].includes(key);
+    const isIssueType = ['issue_type'].includes(key);
+    const isProductType = ['product_type'].includes(key);
+    const isRequestedByType = ['requested_by'].includes(key);
+
+    if (isDateType) return moment(value).format('DD/MM/YYYY');
+    if (isStatusType) return _.get(lastStatusType, [value]);
+    if (isTransactionType) return _.get(transactionType, [value]);
+    if (isIssueType) return _.get(issueType, [value]);
+    if (isProductType) return _.get(productTypes, [value]);
+    if (isRequestedByType) return _.get(requestedBy, [value]);
+    return value;
+};
+
+const WaitingTicketList = ({ data = [], loading, cols = [], onClickRowItem }) => {
     const productsColumns = React.useMemo(
         () =>
             cols[0]
                 ? cols.map((key) => {
-                      // if (key === "user_id")
-                      //   return {
-                      //     Header: key,
-                      //     accessor: key,
-                      //     Cell: ({ value }) => <img src={value} />,
-                      //     maxWidth: 70,
-                      //   };,
                       const typeSelect = ['last_status', 'transaction_type', 'issue_type', 'product_type', 'requested_by'].includes(key);
                       const dateSelect = ['created_date', 'last_status_date'].includes(key);
+                      const isStatusType = ['last_status'].includes(key);
+
                       return {
                           Header: startCase(camelCase(key)),
                           accessor: key,
+                          Cell: ({ value }) => (
+                              <div
+                                  style={{
+                                      color: isStatusType ? getColorAndNameStatus(value)?.color : 'black',
+                                      minWidth: 200,
+                                      maxHeight: 40,
+                                      overflow: 'hidden'
+                                  }}
+                              >
+                                  {renderValue(key, value)}
+                              </div>
+                          ),
                           Filter: typeSelect ? SelectColumnFilter : dateSelect ? DatePickerColumnFilter : DefaultColumnFilter
                       };
                   })
@@ -36,23 +60,12 @@ const TicketList = ({ data = [], pageCount, fetchData, loading, cols = [], onCli
 
     return (
         <MainCard content={false} border={false}>
-            {loading ? (
-                <div>loading...</div>
-            ) : (
-                <FETable
-                    onClickRowItem={onClickRowItem}
-                    data={productsData}
-                    columns={productsColumns}
-                    loading={loading}
-                    fetchData={fetchData}
-                    pageCount={pageCount}
-                />
-            )}
+            {loading ? <div>loading...</div> : <FETable onClickRowItem={onClickRowItem} data={productsData} columns={productsColumns} />}
         </MainCard>
     );
 };
 
-export default TicketList;
+export default WaitingTicketList;
 
 const SelectColumnFilter = ({ column: { filterValue, setFilter, id } }) => {
     const dataSelect =
@@ -75,7 +88,7 @@ const SelectColumnFilter = ({ column: { filterValue, setFilter, id } }) => {
             onChange={(e) => {
                 setFilter(e.target.value);
             }}
-            sx={{ height: 28, fontSize: 10, borderRadius: 8, width: '100%' }}
+            sx={{ height: 35, borderRadius: 8, width: '100%' }}
         >
             <MenuItem value="">All</MenuItem>
             {_.map(dataSelect, (key, value) => {
@@ -93,14 +106,7 @@ export const DefaultColumnFilter = ({ column: { filterValue, setFilter } }) => {
     const onChange = (e) => {
         setFilter(e.target.value);
     };
-    return (
-        <OutlinedInput
-            value={filterValue || ''}
-            onChange={onChange}
-            sx={{ height: 28, fontSize: 10, borderRadius: 8 }}
-            placeholder="input"
-        />
-    );
+    return <OutlinedInput value={filterValue || ''} onChange={onChange} sx={{ height: 35, borderRadius: 8 }} />;
 };
 
 export const DatePickerColumnFilter = ({ column: { filterValue, setFilter } }) => {
@@ -128,11 +134,11 @@ export const DatePickerColumnFilter = ({ column: { filterValue, setFilter } }) =
         <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DatePicker
                 renderInput={({ inputRef, inputProps, InputProps }) => (
-                    <Stack direction="row" alignItems="center">
+                    <Stack direction="row" alignItems="center" sx={{ border: 1, borderRadius: 2, height: 35, padding: '0px 8px' }}>
                         <input
                             ref={inputRef}
                             {...inputProps}
-                            style={{ height: 28, fontSize: 10, borderRadius: 8, border: '1px solid gray', padding: 4 }}
+                            style={{ border: 'none', outline: 'none' }}
                             onFocus={onFocus}
                             onBlur={onBlur}
                         />

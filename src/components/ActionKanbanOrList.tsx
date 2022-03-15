@@ -1,4 +1,4 @@
-import { Box, Button, InputAdornment, Menu, MenuItem, OutlinedInput, Stack, IconButton, Typography } from '@mui/material';
+import { Box, Button, InputAdornment, Menu, MenuItem, OutlinedInput, Stack, Tooltip, Typography } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
 import { shouldForwardProp } from '@mui/system';
 import { IconArrowsLeftRight, IconDownload, IconPlus, IconSearch, IconTrash, IconUpload, IconUserPlus } from '@tabler/icons';
@@ -33,7 +33,7 @@ const Input = styled('input')({
     display: 'none'
 });
 
-const ActionKanban = ({ onClickTransfer, urlAddTicket, onClickDownload, onUploadFile, onClickTrash }) => {
+const ActionKanbanOrList = ({ onClickTransfer, urlAddTicket, onClickDownload, onUploadFile, onClickTrash }) => {
     const theme = useTheme();
     const { mode } = useSelector((state) => state.kanban);
     const [{ selectedIds }] = useContext(TableContext);
@@ -61,24 +61,32 @@ const ActionKanban = ({ onClickTransfer, urlAddTicket, onClickDownload, onUpload
         <>
             <Typography sx={{ mb: 1 }}>{`My Ticket List - ${_.keys(selectedIds).length} Selected`}</Typography>
             <Stack direction="row" spacing={1.5} sx={{ marginBottom: 1 }}>
-                <Button sx={{ ...styles.btn, minWidth: 36, padding: 0 }} variant="outlined" onClick={onClickTransfer}>
-                    <IconArrowsLeftRight size={18} />
-                </Button>
-
-                <Button sx={{ ...styles.btn, minWidth: 36, padding: 0 }} variant="outlined" onClick={onClickDownload}>
-                    <IconDownload size={18} />
-                </Button>
-
-                <label style={{ display: 'flex' }} htmlFor="contained-button-file">
-                    <Input accept=".xlsx, .xls, .csv" type="file" id="contained-button-file" onChange={handleFileSelect} />
-                    <Button sx={{ ...styles.btn, minWidth: 36, padding: 0 }} component="span" variant="outlined">
-                        <IconUpload size={18} />
+                <Tooltip title="Toggle Mode">
+                    <Button sx={{ ...styles.btn, minWidth: 36, padding: 0 }} variant="outlined" onClick={onClickTransfer}>
+                        <IconArrowsLeftRight size={18} />
                     </Button>
-                </label>
+                </Tooltip>
 
-                <Button onClick={onClickTrash} sx={{ ...styles.btn, minWidth: 36, padding: 0 }} variant="outlined">
-                    <IconTrash size={18} />
-                </Button>
+                <Tooltip title="Download">
+                    <Button sx={{ ...styles.btn, minWidth: 36, padding: 0 }} variant="outlined" onClick={onClickDownload}>
+                        <IconDownload size={18} />
+                    </Button>
+                </Tooltip>
+
+                <Tooltip title="Upload">
+                    <label style={{ display: 'flex' }} htmlFor="contained-button-file">
+                        <Input accept=".xlsx, .xls, .csv" type="file" id="contained-button-file" onChange={handleFileSelect} />
+                        <Button sx={{ ...styles.btn, minWidth: 36, padding: 0 }} component="span" variant="outlined">
+                            <IconUpload size={18} />
+                        </Button>
+                    </label>
+                </Tooltip>
+
+                <Tooltip title="Delete">
+                    <Button onClick={onClickTrash} sx={{ ...styles.btn, minWidth: 36, padding: 0 }} variant="outlined">
+                        <IconTrash size={18} />
+                    </Button>
+                </Tooltip>
 
                 <Box sx={{ flexGrow: 1 }} />
 
@@ -168,7 +176,7 @@ const ActionKanban = ({ onClickTransfer, urlAddTicket, onClickDownload, onUpload
     return mode === 'kanban' ? renderActionKanban() : renderActionList();
 };
 
-export default ActionKanban;
+export default ActionKanbanOrList;
 
 const styles = {
     btn: {

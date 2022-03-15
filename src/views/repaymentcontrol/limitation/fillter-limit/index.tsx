@@ -6,7 +6,7 @@ import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { Grid, Button, Typography } from '@mui/material';
 import { useFormik } from 'formik';
-import FEDropDown from 'views/tickets/create/FEDropDown';
+import FEDropDown from 'views/create/FEDropDown';
 import { district, level, province, ward } from '../action-limit/data';
 import * as yup from 'yup';
 import SelectDropDown from './SelectDropDown';

@@ -1,34 +1,23 @@
-import React, { useContext, useState } from 'react';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import {
     Box,
     Checkbox,
-    IconButton,
-    OutlinedInput,
     Table,
     TableBody,
     TableCell,
     TableContainer,
-    TableFooter,
     TableHead,
     TablePagination,
     TableRow,
-    TableSortLabel,
-    Toolbar,
-    Typography
+    TableSortLabel
 } from '@mui/material';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { visuallyHidden } from '@mui/utils';
-
-import { useTable, usePagination, useRowSelect, useSortBy, useFilters } from 'react-table';
-import { IconFilter } from '@tabler/icons';
-import { STATUS } from 'constants/status';
-import { getColorAndNameStatus, issueType, lastStatusType, productTypes, requestedBy, transactionType } from 'views/tickets/constant';
-import { DefaultColumnFilter } from 'views/tickets/list';
 import TableContext from 'contexts/TableContext';
+import React, { useContext } from 'react';
+import { useFilters, usePagination, useRowSelect, useSortBy, useTable } from 'react-table';
 import eventEmitter from 'utils/eventEmitter';
-// import { initialState, reducer } from 'views/tickets';
 
-const FETable = ({ data, columns, fetchData, pageCount: controlledPageCount, loading, onClickRowItem }) => {
+const FETable = ({ data, columns, onClickRowItem }) => {
     const filterTypes = React.useMemo(
         () => ({
             // Add a new fuzzyTextFilterFn filter type.
@@ -129,15 +118,6 @@ const FETable = ({ data, columns, fetchData, pageCount: controlledPageCount, loa
     }, [pageSize, gotoPage]);
 
     React.useEffect(() => {
-        if (controlledPageCount) {
-            dispatch({
-                type: 'TOTAL_COUNT_CHANGED',
-                payload: controlledPageCount
-            });
-        }
-    }, [controlledPageCount]);
-
-    React.useEffect(() => {
         if (selectedRowIds) {
             dispatch({
                 type: 'SELECTED_CHANGE',
@@ -189,7 +169,7 @@ const FETable = ({ data, columns, fetchData, pageCount: controlledPageCount, loa
     return (
         <div>
             <TableContainer {...getTableProps()}>
-                <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'}>
+                <Table aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'}>
                     <TableHead>
                         {headerGroups.map((headerGroup) => (
                             <TableRow {...headerGroup.getHeaderGroupProps()}>
@@ -198,7 +178,6 @@ const FETable = ({ data, columns, fetchData, pageCount: controlledPageCount, loa
                                         {...(column.id === 'selection'
                                             ? column.getHeaderProps()
                                             : column.getHeaderProps(column.getSortByToggleProps()))}
-                                        sx={{ minWidth: 110 }}
                                     >
                                         <TableSortLabel
                                             active={column.isSorted}
@@ -222,16 +201,9 @@ const FETable = ({ data, columns, fetchData, pageCount: controlledPageCount, loa
                         {headerGroups.map((headerGroup) => (
                             <TableRow {...headerGroup.getHeaderGroupProps()}>
                                 {headerGroup.headers.map((column) => {
-                                    if (column.id === 'selection')
-                                        return (
-                                            <TableCell {...column.getHeaderProps()}>
-                                                <IconButton disabled>
-                                                    <IconFilter color="#008345" />
-                                                </IconButton>
-                                            </TableCell>
-                                        );
+                                    if (column.id === 'selection') return <TableCell {...column.getHeaderProps()}>Filter</TableCell>;
                                     return (
-                                        <TableCell {...column.getHeaderProps()} sx={{ minWidth: 110 }}>
+                                        <TableCell {...column.getHeaderProps()}>
                                             {column.canFilter ? column.render('Filter') : null}
                                         </TableCell>
                                     );
@@ -243,7 +215,7 @@ const FETable = ({ data, columns, fetchData, pageCount: controlledPageCount, loa
                     <TableBody {...getTableBodyProps()}>
                         {!Boolean(data.length) && renderNotfound()}
 
-                        {page.map((row, i) => {
+                        {page.map((row) => {
                             prepareRow(row);
                             return (
                                 <TableRow
@@ -253,57 +225,7 @@ const FETable = ({ data, columns, fetchData, pageCount: controlledPageCount, loa
                                     sx={{ textDecoration: 'none', cursor: 'pointer' }}
                                 >
                                     {row.cells.map((cell) => {
-                                        const isDateType = ['created_date', 'last_status_date'].includes(cell.column?.id);
-                                        const isStatusType = ['last_status'].includes(cell.column?.id);
-                                        const isTransactionType = ['transaction_type'].includes(cell.column?.id);
-                                        const isIssueType = ['issue_type'].includes(cell.column?.id);
-                                        const isProductType = ['product_type'].includes(cell.column?.id);
-                                        const isRequestedByType = ['requested_by'].includes(cell.column?.id);
-
-                                        if (isDateType)
-                                            return (
-                                                <TableCell {...cell.getCellProps()} sx={{ ...styles.cellText }}>
-                                                    {moment(cell.value).format('DD/MM/YYYY')}
-                                                </TableCell>
-                                            );
-                                        if (isTransactionType)
-                                            return (
-                                                <TableCell {...cell.getCellProps()} sx={{ ...styles.cellText }}>
-                                                    {_.get(transactionType, [cell.value])}
-                                                </TableCell>
-                                            );
-                                        if (isIssueType)
-                                            return (
-                                                <TableCell {...cell.getCellProps()} sx={{ ...styles.cellText }}>
-                                                    {_.get(issueType, [cell.value])}
-                                                </TableCell>
-                                            );
-                                        if (isProductType)
-                                            return (
-                                                <TableCell {...cell.getCellProps()} sx={{ ...styles.cellText }}>
-                                                    {_.get(productTypes, [cell.value])}
-                                                </TableCell>
-                                            );
-                                        if (isRequestedByType)
-                                            return (
-                                                <TableCell {...cell.getCellProps()} sx={{ ...styles.cellText }}>
-                                                    {_.get(requestedBy, [cell.value])}
-                                                </TableCell>
-                                            );
-                                        if (isStatusType)
-                                            return (
-                                                <TableCell
-                                                    {...cell.getCellProps()}
-                                                    sx={{ ...styles.cellText, color: getColorAndNameStatus(cell.value)?.color }}
-                                                >
-                                                    {_.get(lastStatusType, [cell.value])}
-                                                </TableCell>
-                                            );
-                                        return (
-                                            <TableCell {...cell.getCellProps()} sx={{ ...styles.cellText }}>
-                                                {cell.render('Cell')}
-                                            </TableCell>
-                                        );
+                                        return <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>;
                                     })}
                                 </TableRow>
                             );
@@ -349,18 +271,11 @@ const IndeterminateCheckbox = React.forwardRef(({ indeterminate, ...rest }: { in
             <Checkbox
                 ref={resolvedRef}
                 {...rest}
-                size="small"
                 onClick={(event) => {
                     event.stopPropagation();
                 }}
+                sx={{ padding: 0 }}
             />
         </>
     );
 });
-
-const styles = {
-    cellText: {
-        fontSize: 10,
-        width: 50
-    }
-};

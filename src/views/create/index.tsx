@@ -32,7 +32,7 @@ import TotalCard from './CreateInvoice/TotalCard';
 import { useFormik } from 'formik';
 import FEDropDown from './FEDropDown';
 import FETextField from './FETextField';
-import { issueType, requestedBy, transactionType } from '../constant';
+import { issueType, requestedBy, transactionType } from 'constants/tickets';
 
 // yup validation-schema
 const validationSchema = yup.object({

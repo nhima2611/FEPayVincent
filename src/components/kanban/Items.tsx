@@ -24,7 +24,7 @@ import MenuBookTwoToneIcon from '@mui/icons-material/MenuBookTwoTone';
 import { DefaultRootStateProps } from 'types';
 import { KanbanItem } from 'types/kanban';
 import { TicketItem } from 'types/ticket';
-import { lastStatusType } from '../constant';
+import { lastStatusType } from 'constants/tickets';
 import { useNavigate } from 'react-router-dom';
 
 interface Props {
@@ -132,35 +132,35 @@ const Items = ({ item, index, columnColor }: Props) => {
                         sx={{ mb: itemStory ? -0.75 : 0 }}
                     >
                         <Highlighter
-                            highlightStyle={{ ...styles.ticket, fontWeight: 'bold' }}
+                            highlightStyle={{ ...styles.ticket, fontWeight: 500 }}
                             unhighlightStyle={styles.ticket}
                             searchWords={['Ticket ID: ']}
                             autoEscape
                             textToHighlight={`Ticket ID: ${item.ticket_id}`}
                         />
                         <Highlighter
-                            highlightStyle={{ ...styles.ticket, fontWeight: 'bold' }}
+                            highlightStyle={{ ...styles.ticket, fontWeight: 500 }}
                             unhighlightStyle={styles.ticket}
                             searchWords={['Contract ID: ']}
                             autoEscape
                             textToHighlight={`Contract ID: ${item.contract_id}`}
                         />
                         <Highlighter
-                            highlightStyle={{ ...styles.ticket, fontWeight: 'bold' }}
+                            highlightStyle={{ ...styles.ticket, fontWeight: 500 }}
                             unhighlightStyle={styles.ticket}
                             searchWords={['Ref#: ']}
                             autoEscape
                             textToHighlight={`Ref#: ${item.ref_number}`}
                         />
                         <Highlighter
-                            highlightStyle={{ ...styles.ticket, fontWeight: 'bold' }}
+                            highlightStyle={{ ...styles.ticket, fontWeight: 500 }}
                             unhighlightStyle={styles.ticket}
                             searchWords={['Created Date: ']}
                             autoEscape
                             textToHighlight={`Created Date: ${moment(item.created_date).format('DD/MM/YYYY')}`}
                         />
                         <Highlighter
-                            highlightStyle={{ ...styles.ticket, fontWeight: 'bold' }}
+                            highlightStyle={{ ...styles.ticket, fontWeight: 500 }}
                             unhighlightStyle={{ ...styles.ticket, color: columnColor }}
                             searchWords={['Status: ']}
                             autoEscape
@@ -178,7 +178,7 @@ export default Items;
 const styles = {
     ticket: {
         cursor: 'pointer',
-        fontSize: 10,
+        fontSize: 13,
         background: 'transparent'
     }
 };

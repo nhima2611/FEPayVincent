@@ -8,7 +8,7 @@ import { dispatch } from '../index';
 // types
 import { DefaultRootStateProps } from 'types';
 import { KanbanColumn, KanbanComment, KanbanItem, KanbanUserStory } from 'types/kanban';
-import { columnsData, columnsOrderData } from 'views/tickets/constant';
+import { columnsData, columnsOrderData } from 'constants/tickets';
 
 // ----------------------------------------------------------------------
 
