@@ -42,7 +42,7 @@ const showConfirm = async (args: SweetAlertOptions & SweetAlertConfirm) => {
     });
 };
 
-const showDeleteConfirm = (args: SweetAlertOptions & SweetAlertConfirm) => {
+const showDeleteConfirm = (args?: SweetAlertOptions & SweetAlertConfirm) => {
     return Swal.fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
@@ -54,10 +54,10 @@ const showDeleteConfirm = (args: SweetAlertOptions & SweetAlertConfirm) => {
     }).then((result) => {
         /* Read more about isConfirmed, isDenied below */
         if (result.isConfirmed) {
-            return args.onConfirm?.();
+            return args?.onConfirm?.();
         }
         if (result.isDenied) {
-            return args.onDenied?.();
+            return args?.onDenied?.();
         }
         return null;
     });

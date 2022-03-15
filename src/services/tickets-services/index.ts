@@ -10,6 +10,10 @@ class TicketService extends BaseApiService {
         return axiosServices.post(`/v1/tickets/exportExcel`, { ids: model }, { responseType: 'blob' });
     };
 
+    deleteTicket = (model?: number[]) => {
+        return axiosServices.post(`/v1/tickets/deleteTickets`, { ids: model });
+    };
+
     uploadTicket = (file?: any) => {
         const formData = new FormData();
         formData.append('file', file);

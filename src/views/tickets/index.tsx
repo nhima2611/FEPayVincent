@@ -4,6 +4,7 @@ import TableContext from 'contexts/TableContext';
 import React, { useContext, useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { useNavigate } from 'react-router-dom';
+import toastService from 'services/core/toast.service';
 import ticketsServices from 'services/tickets-services';
 // project imports
 import { useDispatch, useSelector } from 'store';
@@ -135,6 +136,17 @@ export default function KanbanPage() {
         }
     });
 
+    const mDeleteTicket = useMutation((ids: number[]) => ticketsServices.deleteTicket(ids), {
+        onSuccess: (res) => {
+            toastify.showToast('success', res.data?.message);
+            refetchTable();
+            eventEmitter.emit('DESELECT_ALL_ROWS', true);
+        },
+        onError: (err: any) => {
+            toastify.showToast('error', err.message);
+        }
+    });
+
     const onClickDownload = () => {
         const ids: number[] = _.map(selectedIds, (value, key) => _.toNumber(key));
 
@@ -142,6 +154,19 @@ export default function KanbanPage() {
             return toastify.showToast('warning', 'Please choose row!');
         }
         return mDownloadTicket.mutate({ ids });
+    };
+
+    const onClickTrash = () => {
+        const ids: number[] = _.map(selectedIds, (value, key) => _.toNumber(key));
+
+        if (!ids.length) {
+            return toastify.showToast('warning', 'Please choose row!');
+        }
+        return toastService.showDeleteConfirm({
+            onConfirm: async () => {
+                mDeleteTicket.mutate(ids);
+            }
+        });
     };
 
     const onUploadFile = async (file: any) => {
@@ -159,6 +184,7 @@ export default function KanbanPage() {
                             onClickTransfer={() => dispatchs(setMode())}
                             urlAddTicket="/tickets/create-ticket"
                             onUploadFile={onUploadFile}
+                            onClickTrash={onClickTrash}
                         />
                         {mode === 'kanban' ? (
                             <Board />

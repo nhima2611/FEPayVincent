@@ -33,7 +33,7 @@ const Input = styled('input')({
     display: 'none'
 });
 
-const ActionKanban = ({ onClickTransfer, urlAddTicket, onClickDownload, onUploadFile }) => {
+const ActionKanban = ({ onClickTransfer, urlAddTicket, onClickDownload, onUploadFile, onClickTrash }) => {
     const theme = useTheme();
     const { mode } = useSelector((state) => state.kanban);
     const [{ selectedIds }] = useContext(TableContext);
@@ -76,7 +76,7 @@ const ActionKanban = ({ onClickTransfer, urlAddTicket, onClickDownload, onUpload
                     </Button>
                 </label>
 
-                <Button sx={{ ...styles.btn, minWidth: 36, padding: 0 }} variant="outlined">
+                <Button onClick={onClickTrash} sx={{ ...styles.btn, minWidth: 36, padding: 0 }} variant="outlined">
                     <IconTrash size={18} />
                 </Button>
 
