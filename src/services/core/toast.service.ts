@@ -1,14 +1,14 @@
-import Swal, { SweetAlertIcon, SweetAlertOptions, SweetAlertResult } from 'sweetalert2';
+import Swal, { SweetAlertIcon, SweetAlertOptions, SweetAlertPosition, SweetAlertResult } from 'sweetalert2';
 
 interface SweetAlertConfirm {
     onConfirm: () => Promise<void>;
     onDenied?: () => Promise<void>;
 }
 
-const toast = (icon: SweetAlertIcon, title: string): Promise<any> => {
+const toast = (icon: SweetAlertIcon, title: string, position?: SweetAlertPosition): Promise<any> => {
     const Toast: typeof Swal = Swal.mixin({
         toast: true,
-        position: 'top-end',
+        position: position || 'top-end',
         showConfirmButton: false,
         timer: 3000,
         timerProgressBar: true,

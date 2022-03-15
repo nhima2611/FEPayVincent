@@ -38,7 +38,8 @@ export type JWTContextType = {
     logout: () => void;
     login: (email: string, password: string) => Promise<any>;
     register: (body: any) => Promise<any>;
-    resetPassword: (email: string) => void;
+    forgotPassword: (email: string) => Promise<any>;
+    resetPassword: (body: { verification_code: number; email: string; password: string; confirm_password: string }) => Promise<any>;
     updateProfile: VoidFunction;
 };
 

@@ -91,11 +91,8 @@ const FirebaseRegister = ({ ...others }) => {
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                     try {
                         register(_.omit(values, ['submit', 'confirm_password', 'token']))
-                            .then((res) => {
-                                console.log(res);
-                            })
+                            .then((res) => {})
                             .catch((err) => {
-                                console.log(err);
                                 toastService.showError({
                                     title: err.status,
                                     text: err.message,

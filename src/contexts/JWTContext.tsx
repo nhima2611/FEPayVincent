@@ -105,20 +105,6 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
         console.log(response);
 
         return response;
-        // if (window.localStorage.getItem('users') !== undefined && window.localStorage.getItem('users') !== null) {
-        //     const localUsers = window.localStorage.getItem('users');
-        //     users = [
-        //         ...JSON.parse(localUsers!),
-        //         {
-        //             id,
-        //             email,
-        //             password,
-        //             name: `${firstName} ${lastName}`
-        //         }
-        //     ];
-        // }
-
-        // window.localStorage.setItem('users', JSON.stringify(users));
     };
 
     const logout = () => {
@@ -126,7 +112,15 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
         dispatch({ type: LOGOUT });
     };
 
-    const resetPassword = (email: string) => console.log(email);
+    const forgotPassword = async (email: string) => {
+        const response = await axios.post('/forgotPassword', { email });
+        return response;
+    };
+
+    const resetPassword = async (body: { verification_code: number; email: string; password: string; confirm_password: string }) => {
+        const response = await axios.post('/verifyChangePassword', body);
+        return response;
+    };
 
     const updateProfile = () => {};
 
@@ -135,7 +129,9 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
     }
 
     return (
-        <JWTContext.Provider value={{ ...state, login, logout, register, resetPassword, updateProfile }}>{children}</JWTContext.Provider>
+        <JWTContext.Provider value={{ ...state, login, logout, register, resetPassword, forgotPassword, updateProfile }}>
+            {children}
+        </JWTContext.Provider>
     );
 };
 

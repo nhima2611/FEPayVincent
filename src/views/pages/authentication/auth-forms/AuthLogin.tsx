@@ -70,11 +70,8 @@ const AuthLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                     try {
                         login(values.email, values.password)
-                            .then((res) => {
-                                console.log(res);
-                            })
+                            .then((res) => {})
                             .catch((err) => {
-                                console.log(err);
                                 toastService.showError({
                                     title: err.status,
                                     text: err.message,
@@ -87,8 +84,6 @@ const AuthLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
                             setSubmitting(false);
                         }
                     } catch (err: any) {
-                        console.log(err);
-
                         if (scriptedRef.current) {
                             setStatus({ success: false });
                             setErrors({ submit: err.message });
