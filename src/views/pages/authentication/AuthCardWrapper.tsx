@@ -13,7 +13,7 @@ const AuthCardWrapper = ({ children, ...other }: MainCardProps) => (
             boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.25)',
             border: '1px solid #CCCCCC',
             borderRadius: '24px',
-            maxWidth: { xs: 400, lg: 384 },
+            maxWidth: { xs: 450, lg: 420 },
             margin: { xs: 1.5, md: 3 },
             '& > *': {
                 flexGrow: 1,

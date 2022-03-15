@@ -94,34 +94,32 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
                 isLoggedIn: true
             }
         });
+        return response;
     };
 
-    const register = async (email: string, password: string, firstName: string, lastName: string) => {
+    const register = async (body: any) => {
         // todo: this flow need to be recode as it not verified
         const id = chance.bb_pin();
-        const response = await axios.post('/api/account/register', {
-            id,
-            email,
-            password,
-            firstName,
-            lastName
-        });
-        let users = response.data;
+        console.log(id);
 
-        if (window.localStorage.getItem('users') !== undefined && window.localStorage.getItem('users') !== null) {
-            const localUsers = window.localStorage.getItem('users');
-            users = [
-                ...JSON.parse(localUsers!),
-                {
-                    id,
-                    email,
-                    password,
-                    name: `${firstName} ${lastName}`
-                }
-            ];
-        }
+        const response = await axios.post('/register', body);
+        console.log(response);
 
-        window.localStorage.setItem('users', JSON.stringify(users));
+        return response;
+        // if (window.localStorage.getItem('users') !== undefined && window.localStorage.getItem('users') !== null) {
+        //     const localUsers = window.localStorage.getItem('users');
+        //     users = [
+        //         ...JSON.parse(localUsers!),
+        //         {
+        //             id,
+        //             email,
+        //             password,
+        //             name: `${firstName} ${lastName}`
+        //         }
+        //     ];
+        // }
+
+        // window.localStorage.setItem('users', JSON.stringify(users));
     };
 
     const logout = () => {

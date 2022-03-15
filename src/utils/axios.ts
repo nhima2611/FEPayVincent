@@ -15,7 +15,7 @@ axiosServices.interceptors.response.use(
 
         if (_.has(error, 'response.data')) return Promise.reject(error.response.data);
 
-        return Promise.reject((error.response && error.response.data) || 'Something went wrong!');
+        return Promise.reject((error.response && error.response.data) || error);
     }
 );
 
