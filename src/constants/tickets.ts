@@ -28,6 +28,12 @@ const productTypes = {
     3: 'Banca'
 };
 
+const actionTicketTypes = {
+    0: 'None',
+    1: 'Move To Card',
+    2: 'Move To Loan'
+};
+
 const lastStatusType = {
     0: 'Draft',
     1: 'New',
@@ -152,5 +158,6 @@ export {
     productTypes,
     getColorAndNameStatus,
     columnsOrderData,
-    columnsData
+    columnsData,
+    actionTicketTypes
 };

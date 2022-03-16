@@ -1,5 +1,8 @@
 import { Box, Button, Divider, Grid, Stack, Typography } from '@mui/material';
-import { issueType, productTypes, requestedBy, subIssueType, transactionType } from 'constants/tickets';
+import { ROLE } from 'constants/auth';
+import { actionTicketTypes, issueType, lastStatusType, productTypes, requestedBy, subIssueType, transactionType } from 'constants/tickets';
+import useAuth from 'hooks/useAuth';
+import { useState } from 'react';
 import Highlighter from 'react-highlight-words';
 import { TicketDetailModel } from 'types/ticket';
 import MainCard from 'ui-component/cards/MainCard';
@@ -12,8 +15,16 @@ import TasksCard from './TasksCard';
 
 interface Props {
     data: TicketDetailModel;
+    onSaveChanges: (data: any) => void;
 }
-const TicketDetail = ({ data }: Props) => {
+const TicketDetail = ({ data, onSaveChanges }: Props) => {
+    const { user } = useAuth();
+    const statusData = user?.role !== ROLE.PARTNER ? _.omit(lastStatusType, ['0']) : lastStatusType;
+    const [selected, setSelected] = useState<any>({ action: 0 });
+    const handleSubmit = () => {
+        if (data.status === selected.status) return;
+        onSaveChanges?.({ ...selected, transaction_type: data.transaction_type, issue_type: data.issue_type });
+    };
     return (
         <MainCard title="Ticket Handling" contentSX={{ paddingRight: 0, paddingBottom: `0px !important` }}>
             <Grid container spacing={2}>
@@ -26,9 +37,18 @@ const TicketDetail = ({ data }: Props) => {
                             autoEscape
                             textToHighlight={`Ticket ID: ${data?.id}`}
                         />
-                        <FESelectDetail title="Status" />
-                        <FESelectDetail title="Action" />
-                        <Button variant="contained" sx={{ background: '#27AE60' }}>
+                        <FESelectDetail
+                            title="Status"
+                            data={statusData}
+                            status={data?.status}
+                            onDataSelect={(val) => setSelected({ ...selected, ...val })}
+                        />
+                        <FESelectDetail
+                            title="Action"
+                            data={actionTicketTypes}
+                            onDataSelect={(val) => setSelected({ ...selected, ...val })}
+                        />
+                        <Button variant="contained" sx={{ background: '#27AE60' }} onClick={handleSubmit}>
                             Save Changes
                         </Button>
                     </Stack>

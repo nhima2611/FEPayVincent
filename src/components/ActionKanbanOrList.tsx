@@ -2,7 +2,9 @@ import { Box, Button, InputAdornment, Menu, MenuItem, OutlinedInput, Stack, Tool
 import { styled, useTheme } from '@mui/material/styles';
 import { shouldForwardProp } from '@mui/system';
 import { IconArrowsLeftRight, IconDownload, IconPlus, IconSearch, IconTrash, IconUpload, IconUserPlus } from '@tabler/icons';
+import { ROLE } from 'constants/auth';
 import TableContext from 'contexts/TableContext';
+import useAuth from 'hooks/useAuth';
 import { SyntheticEvent, useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'store';
@@ -35,6 +37,8 @@ const Input = styled('input')({
 
 const ActionKanbanOrList = ({ onClickTransfer, urlAddTicket, onClickDownload, onUploadFile, onClickTrash }) => {
     const theme = useTheme();
+    const { user } = useAuth();
+
     const { mode } = useSelector((state) => state.kanban);
     const [{ selectedIds }] = useContext(TableContext);
 
@@ -115,15 +119,17 @@ const ActionKanbanOrList = ({ onClickTransfer, urlAddTicket, onClickDownload, on
                     />
                 </Box>
 
-                <Button
-                    disabled={!_.keys(selectedIds).length}
-                    variant="outlined"
-                    sx={{ ...styles.btn, borderRadius: 2, height: 36, fontSize: 12, fontWeight: 'bold' }}
-                    startIcon={<IconUserPlus size={18} />}
-                    onClick={handleClick}
-                >
-                    Assign To
-                </Button>
+                {ROLE.SUPER_ADMIN === user?.role && (
+                    <Button
+                        disabled={!_.keys(selectedIds).length}
+                        variant="outlined"
+                        sx={{ ...styles.btn, borderRadius: 2, height: 36, fontSize: 12, fontWeight: 'bold' }}
+                        startIcon={<IconUserPlus size={18} />}
+                        onClick={handleClick}
+                    >
+                        Assign To
+                    </Button>
+                )}
 
                 <Menu
                     id="menu-followers-card"

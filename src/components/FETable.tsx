@@ -161,7 +161,7 @@ const FETable = ({ data, columns, onClickRowItem }) => {
     const renderNotfound = () => (
         <TableRow>
             <TableCell sx={{ textAlign: 'left' }} colSpan={columns.length + 1}>
-                Search Not Found
+                Empty Data
             </TableCell>
         </TableRow>
     );

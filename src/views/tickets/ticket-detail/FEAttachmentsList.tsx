@@ -1,4 +1,4 @@
-import { Box, Grid, styled } from '@mui/material';
+import { Box, Grid, styled, Typography } from '@mui/material';
 
 const BoxStyle = styled(Box)({
     backgroundImage: `url(
@@ -13,16 +13,15 @@ const FEAttachmentsList = ({ data = [] }: { data: any[] }) => {
     };
 
     return (
-        <Box>
+        <Box sx={{ paddingBottom: 2 }}>
             <Grid container spacing={2}>
                 {_.map(data, (item, index) => (
-                    <Grid item xs={12} sm={4} md={3}>
+                    <Grid key={index} item xs={12} sm={4} md={3}>
                         <BoxStyle
                             onClick={() => onClickItem(item)}
-                            key={index}
                             sx={{ padding: 3, backgroundColor: 'rgba(39, 174, 96, .15)', cursor: 'pointer' }}
                         >
-                            {item.name}
+                            <Typography sx={{ maxWidth: 400, overflow: 'hidden' }}>{item.name}</Typography>
                         </BoxStyle>
                     </Grid>
                 ))}

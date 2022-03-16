@@ -23,7 +23,7 @@ export abstract class BaseApiService {
     }
 
     updatePut(model: any) {
-        return axiosServices.patch(`${this.apiName}/${model.id}`, model);
+        return axiosServices.put(`${this.apiName}/${model.id}`, model);
     }
 
     insert(model: any) {

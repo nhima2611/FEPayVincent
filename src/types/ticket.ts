@@ -57,8 +57,12 @@ export type AddDescriptionModel = {
 
 export type AddAttachmentModel = {
     ticket_id: number;
-    user_id?: number | string;
-    fullname?: string;
-    name: string;
     attachment: any;
+};
+
+export type UpdateStatusAndActionModel = {
+    id?: number | string;
+    ticket_id?: number;
+    status: number;
+    action: number;
 };

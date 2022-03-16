@@ -20,15 +20,14 @@ const Input = styled('input')({
 
 const FEAttachmentsUpload = ({ ticketId }) => {
     const [files, setFiles] = useState<any>([]);
-    console.log(files);
-    const mUploadFile = useMutation((file: AddAttachmentModel[]) => ticketsServices.addAttachment(file));
+
+    const mUploadFile = useMutation((file: any) => ticketsServices.addAttachment(file));
 
     const onDropFile = (file: any) => {
         setFiles([...file, ...files]);
     };
 
     const { getRootProps, getInputProps } = useDropzone({ onDrop: onDropFile, maxFiles: 5 });
-    const { user } = useAuth();
 
     const onRemoveItem = (index: any) => {
         console.log(index.lastModified);
@@ -36,22 +35,13 @@ const FEAttachmentsUpload = ({ ticketId }) => {
     };
 
     const onUpload = () => {
-        const d = {
-            ticket_id: ticketId,
-            fullname: user?.fullname,
-            user_id: user?.id
-        };
         const formData: any = new FormData();
 
         files.forEach((element: any, i: number) => {
-            formData.append(`file[${i}]`, {
-                attachment: element,
-                name: element.name,
-                ticket_id: ticketId,
-                fullname: user?.fullname,
-                user_id: user?.id
-            });
+            formData.append(`attachment[]`, element);
         });
+
+        formData.append('ticket_id', ticketId);
 
         mUploadFile.mutate(formData);
     };
