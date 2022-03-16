@@ -42,7 +42,7 @@ const other = {
                             id: 'sub_partner',
                             title: <FormattedMessage id="sub_partner" />,
                             type: 'item',
-                            url: '#'
+                            url: '/sub-partner'
                         },
                         {
                             id: 'pos',

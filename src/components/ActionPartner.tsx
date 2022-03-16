@@ -33,7 +33,7 @@ const Input = styled('input')({
     display: 'none'
 });
 
-const ActionPartner = ({ onClickUser, urlAddTicket, onClickDownload, onUploadFile, onClickTrash }) => {
+const ActionPartner = ({ onClickUser, urlAddTicket, onClickDownload, onUploadFile, onClickTrash, title = 'Partner List' }) => {
     const theme = useTheme();
     const { user } = useAuth();
 
@@ -51,7 +51,7 @@ const ActionPartner = ({ onClickUser, urlAddTicket, onClickDownload, onUploadFil
 
     const renderActionList = () => (
         <>
-            <Typography sx={{ mb: 1 }}>{`Partner List - ${_.keys(selectedIds).length} Selected`}</Typography>
+            <Typography sx={{ mb: 1 }}>{`${title} - ${_.keys(selectedIds).length} Selected`}</Typography>
             <Stack direction="row" spacing={1.5} sx={{ marginBottom: 1 }}>
                 <Tooltip title="Download">
                     <Button sx={{ ...styles.btn, minWidth: 36, padding: 0 }} variant="outlined" onClick={onClickDownload}>

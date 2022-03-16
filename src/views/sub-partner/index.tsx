@@ -19,11 +19,11 @@ const PartnerPage = () => {
         data: dataTable,
         refetch: refetchTable
     } = useQuery(
-        ['partner_table', queryPageIndex, queryPageSize, searchTerm, sortByObject, filters],
+        ['sub_partner_table', queryPageIndex, queryPageSize, searchTerm, sortByObject, filters],
         () => {
             const page_size = `per_page=${queryPageSize}&page=${queryPageIndex + 1}`;
             const search = searchTerm?.length === 0 ? '' : `&keyword=${searchTerm}`;
-            const view_type = `view_type=${1}`;
+            const view_type = `view_type=${2}`;
             const sortByProps = Boolean(sortByObject.length)
                 ? `&order_by=${sortByObject[0]?.id ?? 'ticket_id'}&sorted_by=${sortByObject[0]?.desc ? 'desc' : 'asc'}`
                 : '';
@@ -90,6 +90,7 @@ const PartnerPage = () => {
                             urlAddTicket=""
                             onUploadFile={onUploadFile}
                             onClickTrash={onClickTrash}
+                            title="Sub Partner List"
                         />
                         <PartnerList
                             onClickRowItem={onClickRowItem}
