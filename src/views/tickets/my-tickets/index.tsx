@@ -18,7 +18,7 @@ import toastify from 'utils/toastify';
 import Board from 'components/kanban';
 import TicketList from './list';
 
-export default function TicketPage() {
+export default function MyTicketsPage() {
     const dispatchs = useDispatch();
     const [{ queryPageIndex, queryPageSize, sortByObject, filters, selectedIds, resetState }, dispatch] = useContext(TableContext);
 
@@ -178,7 +178,6 @@ export default function TicketPage() {
     };
 
     const onUploadFile = async (file: any) => {
-        if (!file) return;
         mUploadTicket.mutate(file);
     };
 

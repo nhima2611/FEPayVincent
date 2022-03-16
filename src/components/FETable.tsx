@@ -160,8 +160,8 @@ const FETable = ({ data, columns, onClickRowItem }) => {
 
     const renderNotfound = () => (
         <TableRow>
-            <TableCell sx={{ textAlign: 'center' }} colSpan={columns.length + 1}>
-                Search Not Found
+            <TableCell sx={{ textAlign: 'left' }} colSpan={columns.length + 1}>
+                Empty Data
             </TableCell>
         </TableRow>
     );
@@ -203,7 +203,7 @@ const FETable = ({ data, columns, onClickRowItem }) => {
                                 {headerGroup.headers.map((column) => {
                                     if (column.id === 'selection') return <TableCell {...column.getHeaderProps()}>Filter</TableCell>;
                                     return (
-                                        <TableCell {...column.getHeaderProps()}>
+                                        <TableCell {...column.getHeaderProps()} sx={{ minWidth: 200 }}>
                                             {column.canFilter ? column.render('Filter') : null}
                                         </TableCell>
                                     );

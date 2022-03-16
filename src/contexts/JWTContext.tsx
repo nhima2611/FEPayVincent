@@ -52,34 +52,34 @@ const JWTContext = createContext<JWTContextType | null>(null);
 export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
     const [state, dispatch] = useReducer(accountReducer, initialState);
 
-    useEffect(() => {
-        const init = async () => {
-            try {
-                const serviceToken = window.localStorage.getItem('serviceToken');
-                if (serviceToken && verifyToken(serviceToken)) {
-                    setSession(serviceToken);
-                    const response = await axios.get('/v1/auth');
-                    const { data } = response.data;
-                    dispatch({
-                        type: LOGIN,
-                        payload: {
-                            isLoggedIn: true,
-                            user: data
-                        }
-                    });
-                } else {
-                    dispatch({
-                        type: LOGOUT
-                    });
-                }
-            } catch (err) {
-                console.error(err);
+    const init = async () => {
+        try {
+            const serviceToken = window.localStorage.getItem('serviceToken');
+            if (serviceToken && verifyToken(serviceToken)) {
+                setSession(serviceToken);
+                const response = await axios.get('/v1/auth');
+                const { data } = response.data;
+                dispatch({
+                    type: LOGIN,
+                    payload: {
+                        isLoggedIn: true,
+                        user: data
+                    }
+                });
+            } else {
                 dispatch({
                     type: LOGOUT
                 });
             }
-        };
+        } catch (err) {
+            console.error(err);
+            dispatch({
+                type: LOGOUT
+            });
+        }
+    };
 
+    useEffect(() => {
         init();
     }, []);
 
@@ -88,12 +88,9 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
         const { token } = response.data?.data;
 
         setSession(token);
-        dispatch({
-            type: LOGIN,
-            payload: {
-                isLoggedIn: true
-            }
-        });
+        if (token) {
+            init();
+        }
         return response;
     };
 
