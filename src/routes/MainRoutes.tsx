@@ -4,7 +4,6 @@ import { lazy } from 'react';
 import { Navigate } from 'react-router-dom';
 import Loadable from 'ui-component/Loadable';
 import AuthGuard from 'utils/route-guard/AuthGuard';
-import PartnerPage from 'views/partners';
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard')));
 
@@ -14,6 +13,7 @@ const WaitingTicketsPage = Loadable(lazy(() => import('views/tickets/waiting-tic
 const CreateTicketPage = Loadable(lazy(() => import('views/tickets/create')));
 const TicketDetailPage = Loadable(lazy(() => import('views/tickets/ticket-detail')));
 const CreatePartnerPage = Loadable(lazy(() => import('views/create-partner')));
+const PartnerPage = Loadable(lazy(() => import('views/partner')));
 
 // Repayment Control Routing
 const RepaymentControlPage = Loadable(lazy(() => import('views/repaymentcontrol')));

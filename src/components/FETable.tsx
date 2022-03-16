@@ -17,7 +17,7 @@ import React, { useContext } from 'react';
 import { useFilters, usePagination, useRowSelect, useSortBy, useTable } from 'react-table';
 import eventEmitter from 'utils/eventEmitter';
 
-const FETable = ({ data, columns, onClickRowItem }) => {
+const FETable = ({ data, columns, onClickRowItem, showCustomFilter = false }) => {
     const filterTypes = React.useMemo(
         () => ({
             // Add a new fuzzyTextFilterFn filter type.
@@ -26,7 +26,7 @@ const FETable = ({ data, columns, onClickRowItem }) => {
             // "startWith"
             text: (rows, id, filterValue) => {
                 return rows.filter((row) => {
-                    const rowValue = row.values[id];
+                    const rowValue = row?.values[id];
                     return rowValue !== undefined ? String(rowValue).toLowerCase().startsWith(String(filterValue).toLowerCase()) : true;
                 });
             }
@@ -71,7 +71,7 @@ const FETable = ({ data, columns, onClickRowItem }) => {
             pageCount: totalCount,
             filterTypes,
             autoResetSelectedRows: false,
-            getRowId: (row) => row.ticket_id
+            getRowId: (row) => row?.ticket_id
         },
         useFilters,
         useSortBy,
@@ -197,20 +197,22 @@ const FETable = ({ data, columns, onClickRowItem }) => {
                         ))}
                     </TableHead>
 
-                    <TableHead>
-                        {headerGroups.map((headerGroup) => (
-                            <TableRow {...headerGroup.getHeaderGroupProps()}>
-                                {headerGroup.headers.map((column) => {
-                                    if (column.id === 'selection') return <TableCell {...column.getHeaderProps()}>Filter</TableCell>;
-                                    return (
-                                        <TableCell {...column.getHeaderProps()} sx={{ minWidth: 200 }}>
-                                            {column.canFilter ? column.render('Filter') : null}
-                                        </TableCell>
-                                    );
-                                })}
-                            </TableRow>
-                        ))}
-                    </TableHead>
+                    {showCustomFilter && (
+                        <TableHead>
+                            {headerGroups.map((headerGroup) => (
+                                <TableRow {...headerGroup.getHeaderGroupProps()}>
+                                    {headerGroup.headers.map((column) => {
+                                        if (column.id === 'selection') return <TableCell {...column.getHeaderProps()}>Filter</TableCell>;
+                                        return (
+                                            <TableCell {...column.getHeaderProps()} sx={{ minWidth: 200 }}>
+                                                {column.canFilter ? column.render('Filter') : null}
+                                            </TableCell>
+                                        );
+                                    })}
+                                </TableRow>
+                            ))}
+                        </TableHead>
+                    )}
 
                     <TableBody {...getTableBodyProps()}>
                         {!Boolean(data.length) && renderNotfound()}
