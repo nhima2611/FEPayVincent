@@ -3,6 +3,7 @@ import MainLayout from 'layout/MainLayout';
 import { lazy } from 'react';
 import { Navigate } from 'react-router-dom';
 import Loadable from 'ui-component/Loadable';
+import AuthGuard from 'utils/route-guard/AuthGuard';
 import PartnerPage from 'views/partners';
 
 // dashboard routing
@@ -22,9 +23,9 @@ const RepaymentControlPage = Loadable(lazy(() => import('views/repaymentcontrol'
 const MainRoutes = {
     path: '/',
     element: (
-        // <AuthGuard>
-        <MainLayout />
-        // </AuthGuard>
+        <AuthGuard>
+            <MainLayout />
+        </AuthGuard>
     ),
     children: [
         {
