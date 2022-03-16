@@ -75,7 +75,15 @@ const ActionKanbanOrList = ({ onClickTransfer, urlAddTicket, onClickDownload, on
 
                 <Tooltip title="Upload">
                     <label style={{ display: 'flex' }} htmlFor="contained-button-file">
-                        <Input accept=".xlsx, .xls, .csv" type="file" id="contained-button-file" onChange={handleFileSelect} />
+                        <Input
+                            accept=".xlsx, .xls, .csv"
+                            type="file"
+                            id="contained-button-file"
+                            onChange={handleFileSelect}
+                            onClick={(e: any) => {
+                                e.target.value = null;
+                            }}
+                        />
                         <Button sx={{ ...styles.btn, minWidth: 36, padding: 0 }} component="span" variant="outlined">
                             <IconUpload size={18} />
                         </Button>

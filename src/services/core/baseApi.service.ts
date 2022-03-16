@@ -8,7 +8,7 @@ export abstract class BaseApiService {
         return axiosServices.get(`${this.apiName}?${filter}`);
     }
 
-    getById(id: string, includeOption?: any) {
+    getById(id: string | any, includeOption?: any) {
         return axiosServices.get(`${this.apiName}/${id}`, {
             params: { filter: JSON.stringify(includeOption) }
         });

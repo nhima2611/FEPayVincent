@@ -9,10 +9,10 @@ import AuthGuard from 'utils/route-guard/AuthGuard';
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard')));
 
 // tickets routing
-const TicketsPage = Loadable(lazy(() => import('views/tickets')));
-const WaitingTicketsPage = Loadable(lazy(() => import('views/waiting-tickets')));
-const CreateTicketPage = Loadable(lazy(() => import('views/create')));
-const TicketDetailPage = Loadable(lazy(() => import('views/detail')));
+const MyTicketsPage = Loadable(lazy(() => import('views/tickets/my-tickets')));
+const WaitingTicketsPage = Loadable(lazy(() => import('views/tickets/waiting-tickets')));
+const CreateTicketPage = Loadable(lazy(() => import('views/tickets/create')));
+const TicketDetailPage = Loadable(lazy(() => import('views/tickets/ticket-detail')));
 
 // Repayment Control Routing
 const RepaymentControlPage = Loadable(lazy(() => import('views/repaymentcontrol')));
@@ -37,7 +37,7 @@ const MainRoutes = {
         },
         {
             path: '/tickets',
-            element: <TicketsPage />
+            element: <MyTicketsPage />
         },
         {
             path: '/waiting-tickets',

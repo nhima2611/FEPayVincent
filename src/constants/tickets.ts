@@ -9,6 +9,13 @@ const issueType = {
     4: 'System Issue'
 };
 
+const subIssueType = {
+    1: 'Cancel transaction',
+    2: 'Adjust Amount',
+    3: 'Adjust Contract Number',
+    4: 'System Issue'
+};
+
 const requestedBy = {
     1: 'By Teller’s mistake',
     2: 'By Customer’s request',
@@ -136,4 +143,14 @@ const columnsData: any[] = [
     }
 ];
 
-export { transactionType, issueType, requestedBy, lastStatusType, productTypes, getColorAndNameStatus, columnsOrderData, columnsData };
+export {
+    transactionType,
+    subIssueType,
+    issueType,
+    requestedBy,
+    lastStatusType,
+    productTypes,
+    getColorAndNameStatus,
+    columnsOrderData,
+    columnsData
+};

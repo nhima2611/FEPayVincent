@@ -27,7 +27,6 @@ import React from 'react';
 // third party
 import ReCAPTCHA from 'react-google-recaptcha';
 import { Link } from 'react-router-dom';
-import toastService from 'services/core/toast.service';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import * as Yup from 'yup';
 
@@ -57,30 +56,20 @@ const AuthLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
         <>
             <Formik
                 initialValues={{
-                    email: 'admin@gmail.com',
+                    email: 'ntcnet@gmail.com',
                     password: '123456',
                     token: null,
                     submit: null
                 }}
                 validationSchema={Yup.object().shape({
                     email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-                    password: Yup.string().max(255).required('Password is required'),
-                    token: Yup.string().required().nullable()
+                    password: Yup.string().max(255).required('Password is required')
+                    // token: Yup.string().required().nullable()
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
+                    console.log(1);
                     try {
-                        login(values.email, values.password)
-                            .then((res) => {
-                                console.log(res);
-                            })
-                            .catch((err) => {
-                                console.log(err);
-                                toastService.showError({
-                                    title: err.status,
-                                    text: err.message,
-                                    position: 'center-start'
-                                });
-                            });
+                        await login(values.email, values.password);
 
                         if (scriptedRef.current) {
                             setStatus({ success: true });
@@ -180,18 +169,18 @@ const AuthLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
                                 <FormHelperText error>{errors.submit}</FormHelperText>
                             </Box>
                         )}
-                        <FormControl fullWidth error={Boolean(touched.token && errors.token)} sx={{ ...theme.typography.customInput }}>
+                        {/* <FormControl fullWidth error={Boolean(touched.token && errors.token)} sx={{ ...theme.typography.customInput }}>
                             <ReCAPTCHA
                                 ref={recaptchaRef}
                                 onExpired={() => (recaptchaRef.current as any)?.reset()}
-                                sitekey={process.env.REACT_APP_SITE_KEY!}
+                                sitekey="6Lcb7MgeAAAAAB8bZdGoCps1MMat1mluOYSZFZeI"
                                 onChange={(value: any) => {
                                     setValues({ ...values, token: value });
                                 }}
                                 size="normal"
                                 style={{ margin: '0 auto', display: 'table' }}
                             />
-                        </FormControl>
+                        </FormControl> */}
                         <Box sx={{ my: 2 }}>
                             <AnimateButton>
                                 <Button

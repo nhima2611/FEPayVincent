@@ -1,5 +1,11 @@
 import { Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
+import useAuth from 'hooks/useAuth';
 import { useState } from 'react';
+import { useMutation } from 'react-query';
+import ticketsServices from 'services/tickets-services';
+import { AddDescriptionModel } from 'types/ticket';
+import eventEmitter from 'utils/eventEmitter';
+import toastify from 'utils/toastify';
 
 function createData(content: string, updatedByUsers: string, updatedByRole: string, timestamp: Date) {
     return {
@@ -10,25 +16,32 @@ function createData(content: string, updatedByUsers: string, updatedByRole: stri
     };
 }
 
-const rows = [
-    // createData(
-    //     'Lorem Ipsum de Lorem ipsum dolor sit amet, consectetur adipiscing elitLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ...Show less, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ...Show lesslotee ipsum de lotee tan ipsum de tan binlen, Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ...Show less',
-    //     'Tran',
-    //     'Admin',
-    //     new Date()
-    // )
-];
-const FEDescriptionDetail = () => {
+const FEDescriptionDetail = ({ data = [], ticketId }: { data: any[]; ticketId: number }) => {
     const [value, setValue] = useState<string>('');
-    const [data, setData] = useState<any[]>(rows);
+    const { user } = useAuth();
+
+    const mAddDescription = useMutation((model: AddDescriptionModel) => ticketsServices.addDescription(model), {
+        onSuccess: () => {
+            eventEmitter.emit('ADD_DESCRIPTION_SUCCESS', true);
+            setValue('');
+            toastify.showToast('success', 'Add Description Success!');
+        },
+        onError: (err: any) => {
+            toastify.showToast('error', err.message);
+        }
+    });
 
     const handleOnSend = (e) => {
         e.preventDefault();
         if (!Boolean(value.length)) return;
-        const d = new Date();
-        setValue('');
-        const newMessage = createData(value, 'Tran', 'Admin', d);
-        setData((prevState) => [newMessage, ...prevState]);
+        const d: AddDescriptionModel = {
+            ticket_id: ticketId,
+            user_id: user?.id,
+            fullname: user?.fullname,
+            content: value
+        };
+
+        mAddDescription.mutate(d);
     };
     return (
         <form onSubmit={handleOnSend}>
@@ -48,30 +61,31 @@ const FEDescriptionDetail = () => {
                     </TableHead>
                     {Boolean(!data.length) && <caption style={{ textAlign: 'center' }}>Empty data</caption>}
                     <TableBody>
-                        {data.map((row, index) => (
+                        {data.map((row: any, index) => (
                             <TableRow key={index}>
-                                <TableCell component="th" scope="row" sx={styles.cellText}>
+                                <TableCell component="th" scope="row">
                                     {index + 1}
                                 </TableCell>
-                                <TableCell align="left" sx={styles.cellText}>
-                                    {row.content}
+                                <TableCell align="left">
+                                    <div style={{ maxWidth: 200, overflow: 'hidden' }}>{row.content}</div>
                                 </TableCell>
-                                <TableCell align="left" sx={styles.cellText}>
-                                    {row.updatedByUsers}
-                                </TableCell>
-                                <TableCell align="left" sx={styles.cellText}>
-                                    {row.updatedByRole}
-                                </TableCell>
-                                <TableCell align="left" sx={styles.cellText}>
-                                    {moment(row.timestamp).format('DD/MM/YYYY - HH:mm a')}
-                                </TableCell>
+                                <TableCell align="left">{row?.fullname}</TableCell>
+                                <TableCell align="left">{row?.user?.role}</TableCell>
+                                <TableCell align="left">{moment(row?.created_at).format('DD/MM/YYYY - HH:mm a')}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
             </TableContainer>
 
-            <TextField value={value} onChange={(e) => setValue(e.target.value)} fullWidth rows={4} placeholder="Enter Description" />
+            <TextField
+                sx={{ marginTop: 2 }}
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                fullWidth
+                rows={4}
+                placeholder="Enter Description"
+            />
         </form>
     );
 };
