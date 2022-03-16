@@ -101,7 +101,7 @@ const Post = ({ commentAdd, handleCommentLikes, handlePostLikes, handleReplayLik
     const { id, data } = post;
     let { profile } = post;
 
-    profile = { ...profile, name: user?.name || profile.name };
+    profile = { ...profile, name: user?.fullname || profile.name };
 
     const { borderRadius } = useConfig();
     const matchesXS = useMediaQuery(theme.breakpoints.down('md'));

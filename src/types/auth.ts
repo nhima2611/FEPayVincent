@@ -36,9 +36,10 @@ export type JWTContextType = {
     isInitialized?: boolean;
     user?: UserProfile | null | undefined;
     logout: () => void;
-    login: (email: string, password: string) => Promise<void>;
-    register: (email: string, password: string, firstName: string, lastName: string) => Promise<void>;
-    resetPassword: (email: string) => void;
+    login: (email: string, password: string) => Promise<any>;
+    register: (body: any) => Promise<any>;
+    forgotPassword: (email: string) => Promise<any>;
+    resetPassword: (body: { verify_code: number; email: string; password: string; confirm_password: string }) => Promise<any>;
     updateProfile: VoidFunction;
 };
 

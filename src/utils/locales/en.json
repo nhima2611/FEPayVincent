@@ -154,11 +154,14 @@
     "partner_management": "Partner Management",
     "partner_list": "Partner List",
     "partner": "Partner",
-    "sub_partner": "Sub-Partner",
+    "sub_partner": "Sub Partner",
     "pos": "POS",
     "user_management": "User Management",
     "user_list": "User List",
     "role_and_privileges": "Role & Privileges",
     "activity_logs": "Activity Logs",
-    "settings": "Settings"
+    "settings": "Settings",
+    "my_tickets": "My Tickets",
+    "waiting_tickets": "Waiting Tickets",
+    "information": "Information"
 }

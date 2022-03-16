@@ -1,53 +1,70 @@
-import { Box, Divider, Grid, Stack, Typography } from '@mui/material';
+import { Box, Button, Divider, Grid, Stack, Typography } from '@mui/material';
+import { ROLE } from 'constants/auth';
+import { actionTicketTypes, issueType, lastStatusType, productTypes, requestedBy, subIssueType, transactionType } from 'constants/tickets';
+import useAuth from 'hooks/useAuth';
+import { useState } from 'react';
 import Highlighter from 'react-highlight-words';
-import { useParams } from 'react-router-dom';
+import { TicketDetailModel } from 'types/ticket';
 import MainCard from 'ui-component/cards/MainCard';
-import FECommentDetail from './FECommentDetail';
+import FEAttachmentsList from './FEAttachmentsList';
+import FEAttachmentsUpload from './FEAttachmentsUpload';
+import FEDescriptionDetail from './FEDescriptionDetail';
 import FEItemDetail from './FEItemDetail';
+import FESelectDetail from './FESelectDetail';
 import TasksCard from './TasksCard';
 
-const TicketDetail = () => {
-    const { ticketID } = useParams();
+interface Props {
+    data: TicketDetailModel;
+    onSaveChanges: (data: any) => void;
+}
+const TicketDetail = ({ data, onSaveChanges }: Props) => {
+    const { user } = useAuth();
+    const statusData = user?.role !== ROLE.PARTNER ? _.omit(lastStatusType, ['0']) : lastStatusType;
+    const [selected, setSelected] = useState<any>({ action: 0 });
+    const handleSubmit = () => {
+        if (data.status === selected.status) return;
+        onSaveChanges?.({ ...selected, transaction_type: data.transaction_type, issue_type: data.issue_type });
+    };
     return (
         <MainCard title="Ticket Handling" contentSX={{ paddingRight: 0, paddingBottom: `0px !important` }}>
             <Grid container spacing={2}>
                 <Grid item xs={12} md={8}>
-                    <Stack direction="row" spacing={2}>
+                    <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between">
                         <Highlighter
                             highlightStyle={{ ...styles.ticket, fontWeight: 'bold' }}
                             unhighlightStyle={styles.ticket}
                             searchWords={['Ticket ID: ']}
                             autoEscape
-                            textToHighlight={`Ticket ID: ${123456}`}
+                            textToHighlight={`Ticket ID: ${data?.id}`}
                         />
-                        <Highlighter
-                            highlightStyle={{ ...styles.ticket, fontWeight: 'bold' }}
-                            unhighlightStyle={styles.ticket}
-                            searchWords={['Ticket ID: ']}
-                            autoEscape
-                            textToHighlight={`Ticket ID: ${123456}`}
+                        <FESelectDetail
+                            title="Status"
+                            data={statusData}
+                            status={data?.status}
+                            onDataSelect={(val) => setSelected({ ...selected, ...val })}
                         />
-                        <Highlighter
-                            highlightStyle={{ ...styles.ticket, fontWeight: 'bold' }}
-                            unhighlightStyle={styles.ticket}
-                            searchWords={['Ticket ID: ']}
-                            autoEscape
-                            textToHighlight={`Ticket ID: ${123456}`}
+                        <FESelectDetail
+                            title="Action"
+                            data={actionTicketTypes}
+                            onDataSelect={(val) => setSelected({ ...selected, ...val })}
                         />
+                        <Button variant="contained" sx={{ background: '#27AE60' }} onClick={handleSubmit}>
+                            Save Changes
+                        </Button>
                     </Stack>
 
                     <Grid item xs={12} sx={{ marginY: 2 }}>
                         <Divider />
                     </Grid>
 
-                    <Stack direction="row">
+                    <Stack direction="row" justifyContent="space-between">
                         <div style={styles.flex}>
                             <Highlighter
                                 highlightStyle={{ ...styles.ticket, fontWeight: 'bold' }}
                                 unhighlightStyle={styles.ticket}
                                 searchWords={['Ref Number: ']}
                                 autoEscape
-                                textToHighlight={`Ref Number: ${123456}`}
+                                textToHighlight={`Ref Number: ${data?.ref_number}`}
                             />
                         </div>
                         <div style={styles.flex}>
@@ -56,20 +73,21 @@ const TicketDetail = () => {
                                 unhighlightStyle={styles.ticket}
                                 searchWords={['Transaction Amount: ']}
                                 autoEscape
-                                textToHighlight={`Transaction Amount: ${123456}`}
+                                textToHighlight={`Transaction Amount: ${data?.transaction_amount}`}
                             />
                         </div>
+                    </Stack>
+
+                    <Stack direction="row" sx={{ marginY: 2 }}>
                         <div style={styles.flex}>
                             <Highlighter
                                 highlightStyle={{ ...styles.ticket, fontWeight: 'bold' }}
                                 unhighlightStyle={styles.ticket}
                                 searchWords={['Contract #: ']}
                                 autoEscape
-                                textToHighlight={`Contract #: ${123456}`}
+                                textToHighlight={`Contract #: ${data?.contract_number}`}
                             />
                         </div>
-                    </Stack>
-                    <Stack direction="row" sx={{ marginY: 2 }}>
                         <div style={styles.flex}>
                             <Highlighter
                                 highlightStyle={{ ...styles.ticket, fontWeight: 'bold' }}
@@ -79,13 +97,15 @@ const TicketDetail = () => {
                                 textToHighlight={`Product: ${'Card'}`}
                             />
                         </div>
+                    </Stack>
+                    <Stack direction="row" sx={{ marginY: 2 }}>
                         <div style={styles.flex}>
                             <Highlighter
                                 highlightStyle={{ ...styles.ticket, fontWeight: 'bold' }}
                                 unhighlightStyle={styles.ticket}
                                 searchWords={['Right Contract #: ']}
                                 autoEscape
-                                textToHighlight={`Right Contract #: ${123456}`}
+                                textToHighlight={`Right Contract #: ${data?.right_contract_number}`}
                             />
                         </div>
                         <div style={styles.flex}>
@@ -105,7 +125,7 @@ const TicketDetail = () => {
                                 unhighlightStyle={styles.ticket}
                                 searchWords={['National ID: ']}
                                 autoEscape
-                                textToHighlight={`National ID: ${123456}`}
+                                textToHighlight={`National ID: ${data?.requester_national_id}`}
                             />
                         </div>
                         <div style={styles.flex}>
@@ -114,55 +134,49 @@ const TicketDetail = () => {
                                 unhighlightStyle={styles.ticket}
                                 searchWords={['Phone Number: ']}
                                 autoEscape
-                                textToHighlight={`Phone Number: ${123456}`}
+                                textToHighlight={`Phone Number: ${data?.requester_phone}`}
                             />
                         </div>
-                        <div style={styles.flex} />
                     </Stack>
 
                     <Grid item xs={12} sx={{ marginY: 2 }}>
                         <Divider />
                     </Grid>
 
-                    <Stack spacing={1} direction="row">
-                        <Typography sx={{ ...styles.ticket, fontWeight: 'bold' }}>Description: </Typography>
-                        <Typography>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-                            magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                            consequat.
-                        </Typography>
-                    </Stack>
+                    <FEDescriptionDetail data={data?.descriptions} ticketId={data?.id} />
 
                     <Grid item xs={12} sx={{ marginY: 2 }}>
                         <Divider />
                     </Grid>
 
-                    <Grid item xs={12}>
-                        <Typography sx={{ ...styles.ticket, fontWeight: 'bold', color: '#27AE60' }}>Comment: </Typography>
+                    <FEAttachmentsUpload ticketId={data?.id} />
+
+                    <Grid item xs={12} sx={{ marginY: 2 }}>
+                        <Divider />
                     </Grid>
 
-                    <FECommentDetail />
+                    <FEAttachmentsList data={data?.attachments} />
                 </Grid>
                 <Grid item xs={12} md={4}>
-                    <Box sx={{ borderLeft: 1, borderTop: 1, borderTopLeftRadius: 16, borderColor: '#E5E5E5' }}>
+                    <Box sx={{ borderLeft: 1, borderTop: 1, borderTopLeftRadius: 16, borderColor: '#E5E5E5', height: '100%' }}>
                         <Box style={{ height: 60, background: '#27AE60', borderTop: 1, borderTopLeftRadius: 14, padding: 16 }}>
                             <Typography sx={{ color: 'white' }}>Detail</Typography>
                         </Box>
                         <Box sx={{ paddingX: 2 }}>
-                            <FEItemDetail title="Partner" value="Smartnet" />
-                            <FEItemDetail title="Assignee" value="Nguyen Thi Thu Truc" />
-                            <FEItemDetail title="Supporter" value="User Internal" />
-                            <FEItemDetail title="Transaction Type" value="Repayment" />
-                            <FEItemDetail title="Issue Type" value="Adjust Contract Number" />
-                            <FEItemDetail title="Sub Issue Type" value="from Loan to Card" />
-                            <FEItemDetail title="Product Type" value="Loan" />
-                            <FEItemDetail title="Requested by" value="Luong Ngoc Tuan Anh" />
+                            <FEItemDetail title="Partner" value={data?.partner} />
+                            <FEItemDetail title="Assignee" value={data?.assignee} />
+                            <FEItemDetail title="Supporter" value={data?.supporter} />
+                            <FEItemDetail title="Transaction Type" value={_.get(transactionType, [data?.transaction_type])} />
+                            <FEItemDetail title="Issue Type" value={_.get(issueType, [data?.issue_type])} />
+                            <FEItemDetail title="Sub Issue Type" value={_.get(subIssueType, [data?.sub_issue_type])} />
+                            <FEItemDetail title="Product Type" value={_.get(productTypes, [data?.issue_type])} />
+                            <FEItemDetail title="Requested by" value={_.get(requestedBy, [data?.issue_type])} />
                             <Typography sx={{ fontWeight: 'bold', color: '#27AE60' }}>Tracking:</Typography>
-                            <FEItemDetail title="Created Date" value="12/03/2022 - 8:35" />
-                            <FEItemDetail title="Updated Date" value="12/03/2022 - 8:35" />
+                            <FEItemDetail title="Created Date" value={moment(data?.created_at).format('DD/MM/YYYY - HH:mm')} />
+                            <FEItemDetail title="Updated Date" value={moment(data?.updated_at).format('DD/MM/YYYY - HH:mm')} />
                             <FEItemDetail title="Solved Date" value="-" />
                             <Typography sx={{ fontWeight: 'bold', color: '#27AE60' }}>Activity Logs:</Typography>
-                            <TasksCard />
+                            <TasksCard data={data?.ticket_logs} />
                         </Box>
                     </Box>
                 </Grid>

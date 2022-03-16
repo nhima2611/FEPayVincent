@@ -52,76 +52,57 @@ const JWTContext = createContext<JWTContextType | null>(null);
 export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
     const [state, dispatch] = useReducer(accountReducer, initialState);
 
-    useEffect(() => {
-        const init = async () => {
-            try {
-                const serviceToken = window.localStorage.getItem('serviceToken');
-                if (serviceToken && verifyToken(serviceToken)) {
-                    setSession(serviceToken);
-                    const response = await axios.get('/api/account/me');
-                    const { user } = response.data;
-                    dispatch({
-                        type: LOGIN,
-                        payload: {
-                            isLoggedIn: true,
-                            user
-                        }
-                    });
-                } else {
-                    dispatch({
-                        type: LOGOUT
-                    });
-                }
-            } catch (err) {
-                console.error(err);
+    const init = async () => {
+        try {
+            const serviceToken = window.localStorage.getItem('serviceToken');
+            if (serviceToken && verifyToken(serviceToken)) {
+                setSession(serviceToken);
+                const response = await axios.get('/v1/auth');
+                const { data } = response.data;
+                dispatch({
+                    type: LOGIN,
+                    payload: {
+                        isLoggedIn: true,
+                        user: data
+                    }
+                });
+            } else {
                 dispatch({
                     type: LOGOUT
                 });
             }
-        };
+        } catch (err) {
+            console.error(err);
+            dispatch({
+                type: LOGOUT
+            });
+        }
+    };
 
+    useEffect(() => {
         init();
     }, []);
 
     const login = async (email: string, password: string) => {
-        const response = await axios.post('/api/account/login', { email, password });
-        const { serviceToken, user } = response.data;
-        setSession(serviceToken);
-        dispatch({
-            type: LOGIN,
-            payload: {
-                isLoggedIn: true,
-                user
-            }
-        });
+        const response = await axios.post('/auth', { email, password });
+        const { token } = response.data?.data;
+
+        setSession(token);
+        if (token) {
+            init();
+        }
+        return response;
     };
 
-    const register = async (email: string, password: string, firstName: string, lastName: string) => {
+    const register = async (body: any) => {
         // todo: this flow need to be recode as it not verified
         const id = chance.bb_pin();
-        const response = await axios.post('/api/account/register', {
-            id,
-            email,
-            password,
-            firstName,
-            lastName
-        });
-        let users = response.data;
+        console.log(id);
 
-        if (window.localStorage.getItem('users') !== undefined && window.localStorage.getItem('users') !== null) {
-            const localUsers = window.localStorage.getItem('users');
-            users = [
-                ...JSON.parse(localUsers!),
-                {
-                    id,
-                    email,
-                    password,
-                    name: `${firstName} ${lastName}`
-                }
-            ];
-        }
+        const response = await axios.post('/register', body);
+        console.log(response);
 
-        window.localStorage.setItem('users', JSON.stringify(users));
+        return response;
     };
 
     const logout = () => {
@@ -129,7 +110,15 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
         dispatch({ type: LOGOUT });
     };
 
-    const resetPassword = (email: string) => console.log(email);
+    const forgotPassword = async (email: string) => {
+        const response = await axios.post('/forgotPassword', { email });
+        return response;
+    };
+
+    const resetPassword = async (body: { verify_code: number; email: string; password: string; confirm_password: string }) => {
+        const response = await axios.post('/verifyChangePassword', body);
+        return response;
+    };
 
     const updateProfile = () => {};
 
@@ -138,7 +127,9 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
     }
 
     return (
-        <JWTContext.Provider value={{ ...state, login, logout, register, resetPassword, updateProfile }}>{children}</JWTContext.Provider>
+        <JWTContext.Provider value={{ ...state, login, logout, register, resetPassword, forgotPassword, updateProfile }}>
+            {children}
+        </JWTContext.Provider>
     );
 };
 

@@ -27,28 +27,22 @@ import React from 'react';
 // third party
 import ReCAPTCHA from 'react-google-recaptcha';
 import { Link } from 'react-router-dom';
+import toastService from 'services/core/toast.service';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import * as Yup from 'yup';
 
-// ============================|| FIREBASE - LOGIN ||============================ //
+// ============================|| LOGIN ||============================ //
 
 const recaptchaRef: any = React.createRef();
 
-const FirebaseLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
+const AuthLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
     const theme = useTheme();
     const scriptedRef = useScriptRef();
     const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
     const { borderRadius } = useConfig();
     const [checked, setChecked] = React.useState(true);
 
-    const { firebaseEmailPasswordSignIn, firebaseGoogleSignIn } = useAuth();
-    const googleHandler = async () => {
-        try {
-            await firebaseGoogleSignIn();
-        } catch (err) {
-            console.error(err);
-        }
-    };
+    const { login } = useAuth();
 
     const [showPassword, setShowPassword] = React.useState(false);
     const handleClickShowPassword = () => {
@@ -63,7 +57,7 @@ const FirebaseLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
         <>
             <Formik
                 initialValues={{
-                    email: 'info@codedthemes.com',
+                    email: 'ntcnet@gmail.com',
                     password: '123456',
                     token: null,
                     submit: null
@@ -74,24 +68,23 @@ const FirebaseLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
                     token: Yup.string().required().nullable()
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
+                    console.log(1);
                     try {
-                        await firebaseEmailPasswordSignIn(values.email, values.password).then(
-                            () => {
-                                // WARNING: do not set any formik state here as formik might be already destroyed here. You may get following error by doing so.
-                                // Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application.
-                                // To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup function.
-                                // github issue: https://github.com/formium/formik/issues/2430
-                            },
-                            (err: any) => {
-                                if (scriptedRef.current) {
-                                    setStatus({ success: false });
-                                    setErrors({ submit: err.message });
-                                    setSubmitting(false);
-                                }
-                            }
-                        );
+                        login(values.email, values.password)
+                            .then((res) => {})
+                            .catch((err) => {
+                                toastService.showError({
+                                    title: err.status,
+                                    text: err.message,
+                                    position: 'center-start'
+                                });
+                            });
+
+                        if (scriptedRef.current) {
+                            setStatus({ success: true });
+                            setSubmitting(false);
+                        }
                     } catch (err: any) {
-                        console.error(err);
                         if (scriptedRef.current) {
                             setStatus({ success: false });
                             setErrors({ submit: err.message });
@@ -187,7 +180,7 @@ const FirebaseLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
                             <ReCAPTCHA
                                 ref={recaptchaRef}
                                 onExpired={() => (recaptchaRef.current as any)?.reset()}
-                                sitekey="6Lcb7MgeAAAAAB8bZdGoCps1MMat1mluOYSZFZeI"
+                                sitekey={process.env.REACT_APP_SITE_KEY!}
                                 onChange={(value: any) => {
                                     setValues({ ...values, token: value });
                                 }}
@@ -217,4 +210,4 @@ const FirebaseLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
     );
 };
 
-export default FirebaseLogin;
+export default AuthLogin;

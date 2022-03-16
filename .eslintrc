@@ -16,6 +16,7 @@
         }
     },
     "rules": {
+        "jsx-a11y/label-has-associated-control": "off",
         "react-hooks/exhaustive-deps": "off",
         "no-nested-ternary": 0,
         "no-extra-boolean-cast": 0,
@@ -36,6 +37,8 @@
         "prefer-destructuring": 0,
         "import/no-unresolved": [2, { "caseSensitive": false }],
         "@typescript-eslint/no-unused-vars": "off",
+        "import/no-named-as-default": 0,
+        "import/no-named-as-default-member": 0,
         "prettier/prettier": [
             2,
             {

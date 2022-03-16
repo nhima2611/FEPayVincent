@@ -1,6 +1,7 @@
 import QueryBuilderOutlinedIcon from '@mui/icons-material/QueryBuilderOutlined';
 // material-ui
 import { Box, Grid, Stack, Typography } from '@mui/material';
+import { IconPoint } from '@tabler/icons';
 import { map } from 'lodash';
 // third party
 import PerfectScrollbar from 'react-perfect-scrollbar';
@@ -8,29 +9,9 @@ import { gridSpacing } from 'store/constant';
 // project imports
 import Avatar from 'ui-component/extended/Avatar';
 
-// ==============================|| DATA WIDGET - TASKS CARD ||============================== //
-
-const datas = [
-    {
-        id: 1,
-        desc: 'Nguyen Tuan Truong solved the ticket',
-        date: '13/03/2022 - 8:30'
-    },
-    {
-        id: 2,
-        desc: 'Nguyen Tuan Truong solved the ticket',
-        date: '13/03/2022 - 8:30'
-    },
-    {
-        id: 3,
-        desc: 'Nguyen Tuan Truong solved the ticket',
-        date: '13/03/2022 - 8:30'
-    }
-];
-
-const TasksCard = () => (
-    <PerfectScrollbar style={{ width: '100%', minHeight: 200, overflowX: 'hidden' }}>
-        {map(datas, (item, index) => (
+const TasksCard = ({ data = [] }: { data: any[] }) => (
+    <PerfectScrollbar style={{ width: '100%', maxHeight: 500, overflowX: 'hidden' }}>
+        {map(data, (item, index) => (
             <Box sx={{ marginY: 2 }} key={index}>
                 <Grid
                     container
@@ -48,7 +29,7 @@ const TasksCard = () => (
                             top: 15,
                             left: 44,
                             width: 2,
-                            height: 300,
+                            height: '100%',
                             background: '#ebebeb',
                             zIndex: '1'
                         }
@@ -63,8 +44,8 @@ const TasksCard = () => (
                             </Grid>
                             <Grid item xs zeroMinWidth>
                                 <Stack direction="row" justifyContent="space-between">
-                                    <Typography sx={{ fontSize: 10 }}>{item.desc}</Typography>
-                                    <Typography sx={{ fontSize: 10 }}>{item.date}</Typography>
+                                    <Typography sx={{ fontSize: 10 }}>{`${item?.user_fullname} ${item?.content}`}</Typography>
+                                    <Typography sx={{ fontSize: 10 }}>{moment(item?.created_at).format('DD/MM/YYYY - HH:mm a')}</Typography>
                                 </Stack>
                             </Grid>
                         </Grid>
