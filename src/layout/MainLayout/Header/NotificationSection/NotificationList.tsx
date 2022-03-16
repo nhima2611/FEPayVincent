@@ -2,7 +2,7 @@
 import { Avatar, Grid, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, Typography } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
 import User1 from 'assets/images/users/user-round.svg';
-import faker from 'faker';
+import { faker } from '@faker-js/faker';
 
 // styles
 const ListItemWrapper = styled('div')(({ theme }) => ({
