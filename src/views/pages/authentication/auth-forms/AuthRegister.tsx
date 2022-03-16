@@ -27,7 +27,7 @@ import { strengthColor, strengthIndicator } from 'utils/password-strength';
 // third party
 import * as Yup from 'yup';
 
-// ===========================|| FIREBASE - REGISTER ||=========================== //
+// ===========================|| REGISTER ||=========================== //
 
 const recaptchaRef: any = React.createRef();
 

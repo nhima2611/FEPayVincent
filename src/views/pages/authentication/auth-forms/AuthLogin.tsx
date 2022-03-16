@@ -31,7 +31,7 @@ import toastService from 'services/core/toast.service';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import * as Yup from 'yup';
 
-// ============================|| FIREBASE - LOGIN ||============================ //
+// ============================|| LOGIN ||============================ //
 
 const recaptchaRef: any = React.createRef();
 

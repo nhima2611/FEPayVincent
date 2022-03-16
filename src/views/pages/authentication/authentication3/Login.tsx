@@ -7,7 +7,7 @@ import Logo from 'ui-component/Logo';
 import AuthLogin from '../auth-forms/AuthLogin';
 import AuthCardWrapper from '../AuthCardWrapper';
 // project imports
-import AuthWrapper1 from '../AuthWrapper1';
+import AuthWrapper from '../AuthWrapper';
 
 // assets
 
@@ -19,7 +19,7 @@ const Login = () => {
     const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
 
     return (
-        <AuthWrapper1>
+        <AuthWrapper>
             <Grid container direction="column" justifyContent="center" sx={{ minHeight: '100vh', borderRadius: '24px' }}>
                 <Grid item sx={{ m: { xs: 1, sm: 3 }, mb: 0 }}>
                     <AuthCardWrapper>
@@ -74,7 +74,7 @@ const Login = () => {
                     </AuthCardWrapper>
                 </Grid>
             </Grid>
-        </AuthWrapper1>
+        </AuthWrapper>
     );
 };
 

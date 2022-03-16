@@ -8,7 +8,6 @@ import {
     FormControl,
     FormHelperText,
     Grid,
-    Icon,
     IconButton,
     InputAdornment,
     InputLabel,
@@ -30,7 +29,7 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import { strengthColor, strengthIndicator } from 'utils/password-strength';
 import * as Yup from 'yup';
 
-// ========================|| FIREBASE - FORGOT PASSWORD ||======================== //
+// ========================|| FORGOT PASSWORD ||======================== //
 
 const AuthForgotPassword = ({ ...others }) => {
     const theme = useTheme();
@@ -98,7 +97,7 @@ const AuthForgotPassword = ({ ...others }) => {
         setLoading(true);
         setErrorAlerts(null);
         try {
-            resetPassword({ ...data, verification_code: verify, email: emailState })
+            resetPassword({ ...data, verify_code: verify, email: emailState })
                 .then((res) => {
                     setLoading(false);
                     if (!res.data.success) {
@@ -108,23 +107,23 @@ const AuthForgotPassword = ({ ...others }) => {
                             </Alert>
                         );
                     } else {
-                        const Toast = Swal.mixin({
-                            toast: false,
-                            showConfirmButton: false,
-                            timer: 3000,
-                            timerProgressBar: true,
-                            didOpen: (toast) => {
-                                toast.addEventListener('mouseenter', Swal.stopTimer);
-                                toast.addEventListener('mouseleave', Swal.resumeTimer);
-                            }
-                        });
-
-                        Toast.fire({
-                            icon: 'success',
-                            title: res.data.message
-                        }).then((value) => {
-                            nativation(`/login`);
-                        });
+                        toastService
+                            .showSuccess({
+                                toast: false,
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                icon: 'success',
+                                title: 'Successfully',
+                                text: res.data.message,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer);
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer);
+                                }
+                            })
+                            .then((value) => {
+                                nativation(`/login`);
+                            });
                     }
                 })
                 .catch((err) => {

@@ -118,7 +118,7 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
         return response;
     };
 
-    const resetPassword = async (body: { verification_code: number; email: string; password: string; confirm_password: string }) => {
+    const resetPassword = async (body: { verify_code: number; email: string; password: string; confirm_password: string }) => {
         const response = await axios.post('/verifyChangePassword', body);
         return response;
     };

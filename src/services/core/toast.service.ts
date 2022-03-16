@@ -24,6 +24,13 @@ const toast = (icon: SweetAlertIcon, title: string, position?: SweetAlertPositio
     });
 };
 
+const showSuccess = (args: SweetAlertOptions): Promise<any> => {
+    return Swal.fire({
+        ...args,
+        icon: 'success'
+    });
+};
+
 const showError = (args: SweetAlertOptions): Promise<any> => {
     return Swal.fire({
         ...args,
@@ -75,5 +82,6 @@ export default {
     toast,
     showConfirm,
     showDeleteConfirm,
-    showError
+    showError,
+    showSuccess
 };

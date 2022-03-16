@@ -5,7 +5,7 @@ import { useTheme } from '@mui/material/styles';
 import { Divider, Grid, Typography, useMediaQuery } from '@mui/material';
 
 // project imports
-import AuthWrapper1 from '../AuthWrapper1';
+import AuthWrapper from '../AuthWrapper';
 import AuthCardWrapper from '../AuthCardWrapper';
 import Logo from 'ui-component/Logo';
 import AuthForgotPassword from '../auth-forms/AuthForgotPassword';
@@ -20,7 +20,7 @@ const ForgotPassword = () => {
     const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
 
     return (
-        <AuthWrapper1>
+        <AuthWrapper>
             <Grid container direction="column" justifyContent="center" sx={{ minHeight: '100vh' }}>
                 <Grid item xs={12}>
                     <Grid container justifyContent="center" alignItems="center" sx={{ minHeight: 'calc(100vh - 68px)' }}>
@@ -77,7 +77,7 @@ const ForgotPassword = () => {
                     <AuthFooter />
                 </Grid>
             </Grid>
-        </AuthWrapper1>
+        </AuthWrapper>
     );
 };
 
