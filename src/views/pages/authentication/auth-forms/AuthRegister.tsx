@@ -27,7 +27,7 @@ import { strengthColor, strengthIndicator } from 'utils/password-strength';
 // third party
 import * as Yup from 'yup';
 
-// ===========================|| FIREBASE - REGISTER ||=========================== //
+// ===========================|| REGISTER ||=========================== //
 
 const recaptchaRef: any = React.createRef();
 
@@ -91,11 +91,8 @@ const FirebaseRegister = ({ ...others }) => {
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                     try {
                         register(_.omit(values, ['submit', 'confirm_password', 'token']))
-                            .then((res) => {
-                                console.log(res);
-                            })
+                            .then((res) => {})
                             .catch((err) => {
-                                console.log(err);
                                 toastService.showError({
                                     title: err.status,
                                     text: err.message,

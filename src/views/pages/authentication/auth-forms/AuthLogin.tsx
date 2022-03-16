@@ -27,10 +27,11 @@ import React from 'react';
 // third party
 import ReCAPTCHA from 'react-google-recaptcha';
 import { Link } from 'react-router-dom';
+import toastService from 'services/core/toast.service';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import * as Yup from 'yup';
 
-// ============================|| FIREBASE - LOGIN ||============================ //
+// ============================|| LOGIN ||============================ //
 
 const recaptchaRef: any = React.createRef();
 
@@ -69,15 +70,21 @@ const AuthLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                     console.log(1);
                     try {
-                        await login(values.email, values.password);
+                        login(values.email, values.password)
+                            .then((res) => {})
+                            .catch((err) => {
+                                toastService.showError({
+                                    title: err.status,
+                                    text: err.message,
+                                    position: 'center-start'
+                                });
+                            });
 
                         if (scriptedRef.current) {
                             setStatus({ success: true });
                             setSubmitting(false);
                         }
                     } catch (err: any) {
-                        console.log(err);
-
                         if (scriptedRef.current) {
                             setStatus({ success: false });
                             setErrors({ submit: err.message });

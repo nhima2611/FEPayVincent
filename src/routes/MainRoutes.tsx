@@ -4,6 +4,7 @@ import { lazy } from 'react';
 import { Navigate } from 'react-router-dom';
 import Loadable from 'ui-component/Loadable';
 import AuthGuard from 'utils/route-guard/AuthGuard';
+import PartnerPage from 'views/partners';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard')));
@@ -58,6 +59,10 @@ const MainRoutes = {
         {
             path: `/repaymentcontrol`,
             element: <RepaymentControlPage />
+        },
+        {
+            path: `/partner`,
+            element: <PartnerPage />
         }
     ]
 };

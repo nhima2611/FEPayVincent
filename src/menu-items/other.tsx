@@ -28,41 +28,25 @@ const other = {
             children: [
                 {
                     id: 'partner_list',
-                    title: (
-                        <>
-                            <FormattedMessage id="partner_list" />
-                        </>
-                    ),
+                    title: <FormattedMessage id="partner_list" />,
                     type: 'collapse',
                     icon: IconUsers,
                     children: [
                         {
                             id: 'partner',
-                            title: (
-                                <>
-                                    <FormattedMessage id="partner" />
-                                </>
-                            ),
+                            title: <FormattedMessage id="partner" />,
                             type: 'item',
-                            url: '#'
+                            url: '/partner'
                         },
                         {
                             id: 'sub_partner',
-                            title: (
-                                <>
-                                    <FormattedMessage id="sub_partner" />
-                                </>
-                            ),
+                            title: <FormattedMessage id="sub_partner" />,
                             type: 'item',
                             url: '#'
                         },
                         {
                             id: 'pos',
-                            title: (
-                                <>
-                                    <FormattedMessage id="pos" />
-                                </>
-                            ),
+                            title: <FormattedMessage id="pos" />,
                             type: 'item',
                             url: '#'
                         }
