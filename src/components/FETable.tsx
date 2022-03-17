@@ -17,7 +17,7 @@ import React, { useContext } from 'react';
 import { useFilters, usePagination, useRowSelect, useSortBy, useTable } from 'react-table';
 import eventEmitter from 'utils/eventEmitter';
 
-const FETable = ({ data, columns, onClickRowItem, showCustomFilter = false }) => {
+const FETable = ({ data, columns, onClickRowItem, showCustomFilter = false, rowId }) => {
     const filterTypes = React.useMemo(
         () => ({
             // Add a new fuzzyTextFilterFn filter type.
@@ -71,7 +71,7 @@ const FETable = ({ data, columns, onClickRowItem, showCustomFilter = false }) =>
             pageCount: totalCount,
             filterTypes,
             autoResetSelectedRows: false,
-            getRowId: (row) => row?.ticket_id
+            getRowId: (row) => row[rowId]
         },
         useFilters,
         useSortBy,

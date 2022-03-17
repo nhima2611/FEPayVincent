@@ -81,7 +81,11 @@ const PartnerList = ({ data = [], loading, cols = [], onClickRowItem }) => {
                     Delete
                 </MenuItem>
             </Menu>
-            {loading ? <div>loading...</div> : <FETable onClickRowItem={onClickRowItem} data={productsData} columns={productsColumns} />}
+            {loading ? (
+                <div>loading...</div>
+            ) : (
+                <FETable rowId="ID" onClickRowItem={onClickRowItem} data={productsData} columns={productsColumns} />
+            )}
         </MainCard>
     );
 };

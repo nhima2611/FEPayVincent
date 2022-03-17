@@ -22,6 +22,14 @@ const TicketDetailPage = () => {
         };
     }, []);
 
+    useEffect(() => {
+        eventEmitter.addListener('UPLOAD_ATTACHMENT_SUCCESS', (success: boolean) => success && qTicketDetail.refetch());
+
+        return () => {
+            eventEmitter.removeAllListeners();
+        };
+    }, []);
+
     const mUpdateTicket = useMutation((model: UpdateStatusAndActionModel) => ticketsServices.updatePut(model), {
         onSuccess: (res) => {
             qTicketDetail.refetch();
