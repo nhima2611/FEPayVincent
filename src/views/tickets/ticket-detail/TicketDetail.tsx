@@ -1,8 +1,9 @@
-import { Box, Button, Divider, Grid, Stack, Typography } from '@mui/material';
+import { Box, Button, Divider, Grid, IconButton, Menu, MenuItem, Stack, Typography } from '@mui/material';
+import { IconUserPlus } from '@tabler/icons';
 import { ROLE } from 'constants/auth';
 import { actionTicketTypes, issueType, lastStatusType, productTypes, requestedBy, subIssueType, transactionType } from 'constants/tickets';
 import useAuth from 'hooks/useAuth';
-import { useState } from 'react';
+import { SyntheticEvent, useState } from 'react';
 import Highlighter from 'react-highlight-words';
 import { TicketDetailModel } from 'types/ticket';
 import MainCard from 'ui-component/cards/MainCard';
@@ -16,14 +17,25 @@ import TasksCard from './TasksCard';
 interface Props {
     data: TicketDetailModel;
     onSaveChanges: (data: any) => void;
+    onClickAssignee: () => void;
+    onClickSupporter: () => void;
 }
-const TicketDetail = ({ data, onSaveChanges }: Props) => {
+const TicketDetail = ({ data, onSaveChanges, onClickAssignee, onClickSupporter }: Props) => {
     const { user } = useAuth();
     const statusData = user?.role !== ROLE.PARTNER ? _.omit(lastStatusType, ['0']) : lastStatusType;
     const [selected, setSelected] = useState<any>({ action: 0 });
     const handleSubmit = () => {
         if (data.status === selected.status) return;
         onSaveChanges?.({ ...selected, transaction_type: data.transaction_type, issue_type: data.issue_type });
+    };
+
+    const [anchorEl, setAnchorEl] = useState<Element | ((element: Element) => Element) | null | undefined>(null);
+    const handleClick = (event: SyntheticEvent) => {
+        setAnchorEl(event?.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
     };
     return (
         <MainCard title="Ticket Handling" contentSX={{ paddingRight: 0, paddingBottom: `0px !important` }}>
@@ -159,9 +171,40 @@ const TicketDetail = ({ data, onSaveChanges }: Props) => {
                 </Grid>
                 <Grid item xs={12} md={4}>
                     <Box sx={{ borderLeft: 1, borderTop: 1, borderTopLeftRadius: 16, borderColor: '#E5E5E5', height: '100%' }}>
-                        <Box style={{ height: 60, background: '#27AE60', borderTop: 1, borderTopLeftRadius: 14, padding: 16 }}>
+                        <Stack
+                            direction="row"
+                            alignItems="center"
+                            justifyContent="space-between"
+                            style={{ height: 60, background: '#27AE60', borderTop: 1, borderTopLeftRadius: 14, padding: 16 }}
+                        >
                             <Typography sx={{ color: 'white' }}>Detail</Typography>
-                        </Box>
+                            <IconButton onClick={handleClick}>
+                                <IconUserPlus color="white" />
+                            </IconButton>
+                            <Menu
+                                id="menu-followers-card"
+                                anchorEl={anchorEl}
+                                keepMounted
+                                open={Boolean(anchorEl)}
+                                onClose={handleClose}
+                                variant="selectedMenu"
+                                anchorOrigin={{
+                                    vertical: 'bottom',
+                                    horizontal: 'right'
+                                }}
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right'
+                                }}
+                            >
+                                <MenuItem onClick={onClickAssignee} sx={{ color: '#008345', fontSize: 12, fontWeight: 'bold' }}>
+                                    Assignee
+                                </MenuItem>
+                                <MenuItem onClick={onClickSupporter} sx={{ color: '#008345', fontSize: 12, fontWeight: 'bold' }}>
+                                    Supporter
+                                </MenuItem>
+                            </Menu>
+                        </Stack>
                         <Box sx={{ paddingX: 2 }}>
                             <FEItemDetail title="Partner" value={data?.partner} />
                             <FEItemDetail title="Assignee" value={data?.assignee} />

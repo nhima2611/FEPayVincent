@@ -17,6 +17,8 @@ import eventEmitter from 'utils/eventEmitter';
 import toastify from 'utils/toastify';
 import Board from 'components/kanban';
 import TicketList from './list';
+import AssignToDialog, { refAssignTo } from '../components/AssignToDialog';
+import { AssignToModel } from 'types/ticket';
 
 export default function MyTicketsPage() {
     const dispatchs = useDispatch();
@@ -155,30 +157,57 @@ export default function MyTicketsPage() {
         }
     });
 
-    const onClickDownload = () => {
-        const ids: number[] = _.map(selectedIds, (value, key) => _.toNumber(key));
+    const sIds: number[] = _.map(selectedIds, (value, key) => _.toNumber(key));
 
-        if (!ids.length) {
+    const onClickDownload = () => {
+        if (!sIds.length) {
             return toastify.showToast('warning', 'Please choose row!');
         }
-        return mDownloadTicket.mutate({ ids });
+        return mDownloadTicket.mutate({ ids: sIds });
     };
 
     const onClickTrash = () => {
-        const ids: number[] = _.map(selectedIds, (value, key) => _.toNumber(key));
-
-        if (!ids.length) {
+        if (!sIds.length) {
             return toastify.showToast('warning', 'Please choose row!');
         }
         return toastService.showDeleteConfirm({
             onConfirm: async () => {
-                mDeleteTicket.mutate(ids);
+                mDeleteTicket.mutate(sIds);
             }
         });
     };
 
-    const onUploadFile = async (file: any) => {
+    const onUploadFile = (file: any) => {
         mUploadTicket.mutate(file);
+    };
+
+    const onClickAssignee = () => {
+        refAssignTo.current?.handleClickOpen({ title: 'Assignee' });
+    };
+    const onClickSupporter = () => {
+        refAssignTo.current?.handleClickOpen({ title: 'Supporter' });
+    };
+
+    const mAssignTo = useMutation((model: AssignToModel) => ticketsServices.assignTo(model), {
+        onSuccess: (res) => {
+            refetchTable();
+            console.log(res);
+            toastify.showToast('success', res.data?.message);
+            refAssignTo.current?.handleClose();
+            eventEmitter.emit('DESELECT_ALL_ROWS', true);
+        },
+        onError: (err: any) => {
+            toastify.showToast('error', err.message);
+        }
+    });
+
+    const onSubmitAssignTo = (values: any) => {
+        mAssignTo.mutate({
+            email: values.email,
+            name: values.username,
+            ticket_ids: sIds,
+            type: values.type
+        });
     };
 
     return (
@@ -192,6 +221,8 @@ export default function MyTicketsPage() {
                             urlAddTicket="/tickets/create-ticket"
                             onUploadFile={onUploadFile}
                             onClickTrash={onClickTrash}
+                            onClickAssignee={onClickAssignee}
+                            onClickSupporter={onClickSupporter}
                         />
                         {mode === 'kanban' ? (
                             <Board />
@@ -203,6 +234,7 @@ export default function MyTicketsPage() {
                                 cols={dataTable?.data?.cols}
                             />
                         )}
+                        <AssignToDialog onSubmit={onSubmitAssignTo} />
                     </MainCard>
                 </Grid>
             </Grid>

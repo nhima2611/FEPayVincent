@@ -35,7 +35,16 @@ const Input = styled('input')({
     display: 'none'
 });
 
-const ActionKanbanOrList = ({ onClickTransfer, urlAddTicket, onClickDownload, onUploadFile, onClickTrash }) => {
+const ActionKanbanOrList = ({
+    title = 'My Ticket',
+    onClickTransfer,
+    urlAddTicket,
+    onClickDownload,
+    onUploadFile,
+    onClickTrash,
+    onClickAssignee,
+    onClickSupporter
+}) => {
     const theme = useTheme();
     const { user } = useAuth();
 
@@ -63,7 +72,7 @@ const ActionKanbanOrList = ({ onClickTransfer, urlAddTicket, onClickDownload, on
 
     const renderActionList = () => (
         <>
-            <Typography sx={{ mb: 1 }}>{`My Ticket List - ${_.keys(selectedIds).length} Selected`}</Typography>
+            <Typography sx={{ mb: 1 }}>{`${title} List - ${_.keys(selectedIds).length} Selected`}</Typography>
             <Stack direction="row" spacing={1.5} sx={{ marginBottom: 1 }}>
                 <Tooltip title="Toggle Mode">
                     <Button sx={{ ...styles.btn, minWidth: 36, padding: 0 }} variant="outlined" onClick={onClickTransfer}>
@@ -147,10 +156,10 @@ const ActionKanbanOrList = ({ onClickTransfer, urlAddTicket, onClickDownload, on
                         horizontal: 'right'
                     }}
                 >
-                    <MenuItem onClick={handleClose} sx={{ color: '#008345', fontSize: 12, fontWeight: 'bold' }}>
+                    <MenuItem onClick={onClickAssignee} sx={{ color: '#008345', fontSize: 12, fontWeight: 'bold' }}>
                         Assignee
                     </MenuItem>
-                    <MenuItem onClick={handleClose} sx={{ color: '#008345', fontSize: 12, fontWeight: 'bold' }}>
+                    <MenuItem onClick={onClickSupporter} sx={{ color: '#008345', fontSize: 12, fontWeight: 'bold' }}>
                         Supporter
                     </MenuItem>
                 </Menu>
