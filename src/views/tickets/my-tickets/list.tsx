@@ -60,7 +60,11 @@ const TicketList = ({ data = [], loading, cols = [], onClickRowItem }) => {
 
     return (
         <MainCard content={false} border={false}>
-            {loading ? <div>loading...</div> : <FETable onClickRowItem={onClickRowItem} data={productsData} columns={productsColumns} />}
+            {loading ? (
+                <div>loading...</div>
+            ) : (
+                <FETable rowId="ticket_id" showCustomFilter onClickRowItem={onClickRowItem} data={productsData} columns={productsColumns} />
+            )}
         </MainCard>
     );
 };

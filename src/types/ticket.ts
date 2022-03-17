@@ -60,9 +60,36 @@ export type AddAttachmentModel = {
     attachment: any;
 };
 
+export type CreateTicketModel = {
+    attachments: any[];
+    contract_number: number;
+    description: string;
+    issue_type: number;
+    ref_number: string;
+    requested_by: number;
+    requester_national_id: number;
+    requester_phone: number;
+    right_amount: number;
+    right_contract_number: number;
+    right_product_type: number;
+    status: number;
+    sub_issue_type: number;
+    transaction_amount: number;
+    transaction_date: Date;
+    transaction_type: number;
+    wrong_transaction: number;
+};
+
 export type UpdateStatusAndActionModel = {
     id?: number | string;
     ticket_id?: number;
     status: number;
     action: number;
+};
+
+export type AssignToModel = {
+    ticket_ids: number[];
+    email: string;
+    name: string;
+    type: 1 | 2;
 };

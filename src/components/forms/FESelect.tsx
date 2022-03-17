@@ -25,6 +25,7 @@ interface Props {
     api?: string;
     transformFn?: (item: any) => any;
     renderItem?: (item: any, index: number) => any;
+    handleSelect?: (value: any) => void;
 }
 
 const FESelect = ({
@@ -36,7 +37,8 @@ const FESelect = ({
     dataSource,
     api,
     transformFn,
-    renderItem
+    renderItem,
+    handleSelect
 }: Props) => {
     const theme = useTheme();
     const { value: data, loading } = useAsync(() => {
@@ -55,11 +57,12 @@ const FESelect = ({
             </InputLabel>
             <FormControl fullWidth error={Boolean(touched[`${name}`] && errors[`${name}`])} sx={{ ...theme.typography.customInput }}>
                 <Select
-                    {...{ ...selectProps, onSelectValue: undefined }}
+                    {...{ ...selectProps, onSelectValue: {} }}
                     value={selectProps?.value}
                     name={name}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
+                    onChange={(e) => (handleSelect ? handleSelect?.(_.find(data, ['id', e.target.value])) : handleChange(e))}
+                    onBlur={(e) => (handleSelect ? handleSelect?.(_.find(data, ['id', e.target.value])) : handleChange(e))}
+                    defaultValue=""
                 >
                     {!selectProps?.notAllowSelectNull && (
                         <MenuItem value={null as any}>

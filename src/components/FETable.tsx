@@ -17,7 +17,7 @@ import React, { useContext } from 'react';
 import { useFilters, usePagination, useRowSelect, useSortBy, useTable } from 'react-table';
 import eventEmitter from 'utils/eventEmitter';
 
-const FETable = ({ data, columns, onClickRowItem }) => {
+const FETable = ({ data, columns, onClickRowItem, showCustomFilter = false, rowId }) => {
     const filterTypes = React.useMemo(
         () => ({
             // Add a new fuzzyTextFilterFn filter type.
@@ -26,7 +26,7 @@ const FETable = ({ data, columns, onClickRowItem }) => {
             // "startWith"
             text: (rows, id, filterValue) => {
                 return rows.filter((row) => {
-                    const rowValue = row.values[id];
+                    const rowValue = row?.values[id];
                     return rowValue !== undefined ? String(rowValue).toLowerCase().startsWith(String(filterValue).toLowerCase()) : true;
                 });
             }
@@ -71,7 +71,7 @@ const FETable = ({ data, columns, onClickRowItem }) => {
             pageCount: totalCount,
             filterTypes,
             autoResetSelectedRows: false,
-            getRowId: (row) => row.ticket_id
+            getRowId: (row) => row[rowId]
         },
         useFilters,
         useSortBy,
@@ -178,6 +178,7 @@ const FETable = ({ data, columns, onClickRowItem }) => {
                                         {...(column.id === 'selection'
                                             ? column.getHeaderProps()
                                             : column.getHeaderProps(column.getSortByToggleProps()))}
+                                        sx={{ padding: 0.5 }}
                                     >
                                         <TableSortLabel
                                             active={column.isSorted}
@@ -197,20 +198,22 @@ const FETable = ({ data, columns, onClickRowItem }) => {
                         ))}
                     </TableHead>
 
-                    <TableHead>
-                        {headerGroups.map((headerGroup) => (
-                            <TableRow {...headerGroup.getHeaderGroupProps()}>
-                                {headerGroup.headers.map((column) => {
-                                    if (column.id === 'selection') return <TableCell {...column.getHeaderProps()}>Filter</TableCell>;
-                                    return (
-                                        <TableCell {...column.getHeaderProps()} sx={{ minWidth: 200 }}>
-                                            {column.canFilter ? column.render('Filter') : null}
-                                        </TableCell>
-                                    );
-                                })}
-                            </TableRow>
-                        ))}
-                    </TableHead>
+                    {showCustomFilter && (
+                        <TableHead>
+                            {headerGroups.map((headerGroup) => (
+                                <TableRow {...headerGroup.getHeaderGroupProps()}>
+                                    {headerGroup.headers.map((column) => {
+                                        if (column.id === 'selection') return <TableCell {...column.getHeaderProps()}>Filter</TableCell>;
+                                        return (
+                                            <TableCell {...column.getHeaderProps()} sx={{ minWidth: 200, px: 1 }}>
+                                                {column.canFilter ? column.render('Filter') : null}
+                                            </TableCell>
+                                        );
+                                    })}
+                                </TableRow>
+                            ))}
+                        </TableHead>
+                    )}
 
                     <TableBody {...getTableBodyProps()}>
                         {!Boolean(data.length) && renderNotfound()}
@@ -225,7 +228,11 @@ const FETable = ({ data, columns, onClickRowItem }) => {
                                     sx={{ textDecoration: 'none', cursor: 'pointer' }}
                                 >
                                     {row.cells.map((cell) => {
-                                        return <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>;
+                                        return (
+                                            <TableCell {...cell.getCellProps()} sx={{ padding: 0.5 }}>
+                                                {cell.render('Cell')}
+                                            </TableCell>
+                                        );
                                     })}
                                 </TableRow>
                             );
@@ -274,7 +281,6 @@ const IndeterminateCheckbox = React.forwardRef(({ indeterminate, ...rest }: { in
                 onClick={(event) => {
                     event.stopPropagation();
                 }}
-                sx={{ padding: 0 }}
             />
         </>
     );

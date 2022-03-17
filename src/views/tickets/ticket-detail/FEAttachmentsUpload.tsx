@@ -6,6 +6,8 @@ import { useDropzone } from 'react-dropzone';
 import { useMutation } from 'react-query';
 import ticketsServices from 'services/tickets-services';
 import { AddAttachmentModel } from 'types/ticket';
+import eventEmitter from 'utils/eventEmitter';
+import toastify from 'utils/toastify';
 
 const BoxStyle = styled(Box)({
     backgroundImage: `url(
@@ -21,7 +23,16 @@ const Input = styled('input')({
 const FEAttachmentsUpload = ({ ticketId }) => {
     const [files, setFiles] = useState<any>([]);
 
-    const mUploadFile = useMutation((file: any) => ticketsServices.addAttachment(file));
+    const mUploadFile = useMutation((file: any) => ticketsServices.addAttachment(file), {
+        onSuccess: (res) => {
+            setFiles([]);
+            toastify.showToast('success', 'Upload Success!');
+            eventEmitter.emit('UPLOAD_ATTACHMENT_SUCCESS', true);
+        },
+        onError: (err: any) => {
+            toastify.showToast('error', err.message);
+        }
+    });
 
     const onDropFile = (file: any) => {
         setFiles([...file, ...files]);
@@ -30,7 +41,6 @@ const FEAttachmentsUpload = ({ ticketId }) => {
     const { getRootProps, getInputProps } = useDropzone({ onDrop: onDropFile, maxFiles: 5 });
 
     const onRemoveItem = (index: any) => {
-        console.log(index.lastModified);
         setFiles(() => files.filter((it: any, indexFile: number) => indexFile !== index));
     };
 
@@ -38,7 +48,7 @@ const FEAttachmentsUpload = ({ ticketId }) => {
         const formData: any = new FormData();
 
         files.forEach((element: any, i: number) => {
-            formData.append(`attachment[]`, element);
+            formData.append(`attachments[]`, element);
         });
 
         formData.append('ticket_id', ticketId);

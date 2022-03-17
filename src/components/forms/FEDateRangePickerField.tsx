@@ -39,10 +39,13 @@ const FEDateRangePickerField = ({
                     <DateRangePicker
                         value={[values[`${nameFrom}`], values[`${nameTo}`]] as DateRange<Date>}
                         onChange={(newValue) => {
-                            values[`${nameFrom}`] = newValue[0];
-                            values[`${nameTo}`] = newValue[1];
-                            setValues({ ...values });
+                            if (!inputProps?.disabled) {
+                                values[`${nameFrom}`] = newValue[0];
+                                values[`${nameTo}`] = newValue[1];
+                                setValues({ ...values });
+                            }
                         }}
+                        readOnly={inputProps?.disabled}
                         showToolbar
                         renderInput={(startProps, endProps) => (
                             <>

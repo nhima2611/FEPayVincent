@@ -1,13 +1,11 @@
-import { Box, Button, InputAdornment, Menu, MenuItem, OutlinedInput, Stack, Tooltip, Typography } from '@mui/material';
+import { Box, Button, InputAdornment, OutlinedInput, Stack, Tooltip, Typography } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
 import { shouldForwardProp } from '@mui/system';
-import { IconArrowsLeftRight, IconDownload, IconPlus, IconSearch, IconTrash, IconUpload, IconUserPlus } from '@tabler/icons';
-import { ROLE } from 'constants/auth';
+import { IconDownload, IconPlus, IconSearch, IconTrash, IconUpload, IconUser } from '@tabler/icons';
 import TableContext from 'contexts/TableContext';
 import useAuth from 'hooks/useAuth';
-import { SyntheticEvent, useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useSelector } from 'store';
 import eventEmitter from 'utils/eventEmitter';
 
 const OutlineInputStyle = styled(OutlinedInput, { shouldForwardProp })(({ theme }) => ({
@@ -35,30 +33,11 @@ const Input = styled('input')({
     display: 'none'
 });
 
-const ActionKanbanOrList = ({
-    title = 'My Ticket',
-    onClickTransfer,
-    urlAddTicket,
-    onClickDownload,
-    onUploadFile,
-    onClickTrash,
-    onClickAssignee,
-    onClickSupporter
-}) => {
+const ActionPartner = ({ onClickUser, urlAddTicket, onClickDownload, onUploadFile, onClickTrash, title = 'Partner List' }) => {
     const theme = useTheme();
     const { user } = useAuth();
 
-    const { mode } = useSelector((state) => state.kanban);
     const [{ selectedIds }] = useContext(TableContext);
-
-    const [anchorEl, setAnchorEl] = useState<Element | ((element: Element) => Element) | null | undefined>(null);
-    const handleClick = (event: SyntheticEvent) => {
-        setAnchorEl(event?.currentTarget);
-    };
-
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
 
     const [value, setValue] = useState<string>('');
 
@@ -72,14 +51,8 @@ const ActionKanbanOrList = ({
 
     const renderActionList = () => (
         <>
-            <Typography sx={{ mb: 1 }}>{`${title} List - ${_.keys(selectedIds).length} Selected`}</Typography>
+            <Typography sx={{ mb: 1 }}>{`${title} - ${_.keys(selectedIds).length} Selected`}</Typography>
             <Stack direction="row" spacing={1.5} sx={{ marginBottom: 1 }}>
-                <Tooltip title="Toggle Mode">
-                    <Button sx={{ ...styles.btn, minWidth: 36, padding: 0 }} variant="outlined" onClick={onClickTransfer}>
-                        <IconArrowsLeftRight size={18} />
-                    </Button>
-                </Tooltip>
-
                 <Tooltip title="Download">
                     <Button sx={{ ...styles.btn, minWidth: 36, padding: 0 }} variant="outlined" onClick={onClickDownload}>
                         <IconDownload size={18} />
@@ -109,6 +82,12 @@ const ActionKanbanOrList = ({
                     </Button>
                 </Tooltip>
 
+                <Tooltip title="Toggle Mode">
+                    <Button sx={{ ...styles.btn, minWidth: 36, padding: 0 }} variant="outlined" onClick={onClickUser}>
+                        <IconUser size={18} />
+                    </Button>
+                </Tooltip>
+
                 <Box sx={{ flexGrow: 1 }} />
 
                 <Box>
@@ -128,42 +107,6 @@ const ActionKanbanOrList = ({
                     />
                 </Box>
 
-                {ROLE.SUPER_ADMIN === user?.role && (
-                    <Button
-                        disabled={!_.keys(selectedIds).length}
-                        variant="outlined"
-                        sx={{ ...styles.btn, borderRadius: 2, height: 36, fontSize: 12, fontWeight: 'bold' }}
-                        startIcon={<IconUserPlus size={18} />}
-                        onClick={handleClick}
-                    >
-                        Assign To
-                    </Button>
-                )}
-
-                <Menu
-                    id="menu-followers-card"
-                    anchorEl={anchorEl}
-                    keepMounted
-                    open={Boolean(anchorEl)}
-                    onClose={handleClose}
-                    variant="selectedMenu"
-                    anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'right'
-                    }}
-                    transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right'
-                    }}
-                >
-                    <MenuItem onClick={onClickAssignee} sx={{ color: '#008345', fontSize: 12, fontWeight: 'bold' }}>
-                        Assignee
-                    </MenuItem>
-                    <MenuItem onClick={onClickSupporter} sx={{ color: '#008345', fontSize: 12, fontWeight: 'bold' }}>
-                        Supporter
-                    </MenuItem>
-                </Menu>
-
                 <Button
                     variant="outlined"
                     sx={{ borderColor: '#E5E5E5', color: '#008345', borderRadius: 2, height: 36, fontSize: 12, fontWeight: 'bold' }}
@@ -171,35 +114,16 @@ const ActionKanbanOrList = ({
                     component={Link}
                     to={urlAddTicket}
                 >
-                    Add Ticket
+                    Add New
                 </Button>
             </Stack>
         </>
     );
 
-    const renderActionKanban = () => (
-        <>
-            <Typography sx={{ mb: 1 }}>Kanban</Typography>
-            <Stack direction="row" spacing={1.5} sx={{ marginBottom: 1 }}>
-                <Button sx={{ ...styles.btn, minWidth: 36, padding: 0 }} variant="outlined" onClick={onClickTransfer}>
-                    <IconArrowsLeftRight size={18} />
-                </Button>
-                <Button
-                    variant="outlined"
-                    sx={{ ...styles.btn, borderRadius: 2, fontSize: 12, fontWeight: 'bold' }}
-                    startIcon={<IconPlus color="#008345" size={18} />}
-                    component={Link}
-                    to={urlAddTicket}
-                >
-                    Add Ticket
-                </Button>
-            </Stack>
-        </>
-    );
-    return mode === 'kanban' ? renderActionKanban() : renderActionList();
+    return renderActionList();
 };
 
-export default ActionKanbanOrList;
+export default ActionPartner;
 
 const styles = {
     btn: {
