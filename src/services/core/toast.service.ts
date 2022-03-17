@@ -6,9 +6,25 @@ interface SweetAlertConfirm {
 }
 
 const toast = (icon: SweetAlertIcon, title: string, position?: SweetAlertPosition): Promise<any> => {
-    const Toast: typeof Swal = Swal.mixin({
+    let background = '#ffffff';
+    switch (icon) {
+        case 'success':
+            background = '#5cb85c';
+            break;
+
+        case 'error':
+            background = '#d9534f';
+            break;
+        default:
+            break;
+    }
+    return Swal.fire({
+        icon,
+        title,
         toast: true,
-        position: position || 'top-end',
+        position: position || 'bottom-end',
+        background,
+        color: 'white',
         showConfirmButton: false,
         timer: 3000,
         timerProgressBar: true,
@@ -16,11 +32,6 @@ const toast = (icon: SweetAlertIcon, title: string, position?: SweetAlertPositio
             toastr.addEventListener('mouseenter', Swal.stopTimer);
             toastr.addEventListener('mouseleave', Swal.resumeTimer);
         }
-    });
-
-    return Toast.fire({
-        icon,
-        title
     });
 };
 

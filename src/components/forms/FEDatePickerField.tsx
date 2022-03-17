@@ -32,15 +32,26 @@ const FEDatePickerField = ({
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <DatePicker
                         open={open}
-                        onOpen={() => setOpen(true)}
+                        onOpen={() => !inputProps?.disabled && setOpen(true)}
                         onClose={() => setOpen(false)}
                         value={values[`${name}`]}
                         onChange={(newValue) => {
-                            values[`${name}`] = newValue;
-                            setValues({ ...values });
+                            if (!inputProps?.disabled) {
+                                values[`${name}`] = newValue;
+                                setValues({ ...values });
+                            }
                         }}
+                        readOnly={inputProps?.disabled}
                         allowSameDateSelection
-                        renderInput={(params) => <TextField {...params} id={name} name={name} onClick={(e) => setOpen(true)} />}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                {...inputProps}
+                                id={name}
+                                name={name}
+                                onClick={(e) => !inputProps?.disabled && setOpen(true)}
+                            />
+                        )}
                     />
                 </LocalizationProvider>
                 {touched[`${name}`] && errors[`${name}`] && (

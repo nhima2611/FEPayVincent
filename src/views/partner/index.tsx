@@ -54,7 +54,9 @@ const PartnerPage = () => {
     const navi = useNavigate();
 
     const onClickRowItem = (row) => {
-        // navi(row.values?.ticket_id?.toString());
+        console.log(row);
+
+        navi(row.values?.partner_id?.toString());
     };
 
     const handleSearch = _.debounce(
@@ -87,7 +89,7 @@ const PartnerPage = () => {
                         <ActionPartner
                             onClickDownload={onClickDownload}
                             onClickUser={onClickUser}
-                            urlAddTicket=""
+                            urlAddTicket="create"
                             onUploadFile={onUploadFile}
                             onClickTrash={onClickTrash}
                         />

@@ -1,3 +1,4 @@
+/* eslint-disable guard-for-in */
 import axios from 'axios';
 
 const axiosServices = axios.create({
@@ -5,6 +6,11 @@ const axiosServices = axios.create({
 });
 
 axiosServices.defaults.headers.common['App-Platform'] = 'WebApp';
+
+// axiosServices.interceptors.request.use((config) => {
+//     const payload = config.data;
+//     return config;
+// });
 
 axiosServices.interceptors.response.use(
     (response) => response,
