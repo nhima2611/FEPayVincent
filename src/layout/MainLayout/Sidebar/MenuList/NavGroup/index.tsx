@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -8,7 +8,13 @@ import { Divider, List, Typography } from '@mui/material';
 import NavItem from '../NavItem';
 import NavCollapse from '../NavCollapse';
 import { GenericCardProps } from 'types';
-
+import useAuth from 'hooks/useAuth';
+import { ROLE } from 'constants/auth';
+import { dashboard } from 'menu-items/dashboard';
+import { partnerManagement } from 'menu-items/partner-management';
+import { userManagement } from 'menu-items/user-management';
+import { tickets } from 'menu-items/tickets';
+import { ticketPartner } from 'menu-items/ticket-partner';
 // ==============================|| SIDEBAR MENU LIST GROUP ||============================== //
 
 export interface NavGroupProps {
@@ -25,9 +31,19 @@ export interface NavGroupProps {
 
 const NavGroup = ({ item }: NavGroupProps) => {
     const theme = useTheme();
+    const { user } = useAuth();
+    const menuTicket = user?.role === ROLE.PARTNER ? ticketPartner : tickets;
+
+    const [childrenItem, setChildrenItem] = useState<any>(item.children);
+
+    useEffect(() => {
+        setChildrenItem([dashboard, partnerManagement, userManagement, menuTicket, ...childrenItem]);
+    }, []);
+
+    console.log(childrenItem);
 
     // menu list collapse & items
-    const items = item.children?.map((menu) => {
+    const items = childrenItem?.map((menu) => {
         switch (menu.type) {
             case 'collapse':
                 return <NavCollapse key={menu.id} menu={menu} level={1} />;

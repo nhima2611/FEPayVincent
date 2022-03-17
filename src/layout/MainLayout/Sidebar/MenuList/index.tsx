@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useState } from 'react';
 
 // material-ui
 import { Typography } from '@mui/material';
@@ -6,6 +6,8 @@ import { Typography } from '@mui/material';
 // project imports
 import NavGroup from './NavGroup';
 import menuItem from 'menu-items';
+import useAuth from 'hooks/useAuth';
+import { ROLE } from 'constants/auth';
 
 // ==============================|| SIDEBAR MENU LIST ||============================== //
 
