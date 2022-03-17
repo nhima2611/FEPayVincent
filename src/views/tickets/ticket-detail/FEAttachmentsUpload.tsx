@@ -48,7 +48,7 @@ const FEAttachmentsUpload = ({ ticketId }) => {
         const formData: any = new FormData();
 
         files.forEach((element: any, i: number) => {
-            formData.append(`attachment[]`, element);
+            formData.append(`attachments[]`, element);
         });
 
         formData.append('ticket_id', ticketId);

@@ -10,10 +10,18 @@ const issueType = {
 };
 
 const subIssueType = {
-    1: 'Cancel transaction',
-    2: 'Adjust Amount',
-    3: 'Adjust Contract Number',
-    4: 'System Issue'
+    1: 'From Loan to Loan',
+    2: 'From Loan to Card',
+    3: 'From Card to Loan',
+    4: 'From Card to Card',
+    5: 'From Banca to Loan',
+    6: 'From Banca to Card',
+    7: 'Ect'
+};
+
+const productTypeRightContractNumberType = {
+    1: 'Loan',
+    2: 'Card'
 };
 
 const requestedBy = {
@@ -159,5 +167,6 @@ export {
     getColorAndNameStatus,
     columnsOrderData,
     columnsData,
-    actionTicketTypes
+    actionTicketTypes,
+    productTypeRightContractNumberType
 };

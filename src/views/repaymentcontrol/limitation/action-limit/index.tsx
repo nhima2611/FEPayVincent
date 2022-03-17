@@ -6,8 +6,8 @@ import { useFormik } from 'formik';
 import { map } from 'lodash';
 import React, { createRef, useImperativeHandle, useState } from 'react';
 import MainCard from 'ui-component/cards/MainCard';
-import FEDropDown from 'views/tickets/create/FEDropDown';
-import FETextField from 'views/tickets/create/FETextField';
+import FEDropDown from 'views/tickets/components/FEDropDown';
+import FETextField from 'views/tickets/components/FETextField';
 import * as yup from 'yup';
 import { partner, productName, subPartner } from './data';
 
