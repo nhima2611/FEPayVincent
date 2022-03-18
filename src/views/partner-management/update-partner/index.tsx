@@ -3,7 +3,7 @@ import faker from '@faker-js/faker';
 import { FormikHelpers } from 'formik';
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import dataService from 'services/api-services/data.service';
 import toastService from 'services/core/toast.service';
 import partnerServices from 'services/partner-services';
@@ -77,6 +77,7 @@ const validationSchema = Yup.object({
     password: Yup.string().max(255).required('Pasword is required')
 });
 const UpdatePartnerPage = ({ ...others }) => {
+    const navi = useNavigate();
     const { partnerId } = useParams();
     const [isEdit, setIsEdit] = useState(false);
     const [provinceId, setProvinceId] = useState<any>(null);
@@ -164,6 +165,7 @@ const UpdatePartnerPage = ({ ...others }) => {
                     .then((res) => {
                         toastService.toast('success', 'Created new Partner');
                         formikHelpers.resetForm();
+                        navi(-1);
                     })
                     .catch((err) => {
                         toastService.toast('error', err?.message || 'Something went error !');
