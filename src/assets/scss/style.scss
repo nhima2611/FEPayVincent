@@ -23,7 +23,10 @@
 }
 
 // ==============================|| PERFECT SCROLLBAR ||============================== //
-
+.swal2-container.swal2-backdrop-show,
+.swal2-container.swal2-noanimation {
+    z-index: 1000000 !important;
+}
 .scrollbar-container {
     .ps__rail-y {
         &:hover > .ps__thumb-y,

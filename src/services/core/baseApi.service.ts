@@ -26,6 +26,7 @@ export abstract class BaseApiService {
     }
 
     updatePut(model: any) {
+        model = this.convertDateStringsToDates(model);
         return axiosServices.put(`${this.apiName}/${model.id}`, model);
     }
 

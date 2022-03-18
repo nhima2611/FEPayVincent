@@ -51,7 +51,10 @@ const showError = (args: SweetAlertOptions): Promise<any> => {
 
 const showConfirm = async (args: SweetAlertOptions & SweetAlertConfirm): Promise<any> => {
     return Swal.fire({
-        title: args.title,
+        backdrop: true,
+        title: args.title || 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'info',
         showCancelButton: true,
         confirmButtonText: args.confirmButtonText ?? 'Ok',
         denyButtonText: args.denyButtonText ?? 'Cancel'
