@@ -1,31 +1,32 @@
 import { FormHelperText, InputLabel, MenuItem, Select, Stack } from '@mui/material';
 import { map } from 'lodash';
-import React from 'react';
 
 interface Props {
     formik: any;
     title: string;
     data?: any;
+    name?: string;
+    disabled?: boolean;
 }
-const FEDropDown = ({ formik, title = '', data = {} }: Props) => {
+const FEDropDown = ({ formik, title = '', data = {}, name = '', disabled }: Props) => {
     return (
-        <Stack>
-            <InputLabel sx={{ color: '#4C4C4C', fontWeight: 'bold', marginBottom: 1 }}>{title}</InputLabel>
+        <Stack spacing={1}>
+            <InputLabel sx={{ color: disabled ? '#CCCCCC' : '#4C4C4C', fontWeight: 700 }}>{title}</InputLabel>
             <Select
-                style={{ height: 36, fontSize: 12, color: 'red !important' }}
-                id="orderStatus"
-                name="orderStatus"
-                defaultValue={formik.values.orderStatus}
-                value={formik.values.orderStatus}
+                id={name}
+                name={name}
+                defaultValue={formik.values[name]}
+                value={formik.values[name]}
                 onChange={formik.handleChange}
+                disabled={disabled}
             >
-                {map(data, (item, index) => (
-                    <MenuItem key={index} value={item}>
-                        {item}
+                {map(data, (key, value) => (
+                    <MenuItem key={value} value={_.toNumber(value)}>
+                        {key}
                     </MenuItem>
                 ))}
             </Select>
-            {formik.errors.orderStatus && <FormHelperText error>{formik.errors.orderStatus}</FormHelperText>}
+            {formik.errors[name] && <FormHelperText error>{formik.errors[name]}</FormHelperText>}
         </Stack>
     );
 };

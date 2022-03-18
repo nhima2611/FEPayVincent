@@ -9,6 +9,7 @@ import MainCard from 'ui-component/cards/MainCard';
 const PartnerList = ({ data = [], loading, cols = [], onClickRowItem }) => {
     const [anchorEl, setAnchorEl] = useState<Element | ((element: Element) => Element) | null | undefined>(null);
     const handleClick = (event: SyntheticEvent) => {
+        event.stopPropagation();
         setAnchorEl(event?.currentTarget);
     };
 

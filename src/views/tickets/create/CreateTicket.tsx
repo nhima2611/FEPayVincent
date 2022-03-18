@@ -13,8 +13,8 @@ import MainCard from 'ui-component/cards/MainCard';
 import InputLabel from 'ui-component/extended/Form/InputLabel';
 // third-party
 import * as yup from 'yup';
-import FEDropDown from '../components/FEDropDown';
-import FETextField from '../components/FETextField';
+import FEDropDown from 'components/forms/FEDropDown';
+import FETextField from 'components/forms/FETextField';
 
 // yup validation-schema
 const validationSchema = yup.object({

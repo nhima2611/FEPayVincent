@@ -1,60 +1,21 @@
-import { FormControl, FormHelperText, InputLabel, TextField, TextFieldProps } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
-import { FormikProps } from 'formik';
-import React from 'react';
+import { InputLabel, Stack, TextField } from '@mui/material';
 
-interface Props {
-    formik: FormikProps<any>;
-    label: string;
-    name: string;
-    required?: boolean;
-    type?: React.HTMLInputTypeAttribute | undefined;
-    inputProps?: TextFieldProps;
-}
-
-const FETextField = ({
-    formik: { errors, handleBlur, handleChange, touched, values, setValues },
-    type,
-    label,
-    name,
-    required,
-    inputProps
-}: Props) => {
-    const theme = useTheme();
-
+const FETextField = ({ formik, title, disabled = false, name = '', ...rest }) => {
     return (
-        <>
-            <InputLabel sx={{ color: '#4C4C4C', fontWeight: 'bold' }} required={required} htmlFor={name}>
-                {label}
-            </InputLabel>
-            <FormControl fullWidth error={Boolean(touched[`${name}`] && errors[`${name}`])} sx={{ ...theme.typography.customInput }}>
-                {/* <InputLabel required={required} htmlFor={name} shrink>
-                    {label}
-                </InputLabel> */}
-                <TextField
-                    {...inputProps}
-                    id={name}
-                    value={values[`${name}`]}
-                    name={name}
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    type={type || 'text'}
-                    inputProps={{
-                        style: {
-                            borderRadius: 8,
-                            border: '1px solid',
-                            borderColor: '#e5e5e5',
-                            padding: `0px 0px !important`
-                        }
-                    }}
-                />
-                {touched[`${name}`] && errors[`${name}`] && (
-                    <FormHelperText error id="standard-weight-helper-text--register">
-                        {errors[`${name}`]}
-                    </FormHelperText>
-                )}
-            </FormControl>
-        </>
+        <Stack spacing={1}>
+            <InputLabel sx={{ color: disabled ? '#CCCCCC' : '#4C4C4C', fontWeight: 700 }}>{title}</InputLabel>
+            <TextField
+                fullWidth
+                name={name}
+                value={formik.values[name]}
+                onBlur={formik.handleBlur}
+                error={formik.touched[name] && Boolean(formik.errors[name])}
+                helperText={formik.touched[name] && formik.errors[name]}
+                onChange={formik.handleChange}
+                disabled={disabled}
+                {...rest}
+            />
+        </Stack>
     );
 };
 
