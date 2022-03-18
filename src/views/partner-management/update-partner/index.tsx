@@ -1,25 +1,15 @@
 // assets
 import faker from '@faker-js/faker';
-import { Grid, Typography } from '@mui/material';
-// material-ui
-import { useTheme } from '@mui/material/styles';
-import FEDatePickerField from 'components/forms/FEDatePickerField';
-import FEDateRangePickerField from 'components/forms/FEDateRangePickerField';
-import FESelect from 'components/forms/FESelect';
-import FETextField from 'components/forms/FETextField';
-import ToolbarUpdate from 'components/ToolbarUpdate';
-import { useFormik } from 'formik';
-import useScriptRef from 'hooks/useScriptRef';
-import React, { useEffect, useRef, useState } from 'react';
+import { FormikHelpers } from 'formik';
+import React, { useState } from 'react';
+import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
-import { useAsync } from 'react-use';
 import dataService from 'services/api-services/data.service';
 import toastService from 'services/core/toast.service';
 import partnerServices from 'services/partner-services';
-import MainCard from 'ui-component/cards/MainCard';
 // third party
 import * as Yup from 'yup';
-import FETableUserOfPartner from './components/FETableUserOfPartner';
+import FEUpdatePartnerFrm from './components/FEUpdatePartnerFrm';
 
 // ==============================|| CREATE PARTNER ||============================== //
 
@@ -87,270 +77,170 @@ const validationSchema = Yup.object({
     password: Yup.string().max(255).required('Pasword is required')
 });
 const UpdatePartnerPage = ({ ...others }) => {
-    const formRef = useRef<any>(null);
-    const theme = useTheme();
     const { partnerId } = useParams();
-    const scriptedRef = useScriptRef();
     const [isEdit, setIsEdit] = useState(false);
     const [provinceId, setProvinceId] = useState<any>(null);
     const [districtId, setDistrictId] = useState<any>(null);
 
-    const { value, loading } = useAsync(() => {
-        if (partnerId) {
-            setIsEdit(true);
-            return partnerServices.getById(partnerId).then((res) => res.data.data);
+    const qProvincesQuery = useQuery(
+        ['qProvincesQuery'],
+        () => {
+            return dataService.getCities();
+        },
+        {
+            keepPreviousData: true,
+            // staleTime: Infinity
+            onError: (err: any) => {
+                toastService.toast('error', err?.message || 'Something went error !');
+            },
+            onSuccess: (res) => {}
         }
-        setIsEdit(false);
-        return Promise.resolve();
-    }, [partnerId]);
-    const formik = useFormik<IFormProps>({
-        initialValues,
-        validationSchema,
-        onSubmit: async (values, { setErrors, setStatus, setSubmitting }) => {
-            try {
-                if (scriptedRef.current) {
-                    if (!isEdit) {
+    );
+
+    const qDistrictsQuery = useQuery(
+        ['qDistrictsQuery', provinceId],
+        () => {
+            if (provinceId) {
+                return dataService.getDistricts(provinceId);
+            }
+            return null;
+        },
+        {
+            keepPreviousData: true,
+            // staleTime: Infinity
+            onError: (err: any) => {
+                toastService.toast('error', err?.message || 'Something went error !');
+            },
+            onSuccess: (res) => {}
+        }
+    );
+
+    const qWardsQuery = useQuery(
+        ['qWardsQuery', districtId],
+        () => {
+            if (districtId) {
+                return dataService.getWards(districtId);
+            }
+            return null;
+        },
+        {
+            keepPreviousData: true,
+            // staleTime: Infinity
+            onError: (err: any) => {
+                toastService.toast('error', err?.message || 'Something went error !');
+            },
+            onSuccess: (res) => {}
+        }
+    );
+
+    const qDetailQuery = useQuery(
+        ['detail_data', partnerId],
+        () => {
+            if (partnerId) {
+                setIsEdit(true);
+                return partnerServices.getById(partnerId);
+            }
+            setIsEdit(false);
+            return null;
+        },
+        {
+            keepPreviousData: true,
+            // staleTime: Infinity
+            onError: (err: any) => {
+                toastService.toast('error', err?.message || 'Something went error !');
+            },
+            onSuccess: (res: any) => {
+                setProvinceId(_.get(res, 'data.data.province'));
+                setDistrictId(_.get(res, 'data.data.district'));
+            }
+        }
+    );
+
+    const onSubmit = async (values, formikHelpers: FormikHelpers<any>) => {
+        try {
+            if (!isEdit) {
+                partnerServices
+                    .insert(values)
+                    .then((res) => {
+                        toastService.toast('success', 'Created new Partner');
+                        formikHelpers.resetForm();
+                    })
+                    .catch((err) => {
+                        toastService.toast('error', err?.message || 'Something went error !');
+                    });
+            }
+            if (isEdit) {
+                const payload = _.pick(values, [
+                    'id',
+                    'email',
+                    'code',
+                    'name',
+                    'presentative',
+                    'pic_email',
+                    'pic_phone',
+                    'contract_number',
+                    'contract_from',
+                    'contract_to',
+                    'sign_contract_date',
+                    'phone',
+                    'address',
+                    'address2',
+                    'ward',
+                    'district',
+                    'province'
+                ]) as any;
+                payload.code = faker.internet.password();
+                toastService.showConfirm({
+                    onConfirm: async () => {
                         partnerServices
-                            .insert(values)
+                            .updatePut(payload)
                             .then((res) => {
-                                toastService.toast('success', 'Created new Partner');
+                                toastService.toast('success', 'Updated Partner');
+                                qDetailQuery.refetch();
                             })
                             .catch((err) => {
-                                toastService.toast('error', err?.message || 'Something went error !');
+                                toastService.toast(
+                                    'error',
+                                    `${err?.message} ${_.map(err.details, (item) => {
+                                        return `\n<i> - ${item}</i>`;
+                                    })}` || 'Something went error !'
+                                );
                             });
                     }
-                    setStatus({ success: true });
-                    setSubmitting(false);
-                }
-            } catch (err: any) {
-                console.error(err);
-                if (scriptedRef.current) {
-                    setStatus({ success: false });
-                    setSubmitting(false);
-                }
+                });
             }
-        },
-        onReset: (props) => {
-            console.log(props);
+            formikHelpers.setStatus({ success: true });
+            formikHelpers.setSubmitting(false);
+        } catch (err: any) {
+            console.error(err);
+            formikHelpers.setStatus({ success: false });
+            formikHelpers.setSubmitting(false);
         }
-    });
-
-    const cities = useAsync(() => {
-        return dataService.getCities().then((res) => res.data.data);
-    }, []);
-
-    const districts = useAsync(() => {
-        if (!provinceId) return Promise.resolve();
-        return dataService.getDistricts(provinceId).then((res) => res.data.data);
-    }, [provinceId]);
-
-    const wards = useAsync(() => {
-        if (!provinceId) return Promise.resolve();
-        return dataService.getWards(districtId).then((res) => res.data.data);
-    }, [districtId]);
-
-    useEffect(() => {
-        if (value) {
-            formik.setValues({ ...formik.values, ...value });
-        }
-    }, [value]);
-
-    // useEffect(() => {
-    //     if (cities.value && formik.values.province) {
-    //         setProvinceId(_.get(_.find(cities.value, ['name', formik.values.province]), 'code'));
-    //         formik.setFieldValue('province', formik.values.province);
-    //     }
-    //     if (districts.value && formik.values.district) {
-    //         console.log(formik.values.district);
-    //         setDistrictId(_.get(_.find(districts.value, ['name', formik.values.district]), 'code'));
-    //     }
-    //     if (wards.value && formik.values.ward) {
-    //         formik.setFieldValue('ward', formik.values.ward);
-    //     }
-    // }, [cities, districts, wards]);
+    };
 
     return (
-        <form
-            ref={formRef}
-            onSubmit={(e) => {
-                formik.handleSubmit(e);
-                console.log(formik.errors);
+        <FEUpdatePartnerFrm
+            onSubmit={onSubmit}
+            dataInitial={_.get(qDetailQuery, 'data.data.data', null)}
+            onChangeWard={(item) => {}}
+            onChangeProvince={(item) => {
+                setProvinceId(item.code);
             }}
-            {...others}
-        >
-            <ToolbarUpdate loading={formik.isSubmitting} />
-            <MainCard
-                boxShadow
-                shadow="0px 4px 4px rgba(0, 0, 0, 0.05)"
-                sx={{
-                    boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.05)',
-                    border: '1px solid #E5E5E5 !important',
-                    mb: 3
-                }}
-            >
-                <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                        <Typography variant="h3">
-                            {/* <FormattedMessage id="information" /> */}
-                            {Boolean(isEdit) ? 'Partner Details - Edit' : 'Add New Partner'}
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12} md>
-                                <FETextField formik={formik} title="Partner" name="name" inputProps={{ disabled: isEdit }} />
-                            </Grid>
-                            <Grid item xs={12} md>
-                                <FETextField
-                                    formik={formik}
-                                    title="Contract Number"
-                                    name="contract_number"
-                                    inputProps={{ disabled: isEdit }}
-                                />
-                            </Grid>
-                            <Grid item xs={12} md>
-                                <FEDatePickerField
-                                    formik={formik}
-                                    label="Create Contract Date"
-                                    name="created_contract_date"
-                                    inputProps={{ disabled: isEdit }}
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={4}>
-                                <FEDateRangePickerField
-                                    formik={formik}
-                                    label="Contract Duration"
-                                    nameFrom="contract_from"
-                                    nameTo="contract_to"
-                                    inputProps={{ disabled: isEdit }}
-                                />
-                            </Grid>
-                            <Grid item xs={12} md>
-                                <FEDatePickerField
-                                    formik={formik}
-                                    label="Sign Contract Date"
-                                    name="sign_contract_date"
-                                    inputProps={{ disabled: isEdit }}
-                                />
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                    <Grid item xs={12} md={4}>
-                        <FESelect
-                            formik={formik}
-                            label="City"
-                            name="province"
-                            dataSource={_.map(_.get(cities, 'value'), (item) => {
-                                return { id: item.name, ...item };
-                            })}
-                            handleSelect={(item) => {
-                                if (item) {
-                                    formik.setFieldValue('province', item.name);
-                                    formik.setFieldValue('district', '');
-                                    formik.setFieldValue('ward', '');
-                                    setProvinceId(item.code);
-                                }
-                            }}
-                            selectProps={{ notAllowSelectNull: true }}
-                        />
-                    </Grid>
-                    <Grid item xs={12} md={4}>
-                        <FESelect
-                            formik={formik}
-                            label="District"
-                            name="district"
-                            dataSource={_.map(_.get(districts, 'value'), (item) => {
-                                return { id: item.name, ...item };
-                            })}
-                            handleSelect={(item) => {
-                                if (item) {
-                                    formik.setFieldValue('district', item.name);
-                                    formik.setFieldValue('ward', '');
-                                    setDistrictId(item.code);
-                                }
-                            }}
-                            selectProps={{ notAllowSelectNull: true }}
-                        />
-                    </Grid>
-                    <Grid item xs={12} md={4}>
-                        <FESelect
-                            formik={formik}
-                            label="Ward"
-                            name="ward"
-                            dataSource={_.map(_.get(wards, 'value'), (item) => {
-                                return { id: item.name, ...item };
-                            })}
-                            handleSelect={(item) => {
-                                if (item) {
-                                    formik.setFieldValue('ward', item.name);
-                                }
-                            }}
-                            selectProps={{ notAllowSelectNull: true }}
-                        />
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                        <FETextField
-                            formik={formik}
-                            title="Address"
-                            name="address"
-                            inputProps={{
-                                helperText: '(Street address, P.O box, Apartment, Floor, Unit, Building, etc)'
-                            }}
-                        />
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                        <FETextField formik={formik} title="Street" name="address2" />
-                    </Grid>
-
-                    {!Boolean(isEdit) && (
-                        <>
-                            <Grid item xs={12}>
-                                <Typography variant="h3">Main User information (*)</Typography>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={12} md>
-                                        <FETextField formik={formik} title="Full Name" name="fullname" />
-                                    </Grid>
-                                    <Grid item xs={12} md>
-                                        <FETextField formik={formik} title="Email" name="email" />
-                                    </Grid>
-                                    <Grid item xs={12} md>
-                                        <FETextField formik={formik} title="Phone" name="phone" />
-                                    </Grid>
-                                    <Grid item xs={12} md>
-                                        <FETextField formik={formik} title="Password" name="password" />
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                        </>
-                    )}
-                    {Boolean(isEdit && value) && (
-                        <>
-                            <Grid item xs={12}>
-                                <Typography variant="h3">User List</Typography>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <FETableUserOfPartner rows={_.get(value, 'users')} />
-                            </Grid>
-                        </>
-                    )}
-                    {/* <Grid item xs={12}>
-                        <Button
-                            disabled={formik.isSubmitting}
-                            fullWidth
-                            size="large"
-                            type="submit"
-                            variant="contained"
-                            color="primary"
-                            sx={{ borderRadius: '8px' }}
-                        >
-                            Save
-                        </Button>
-                    </Grid> */}
-                </Grid>
-            </MainCard>
-        </form>
+            onChangeDistrict={(item) => {
+                setDistrictId(item.code);
+            }}
+            cities={_.map(_.get(qProvincesQuery, 'data.data.data', []), (item) => {
+                return { ...item, id: item.code };
+            })}
+            districts={_.map(_.get(qDistrictsQuery, 'data.data.data', []), (item) => {
+                return { ...item, id: item.code };
+            })}
+            wards={_.map(_.get(qWardsQuery, 'data.data.data', []), (item) => {
+                return { ...item, id: item.code };
+            })}
+            isLoading={qDetailQuery.isLoading}
+            isEdit={isEdit}
+        />
     );
 };
 
