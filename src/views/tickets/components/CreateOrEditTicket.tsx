@@ -27,11 +27,11 @@ const validationSchema = yup.object({
     }),
     requested_by: yup.string().required('Requested By is Required'),
     ref_number: yup.string().required('Ref Number is Required'),
-    transaction_date: yup.date().required('Transaction Date is Required'),
+    transaction_date: yup.string().required('Transaction Date is Required'),
     transaction_amount: yup.number().typeError('Transaction Amount must be a number').required('Transaction Amount is Required'),
     contract_number: yup.string().required('Contract Number is Required'),
     wrong_transaction: yup.string().required('Wrong Transaction is Required'),
-    right_contract_number: yup.number().typeError('Right Contract Number must be a number').required('Right Contract Number is Required'),
+    right_contract_number: yup.string().required('Right Contract Number is Required'),
     right_product_type: yup.number().when('issue_type', { is: 3, then: yup.number().required('Right Product Type is Required') }),
     requester_national_id: yup.number().typeError("Requested's Nation ID must be a number").required("Requested's Nation ID is Required"),
     requester_phone: yup
@@ -43,37 +43,52 @@ const validationSchema = yup.object({
 
 // ==============================|| CREATE TICKET ||============================== //
 
-const CreateTicket = ({ onSubmit }) => {
+interface Props {
+    onSubmit: (values: any) => void;
+    onCancel?: () => void;
+    data?: any;
+}
+
+export const initialValues = {
+    transaction_type: 1,
+    issue_type: 1,
+    sub_issue_type: 0,
+    requested_by: 1,
+    ref_number: '',
+    transaction_date: new Date(),
+    transaction_amount: '',
+    contract_number: '',
+    wrong_transaction: '',
+    right_contract_number: '',
+    right_amount: '',
+    right_product_type: 0,
+    requester_national_id: '',
+    requester_phone: '',
+    status: null,
+    description: '',
+    attachments: []
+};
+
+const CreateOrEditTicket = ({ onSubmit, onCancel, data }: Props) => {
     const formik = useFormik({
-        initialValues: {
-            transaction_type: 1,
-            issue_type: 1,
-            sub_issue_type: 0,
-            requested_by: 1,
-            ref_number: '',
-            transaction_date: new Date(),
-            transaction_amount: '',
-            contract_number: '',
-            wrong_transaction: '',
-            right_contract_number: '',
-            right_amount: '',
-            right_product_type: 0,
-            requester_national_id: '',
-            requester_phone: '',
-            status: null,
-            description: '',
-            attachments: []
-        },
+        initialValues,
         validationSchema,
         onSubmit: (val) => onSubmit(val)
     });
+
+    useEffect(() => {
+        if (data) {
+            const d: any = _.pickBy(data, (key, value) => _.keys(initialValues).includes(value));
+            formik.setValues(d);
+        }
+    }, [data]);
+    console.log(formik);
 
     useEffect(() => {
         if (formik.values.issue_type !== 3) {
             formik.setFieldValue('sub_issue_type', 0);
             formik.setFieldValue('right_product_type', 0);
         }
-
         if (formik.values.issue_type !== 2) {
             formik.setFieldValue('right_amount', '');
         }
@@ -82,10 +97,11 @@ const CreateTicket = ({ onSubmit }) => {
     const handleSubmit = ({ status }) => {
         if (!formik.isValid) return;
         formik.setFieldValue('status', status);
+        formik.setFieldValue('transaction_date', moment(formik.values.transaction_date).format('DD/MM/YYYY'));
     };
 
     const onDropFile = (files: any) => {
-        formik.setFieldValue('attachments', files);
+        formik.setFieldValue('attachments', [...files, ...formik.values.attachments]);
     };
 
     const onRemoveItem = (index) => {
@@ -189,10 +205,10 @@ const CreateTicket = ({ onSubmit }) => {
                                 <Typography>Browse or Drop file here</Typography>
                             </Stack>
                         </BoxStyle>
-                        {formik.values.attachments.map((file: any, index: number) => (
+                        {formik.values.attachments?.map((file: any, index: number) => (
                             <Stack key={index} direction="row" alignItems="center">
                                 <li style={{ margin: '8px 4px' }}>
-                                    {file.path} - {file.size} bytes
+                                    {file.path || file.name} - {file.size} bytes
                                 </li>
                                 <IconButton onClick={() => onRemoveItem(index)}>
                                     <IconX />
@@ -202,7 +218,7 @@ const CreateTicket = ({ onSubmit }) => {
                     </Grid>
 
                     <Grid item sx={{ display: 'flex', justifyContent: 'flex-end' }} xs={12}>
-                        <Button variant="contained" sx={{ background: '#999999' }}>
+                        <Button variant="contained" sx={{ background: '#999999' }} onClick={onCancel}>
                             Cancel
                         </Button>
                         <Button
@@ -228,7 +244,7 @@ const CreateTicket = ({ onSubmit }) => {
     );
 };
 
-export default CreateTicket;
+export default CreateOrEditTicket;
 
 const BoxStyle = styled(Box)({
     backgroundImage: `url(

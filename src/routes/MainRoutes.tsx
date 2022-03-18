@@ -12,6 +12,7 @@ const DashboardDefault = Loadable(lazy(() => import('views/dashboard')));
 const MyTicketsPage = Loadable(lazy(() => import('views/tickets/my-tickets')));
 const WaitingTicketsPage = Loadable(lazy(() => import('views/tickets/waiting-tickets')));
 const CreateTicketPage = Loadable(lazy(() => import('views/tickets/create')));
+const EditTicketPage = Loadable(lazy(() => import('views/tickets/edit')));
 const TicketDetailPage = Loadable(lazy(() => import('views/tickets/ticket-detail')));
 
 // partner management
@@ -54,6 +55,10 @@ const MainRoutes = {
         {
             path: '/tickets/create-ticket',
             element: <CreateTicketPage />
+        },
+        {
+            path: '/tickets/edit-ticket/:ticket_id',
+            element: <EditTicketPage />
         },
         {
             path: `/tickets/:ticketID`,

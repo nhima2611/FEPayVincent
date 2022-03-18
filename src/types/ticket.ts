@@ -80,6 +80,10 @@ export type CreateTicketModel = {
     wrong_transaction: number;
 };
 
+export interface EditTicketModel extends CreateTicketModel {
+    id?: number;
+}
+
 export type UpdateStatusAndActionModel = {
     id?: number | string;
     ticket_id?: number;

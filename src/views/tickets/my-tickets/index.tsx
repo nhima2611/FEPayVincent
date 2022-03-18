@@ -44,7 +44,13 @@ export default function MyTicketsPage() {
     const navi = useNavigate();
 
     const onClickRowItem = (row) => {
-        navi(row.values?.ticket_id?.toString());
+        const { original } = row;
+        console.log(original);
+        if (original.last_status === 0) {
+            navi(`edit-ticket/${row.values?.ticket_id?.toString()}`);
+        } else {
+            navi(`/tickets/${row.values?.ticket_id?.toString()}`);
+        }
     };
 
     const { mode } = useSelector((state) => state.kanban);

@@ -116,7 +116,7 @@ const Board = () => {
     return (
         <Box sx={{ display: 'flex' }}>
             <DragDropContext onDragEnd={onDragEnd}>
-                <Droppable droppableId="columns" direction="horizontal" type="column">
+                <Droppable droppableId="columns" direction="horizontal" type="column" isDropDisabled>
                     {(provided, snapshot) => (
                         <MainCard
                             border={false}

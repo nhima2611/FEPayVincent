@@ -16,7 +16,7 @@ const FEDropDown = ({ formik, title = '', data = {}, name = '', disabled }: Prop
                 id={name}
                 name={name}
                 defaultValue={formik.values[name]}
-                value={formik.values[name]}
+                value={formik.values[name] === 0 ? '' : formik.values[name]}
                 onChange={formik.handleChange}
                 disabled={disabled}
             >

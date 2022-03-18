@@ -1,13 +1,16 @@
 import { useMutation } from 'react-query';
+import { useNavigate } from 'react-router-dom';
 import ticketsServices from 'services/tickets-services';
 import { CreateTicketModel } from 'types/ticket';
 import toastify from 'utils/toastify';
-import CreateTicket from './CreateTicket';
+import CreateOrEditTicket from '../components/CreateOrEditTicket';
 
 const CreateTicketPage = () => {
+    const navi = useNavigate();
     const mCreateTicket = useMutation((data: CreateTicketModel) => ticketsServices.createTicket(data), {
         onSuccess: (res) => {
             toastify.showToast('success', 'Upload Success!');
+            navi(-1);
         },
         onError: (err: any) => {
             toastify.showToast('error', err.message);
@@ -27,7 +30,7 @@ const CreateTicketPage = () => {
         });
         mCreateTicket.mutate(formData);
     };
-    return <CreateTicket onSubmit={onSubmit} />;
+    return <CreateOrEditTicket onSubmit={onSubmit} onCancel={() => navi(-1)} />;
 };
 
 export default CreateTicketPage;
