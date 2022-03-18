@@ -23,13 +23,19 @@ const EditTicketPage = () => {
     const onSubmit = (values: any) => {
         const { attachments } = values;
         const formData: any = new FormData();
+        const dd: any = [];
 
-        attachments.forEach((element: any, i: number) => {
-            formData.append(`attachments[]`, element);
+        attachments.forEach((element: any) => {
+            if (_.has(element, 'id')) {
+                dd.push(element.id);
+            } else {
+                formData.append(`attachments[]`, element);
+            }
         });
+        formData.append(`attachmentIds[]`, dd);
 
         _.forEach(_.omit(values, 'attachments'), (item, key) => {
-            formData.append(`${key}`, item);
+            return formData.append(`${key}`, item);
         });
 
         // BE require
