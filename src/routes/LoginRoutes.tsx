@@ -5,7 +5,6 @@ import Loadable from 'ui-component/Loadable';
 // project imports
 import GuestGuard from 'utils/route-guard/GuestGuard';
 
-
 // login routing
 const AuthLogin = Loadable(lazy(() => import('views/pages/authentication/authentication3/Login')));
 const AuthRegister = Loadable(lazy(() => import('views/pages/authentication/authentication3/Register')));
