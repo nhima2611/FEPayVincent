@@ -1,14 +1,17 @@
-import { useMutation } from 'react-query';
-import { useNavigate } from 'react-router-dom';
+import { useMutation, useQuery } from 'react-query';
+import { useNavigate, useParams } from 'react-router-dom';
 import ticketsServices from 'services/tickets-services';
 import { CreateTicketModel } from 'types/ticket';
 import toastify from 'utils/toastify';
 import CreateOrEditTicket from '../components/CreateOrEditTicket';
 
-const CreateTicketPage = () => {
+const EditTicketPage = () => {
+    const { ticket_id } = useParams();
     const navi = useNavigate();
-    const mCreateTicket = useMutation((data: CreateTicketModel) => ticketsServices.createTicket(data), {
+
+    const mEditTicket = useMutation((data: CreateTicketModel) => ticketsServices.editTicket(data, ticket_id), {
         onSuccess: (res) => {
+            console.log(res);
             toastify.showToast('success', 'Upload Success!');
             navi(-1);
         },
@@ -28,9 +31,16 @@ const CreateTicketPage = () => {
         _.forEach(_.omit(values, 'attachments'), (item, key) => {
             formData.append(`${key}`, item);
         });
-        mCreateTicket.mutate(formData);
+
+        // BE require
+        formData.append(`action`, 0);
+
+        mEditTicket.mutate(formData);
     };
-    return <CreateOrEditTicket onSubmit={onSubmit} onCancel={() => navi(-1)} />;
+
+    const qTicketDetail = useQuery(`qTicketDetail_${ticket_id}`, () => ticketsServices.getById(ticket_id), { keepPreviousData: false });
+
+    return <CreateOrEditTicket onSubmit={onSubmit} onCancel={() => navi(-1)} data={qTicketDetail.data?.data?.data} />;
 };
 
-export default CreateTicketPage;
+export default EditTicketPage;

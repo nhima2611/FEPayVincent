@@ -40,8 +40,6 @@ const NavGroup = ({ item }: NavGroupProps) => {
         setChildrenItem([dashboard, partnerManagement, userManagement, menuTicket, ...childrenItem]);
     }, []);
 
-    console.log(childrenItem);
-
     // menu list collapse & items
     const items = childrenItem?.map((menu) => {
         switch (menu.type) {

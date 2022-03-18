@@ -7,7 +7,8 @@ export abstract class BaseApiService {
     constructor(protected apiName: string) {}
 
     getAll(filter?: any) {
-        return axiosServices.get(`${this.apiName}?${filter}`);
+        const query = filter ? `?${filter}` : '';
+        return axiosServices.get(`${this.apiName}${query}`);
     }
 
     getById(id: string | any, includeOption?: any) {

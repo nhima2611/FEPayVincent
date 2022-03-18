@@ -117,7 +117,7 @@ const Columns = ({ column, index }: Props) => {
     };
 
     return (
-        <Draggable draggableId={column.id} index={index}>
+        <Draggable draggableId={column.id} index={index} isDragDisabled>
             {(provided, snapshot) => (
                 <div
                     ref={provided.innerRef}

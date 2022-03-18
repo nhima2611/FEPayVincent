@@ -116,7 +116,7 @@ const Items = ({ item, index, columnColor }: Props) => {
     };
 
     return (
-        <Draggable key={item.ticket_id.toString()} draggableId={item.ticket_id.toString()} index={index} isDragDisabled>
+        <Draggable key={item.ticket_id.toString()} draggableId={item.ticket_id.toString()} index={index}>
             {(provided, snapshot) => (
                 <div
                     ref={provided.innerRef}

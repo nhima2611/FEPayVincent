@@ -19,7 +19,7 @@ const ListItemWrapper = styled('div')(({ theme }) => ({
 
 // ==============================|| NOTIFICATION LIST ITEM ||============================== //
 
-const NotificationList = () => {
+const NotificationList = ({ data = [] }) => {
     const theme = useTheme();
 
     const chipSX = {
@@ -67,7 +67,7 @@ const NotificationList = () => {
                 }
             }}
         >
-            {[0, 1, 2, 3, 4, 5, 6].map((item) => (
+            {_.map(data, (item) => (
                 <ListItemWrapper key={item}>
                     <ListItem alignItems="center">
                         <ListItemAvatar>

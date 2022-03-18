@@ -24,7 +24,9 @@ import * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
 // third-party
 import PerfectScrollbar from 'react-perfect-scrollbar';
+import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
+import notificationServices from 'services/notification-services';
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
 import Transitions from 'ui-component/extended/Transitions';
@@ -89,6 +91,8 @@ const NotificationSection = () => {
     const handleChangeTab = (event, newValue) => {
         setTabValue(newValue);
     };
+
+    const qNotifications = useQuery('qNotifications', () => notificationServices.getAll());
 
     return (
         <>
@@ -156,7 +160,7 @@ const NotificationSection = () => {
                                                             <Typography variant="subtitle1">Notification</Typography>
                                                             <Chip
                                                                 size="small"
-                                                                label="04"
+                                                                label={qNotifications.data?.data?.data?.length}
                                                                 sx={{
                                                                     color: theme.palette.background.default,
                                                                     bgcolor: theme.palette.warning.dark
@@ -189,10 +193,10 @@ const NotificationSection = () => {
                                                                     </Tabs>
                                                                 </Box>
                                                                 <TabPanel value={tabValue} index={0}>
-                                                                    <NotificationList />
+                                                                    <NotificationList data={qNotifications.data?.data?.data} />
                                                                 </TabPanel>
                                                                 <TabPanel value={tabValue} index={1}>
-                                                                    <NotificationList />
+                                                                    <NotificationList data={qNotifications.data?.data?.data} />
                                                                 </TabPanel>
                                                             </Box>
                                                         </Grid>
