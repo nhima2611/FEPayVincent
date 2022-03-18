@@ -27,7 +27,7 @@ const validationSchema = yup.object({
     }),
     requested_by: yup.string().required('Requested By is Required'),
     ref_number: yup.string().required('Ref Number is Required'),
-    transaction_date: yup.date().required('Transaction Date is Required'),
+    transaction_date: yup.string().required('Transaction Date is Required'),
     transaction_amount: yup.number().typeError('Transaction Amount must be a number').required('Transaction Amount is Required'),
     contract_number: yup.string().required('Contract Number is Required'),
     wrong_transaction: yup.string().required('Wrong Transaction is Required'),
@@ -97,6 +97,7 @@ const CreateOrEditTicket = ({ onSubmit, onCancel, data }: Props) => {
     const handleSubmit = ({ status }) => {
         if (!formik.isValid) return;
         formik.setFieldValue('status', status);
+        formik.setFieldValue('transaction_date', moment(formik.values.transaction_date).format('DD/MM/YYYY'));
     };
 
     const onDropFile = (files: any) => {
