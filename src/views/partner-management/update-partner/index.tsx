@@ -198,12 +198,12 @@ const UpdatePartnerPage = ({ ...others }) => {
                     <Grid item xs={12}>
                         <Grid container spacing={2}>
                             <Grid item xs={12} md>
-                                <FETextField formik={formik} label="Partner" name="name" inputProps={{ disabled: isEdit }} />
+                                <FETextField formik={formik} title="Partner" name="name" inputProps={{ disabled: isEdit }} />
                             </Grid>
                             <Grid item xs={12} md>
                                 <FETextField
                                     formik={formik}
-                                    label="Contract Number"
+                                    title="Contract Number"
                                     name="contract_number"
                                     inputProps={{ disabled: isEdit }}
                                 />
@@ -291,7 +291,7 @@ const UpdatePartnerPage = ({ ...others }) => {
                     <Grid item xs={12} md={6}>
                         <FETextField
                             formik={formik}
-                            label="Address"
+                            title="Address"
                             name="address"
                             inputProps={{
                                 helperText: '(Street address, P.O box, Apartment, Floor, Unit, Building, etc)'
@@ -299,7 +299,7 @@ const UpdatePartnerPage = ({ ...others }) => {
                         />
                     </Grid>
                     <Grid item xs={12} md={6}>
-                        <FETextField formik={formik} label="Street" name="address2" />
+                        <FETextField formik={formik} title="Street" name="address2" />
                     </Grid>
 
                     {!Boolean(isEdit) && (
@@ -310,16 +310,16 @@ const UpdatePartnerPage = ({ ...others }) => {
                             <Grid item xs={12}>
                                 <Grid container spacing={2}>
                                     <Grid item xs={12} md>
-                                        <FETextField formik={formik} label="Full Name" name="fullname" />
+                                        <FETextField formik={formik} title="Full Name" name="fullname" />
                                     </Grid>
                                     <Grid item xs={12} md>
-                                        <FETextField formik={formik} label="Email" name="email" />
+                                        <FETextField formik={formik} title="Email" name="email" />
                                     </Grid>
                                     <Grid item xs={12} md>
-                                        <FETextField formik={formik} label="Phone" name="phone" />
+                                        <FETextField formik={formik} title="Phone" name="phone" />
                                     </Grid>
                                     <Grid item xs={12} md>
-                                        <FETextField formik={formik} label="Password" name="password" />
+                                        <FETextField formik={formik} title="Password" name="password" />
                                     </Grid>
                                 </Grid>
                             </Grid>

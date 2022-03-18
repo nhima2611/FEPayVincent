@@ -1,8 +1,8 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Stack, TextField } from '@mui/material';
+import FETextField from 'components/forms/FETextField';
 import { useFormik } from 'formik';
 import React, { useEffect, useImperativeHandle, useState } from 'react';
 import * as yup from 'yup';
-import FETextField from './FETextField';
 
 const validationSchema = yup.object({
     username: yup.string().required('Name is Required'),

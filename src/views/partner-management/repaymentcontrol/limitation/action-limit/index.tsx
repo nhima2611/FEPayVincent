@@ -6,10 +6,10 @@ import { useFormik } from 'formik';
 import { map } from 'lodash';
 import React, { createRef, useImperativeHandle, useState } from 'react';
 import MainCard from 'ui-component/cards/MainCard';
-import FEDropDown from 'views/tickets/components/FEDropDown';
-import FETextField from 'views/tickets/components/FETextField';
+import FEDropDown from 'components/forms/FEDropDown';
 import * as yup from 'yup';
 import { partner, productName, subPartner } from './data';
+import FETextField from 'components/forms/FETextField';
 
 const validationSchema = yup.object({
     invoiceNumber: yup.string().required('Invoice Number is Required'),
