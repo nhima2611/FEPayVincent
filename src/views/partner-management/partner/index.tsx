@@ -4,6 +4,7 @@ import TableContext from 'contexts/TableContext';
 import React, { useContext, useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useNavigate } from 'react-router-dom';
+import { useSearchParam } from 'react-use';
 import partnerServices from 'services/partner-services';
 import MainCard from 'ui-component/cards/MainCard';
 import eventEmitter from 'utils/eventEmitter';
@@ -14,6 +15,7 @@ const PartnerPage = () => {
     const [{ queryPageIndex, queryPageSize, sortByObject, filters, selectedIds, resetState }, dispatch] = useContext(TableContext);
     const [searchTerm, setSearchTerm] = useState('');
 
+    const f = useSearchParam('f');
     const {
         isLoading,
         data: dataTable,
@@ -76,6 +78,13 @@ const PartnerPage = () => {
             eventEmitter.removeAllListeners();
         };
     }, []);
+
+    useEffect(() => {
+        if (f) {
+            dispatch({ type: 'PAGE_CHANGED', payload: JSON.parse(f!)?.queryPageIndex! || 0 });
+            setSearchTerm(JSON.parse(f!)?.keyword! || '');
+        }
+    }, [f]);
 
     const onClickDownload = () => {};
     const onUploadFile = () => {};

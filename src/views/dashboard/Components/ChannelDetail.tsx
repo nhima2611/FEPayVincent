@@ -32,17 +32,17 @@ const ChannelDetail = ({ isLoading, title }: ChannelDetailProps) => {
         setAnchorEl(null);
     };
 
-    const featchChannelDetail = async () => {
-        try {
-            const res = await axiosServices.get('/api/dashboard/channeldetails');
-            console.log(res);
-        } catch (error) {
-            console.log(error);
-        }
-    };
-    React.useEffect(() => {
-        featchChannelDetail();
-    }, []);
+    // const featchChannelDetail = async () => {
+    //     try {
+    //         const res = await axiosServices.get('/api/dashboard/channeldetails');
+    //         console.log(res);
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+    // };
+    // React.useEffect(() => {
+    //     featchChannelDetail();
+    // }, []);
 
     return (
         <>

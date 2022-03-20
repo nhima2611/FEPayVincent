@@ -25,7 +25,7 @@ export default function ToolbarUpdate({ onBack, loading }: { onBack?: () => void
         >
             <Button
                 disableElevation
-                size="large"
+                // size="small"
                 type="button"
                 variant="contained"
                 color="success"
@@ -40,7 +40,7 @@ export default function ToolbarUpdate({ onBack, loading }: { onBack?: () => void
             <LoadingButton
                 disableElevation
                 disabled={loading}
-                size="large"
+                // size="small"
                 type="submit"
                 variant="contained"
                 color="secondary"
