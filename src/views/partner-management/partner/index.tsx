@@ -82,7 +82,7 @@ const PartnerPage = () => {
     useEffect(() => {
         if (f) {
             dispatch({ type: 'PAGE_CHANGED', payload: JSON.parse(f!)?.queryPageIndex! || 0 });
-            setSearchTerm(JSON.parse(f!)?.keyword!);
+            setSearchTerm(JSON.parse(f!)?.keyword! || '');
         }
     }, [f]);
 
