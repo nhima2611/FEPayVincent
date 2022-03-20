@@ -7,7 +7,7 @@ import { AssignToModel, UpdateStatusAndActionModel } from 'types/ticket';
 import eventEmitter from 'utils/eventEmitter';
 import toastify from 'utils/toastify';
 import AssignToDialog, { refAssignTo } from '../components/AssignToDialog';
-import TicketDetail from './TicketDetail';
+import TicketDetail, { refTicketDetail } from './TicketDetail';
 
 const TicketDetailPage = () => {
     const { ticketID } = useParams();
@@ -72,9 +72,11 @@ const TicketDetailPage = () => {
     };
 
     const onClickAssignee = () => {
+        refTicketDetail.current?.handleClose();
         refAssignTo.current?.handleClickOpen({ title: 'Assignee' });
     };
     const onClickSupporter = () => {
+        refTicketDetail.current?.handleClose();
         refAssignTo.current?.handleClickOpen({ title: 'Supporter' });
     };
 

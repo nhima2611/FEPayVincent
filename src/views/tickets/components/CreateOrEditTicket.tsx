@@ -112,7 +112,7 @@ const CreateOrEditTicket = ({ onSubmit, onCancel, data }: Props) => {
     const { getRootProps, getInputProps } = useDropzone({ onDrop: onDropFile, maxFiles: 5 });
 
     return (
-        <MainCard title="Create Ticket">
+        <MainCard title={_.isEmpty(data) ? 'Create Ticket' : 'Edit Ticket'}>
             <form onSubmit={formik.handleSubmit}>
                 <Grid container spacing={gridSpacing}>
                     <Grid item xs={12} md={3}>

@@ -156,10 +156,22 @@ const ActionKanbanOrList = ({
                         horizontal: 'right'
                     }}
                 >
-                    <MenuItem onClick={onClickAssignee} sx={{ color: '#008345', fontSize: 12, fontWeight: 'bold' }}>
+                    <MenuItem
+                        onClick={() => {
+                            handleClose();
+                            onClickAssignee?.();
+                        }}
+                        sx={{ color: '#008345', fontSize: 12, fontWeight: 'bold' }}
+                    >
                         Assignee
                     </MenuItem>
-                    <MenuItem onClick={onClickSupporter} sx={{ color: '#008345', fontSize: 12, fontWeight: 'bold' }}>
+                    <MenuItem
+                        onClick={() => {
+                            handleClose();
+                            onClickSupporter?.();
+                        }}
+                        sx={{ color: '#008345', fontSize: 12, fontWeight: 'bold' }}
+                    >
                         Supporter
                     </MenuItem>
                 </Menu>

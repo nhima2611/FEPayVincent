@@ -1,9 +1,18 @@
 import { Box, Button, Divider, Grid, IconButton, Menu, MenuItem, Stack, Typography } from '@mui/material';
 import { IconUserPlus } from '@tabler/icons';
 import { ROLE } from 'constants/auth';
-import { actionTicketTypes, issueType, lastStatusType, productTypes, requestedBy, subIssueType, transactionType } from 'constants/tickets';
+import {
+    actionTicketTypes,
+    issueType,
+    lastStatusType,
+    productTypeRightContractNumberType,
+    productTypes,
+    requestedBy,
+    subIssueType,
+    transactionType
+} from 'constants/tickets';
 import useAuth from 'hooks/useAuth';
-import { SyntheticEvent, useState } from 'react';
+import { createRef, SyntheticEvent, useImperativeHandle, useState } from 'react';
 import Highlighter from 'react-highlight-words';
 import { TicketDetailModel } from 'types/ticket';
 import MainCard from 'ui-component/cards/MainCard';
@@ -20,11 +29,15 @@ interface Props {
     onClickAssignee: () => void;
     onClickSupporter: () => void;
 }
+
+export const refTicketDetail = createRef<{ handleClose: () => void }>();
 const TicketDetail = ({ data, onSaveChanges, onClickAssignee, onClickSupporter }: Props) => {
     const { user } = useAuth();
-    const statusData = user?.role !== ROLE.PARTNER ? _.omit(lastStatusType, ['0']) : lastStatusType;
+    const isPartner = user?.role === ROLE.PARTNER;
+    const statusData = !isPartner ? _.omit(lastStatusType, ['0']) : lastStatusType;
     const [selected, setSelected] = useState<any>({ action: 0 });
     const handleSubmit = () => {
+        if (isPartner) return;
         if (data.status === selected.status) return;
         onSaveChanges?.({ ...selected, transaction_type: data.transaction_type, issue_type: data.issue_type });
     };
@@ -33,6 +46,14 @@ const TicketDetail = ({ data, onSaveChanges, onClickAssignee, onClickSupporter }
     const handleClick = (event: SyntheticEvent) => {
         setAnchorEl(event?.currentTarget);
     };
+
+    useImperativeHandle(
+        refTicketDetail,
+        () => ({
+            handleClose
+        }),
+        []
+    );
 
     const handleClose = () => {
         setAnchorEl(null);
@@ -49,17 +70,40 @@ const TicketDetail = ({ data, onSaveChanges, onClickAssignee, onClickSupporter }
                             autoEscape
                             textToHighlight={`Ticket ID: ${data?.id}`}
                         />
-                        <FESelectDetail
-                            title="Status"
-                            data={statusData}
-                            status={data?.status}
-                            onDataSelect={(val) => setSelected({ ...selected, ...val })}
-                        />
-                        <FESelectDetail
-                            title="Action"
-                            data={actionTicketTypes}
-                            onDataSelect={(val) => setSelected({ ...selected, ...val })}
-                        />
+                        {isPartner ? (
+                            <Highlighter
+                                highlightStyle={{ ...styles.ticket, fontWeight: 'bold' }}
+                                unhighlightStyle={styles.ticket}
+                                searchWords={['Status: ']}
+                                autoEscape
+                                textToHighlight={`Status: ${_.get(lastStatusType, [data?.status])}`}
+                            />
+                        ) : (
+                            <FESelectDetail
+                                title="Status"
+                                data={statusData}
+                                status={data?.status}
+                                onDataSelect={(val) => setSelected({ ...selected, ...val })}
+                            />
+                        )}
+
+                        {isPartner ? (
+                            <Highlighter
+                                highlightStyle={{ ...styles.ticket, fontWeight: 'bold' }}
+                                unhighlightStyle={styles.ticket}
+                                searchWords={['Action: ']}
+                                autoEscape
+                                textToHighlight={`Action: ${_.get(productTypeRightContractNumberType, [
+                                    data?.product_type_of_right_contact
+                                ])}`}
+                            />
+                        ) : (
+                            <FESelectDetail
+                                title="Action"
+                                data={actionTicketTypes}
+                                onDataSelect={(val) => setSelected({ ...selected, ...val })}
+                            />
+                        )}
                         <Button variant="contained" sx={{ background: '#27AE60' }} onClick={handleSubmit}>
                             Save Changes
                         </Button>
@@ -126,7 +170,9 @@ const TicketDetail = ({ data, onSaveChanges, onClickAssignee, onClickSupporter }
                                 unhighlightStyle={styles.ticket}
                                 searchWords={['Product of Right Contract: ']}
                                 autoEscape
-                                textToHighlight={`Product of Right Contract: ${'Card'}`}
+                                textToHighlight={`Product of Right Contract: ${_.get(productTypeRightContractNumberType, [
+                                    data?.product_type_of_right_contact
+                                ])}`}
                             />
                         </div>
                     </Stack>
@@ -178,9 +224,11 @@ const TicketDetail = ({ data, onSaveChanges, onClickAssignee, onClickSupporter }
                             style={{ height: 60, background: '#27AE60', borderTop: 1, borderTopLeftRadius: 14, padding: 16 }}
                         >
                             <Typography sx={{ color: 'white' }}>Detail</Typography>
-                            <IconButton onClick={handleClick}>
-                                <IconUserPlus color="white" />
-                            </IconButton>
+                            {!isPartner && (
+                                <IconButton onClick={handleClick}>
+                                    <IconUserPlus color="white" />
+                                </IconButton>
+                            )}
                             <Menu
                                 id="menu-followers-card"
                                 anchorEl={anchorEl}
@@ -206,9 +254,9 @@ const TicketDetail = ({ data, onSaveChanges, onClickAssignee, onClickSupporter }
                             </Menu>
                         </Stack>
                         <Box sx={{ paddingX: 2 }}>
-                            <FEItemDetail title="Partner" value={data?.partner} />
-                            <FEItemDetail title="Assignee" value={data?.assignee} />
-                            <FEItemDetail title="Supporter" value={data?.supporter} />
+                            <FEItemDetail title="Partner" value={data?.partner ?? '-'} />
+                            <FEItemDetail title="Assignee" value={data?.assignee ?? '-'} />
+                            <FEItemDetail title="Supporter" value={data?.supporter ?? '-'} />
                             <FEItemDetail title="Transaction Type" value={_.get(transactionType, [data?.transaction_type])} />
                             <FEItemDetail title="Issue Type" value={_.get(issueType, [data?.issue_type])} />
                             <FEItemDetail title="Sub Issue Type" value={_.get(subIssueType, [data?.sub_issue_type])} />
