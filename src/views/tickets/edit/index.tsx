@@ -23,6 +23,7 @@ const EditTicketPage = () => {
     const onSubmit = (values: any) => {
         const { attachments } = values;
         const formData: any = new FormData();
+
         const dd: any = [];
 
         attachments.forEach((element: any) => {
@@ -35,7 +36,7 @@ const EditTicketPage = () => {
         formData.append(`attachmentIds[]`, dd);
 
         _.forEach(_.omit(values, 'attachments'), (item, key) => {
-            return formData.append(`${key}`, item);
+            return formData.append(`${key}`, key === 'transaction_date' ? moment(item).format('DD/MM/YYYY') : item);
         });
 
         // BE require

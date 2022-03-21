@@ -33,12 +33,18 @@ const validationSchema = yup.object({
     wrong_transaction: yup.string().required('Wrong Transaction is Required'),
     right_contract_number: yup.string().required('Right Contract Number is Required'),
     right_product_type: yup.number().when('issue_type', { is: 3, then: yup.number().required('Right Product Type is Required') }),
-    requester_national_id: yup.number().typeError("Requested's Nation ID must be a number").required("Requested's Nation ID is Required"),
+    requester_national_id: yup
+        .string()
+        .min(12, "Requested's Nation ID should be of minimum 12 characters")
+        .max(12, "Requested's Nation ID should be of minimum 12 characters")
+        .required("Requested's Nation ID is Required")
+        .typeError("Requested's Nation ID must be a number"),
     requester_phone: yup
-        .number()
-        .typeError("Requester's Phone Number must be a number")
+        .string()
         .min(10, 'Phone number should be of minimum 10 characters')
+        .max(10, 'Phone number should be of minimum 10 characters')
         .required("Requester's Phone Number is Required")
+        .typeError("Requester's Phone Number must be a number")
 });
 
 // ==============================|| CREATE TICKET ||============================== //
@@ -82,7 +88,6 @@ const CreateOrEditTicket = ({ onSubmit, onCancel, data }: Props) => {
             formik.setValues(d);
         }
     }, [data]);
-    console.log(formik);
 
     useEffect(() => {
         if (formik.values.issue_type !== 3) {
@@ -97,7 +102,6 @@ const CreateOrEditTicket = ({ onSubmit, onCancel, data }: Props) => {
     const handleSubmit = ({ status }) => {
         if (!formik.isValid) return;
         formik.setFieldValue('status', status);
-        formik.setFieldValue('transaction_date', moment(formik.values.transaction_date).format('DD/MM/YYYY'));
     };
 
     const onDropFile = (files: any) => {

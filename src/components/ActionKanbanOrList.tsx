@@ -47,6 +47,7 @@ const ActionKanbanOrList = ({
 }) => {
     const theme = useTheme();
     const { user } = useAuth();
+    const isManager = [ROLE.REPAYMENT_MANAGER, ROLE.DISBURSEMENT_STAFF, ROLE.SUPER_ADMIN].includes(user?.role as any);
 
     const { mode } = useSelector((state) => state.kanban);
     const [{ selectedIds }] = useContext(TableContext);
@@ -156,15 +157,17 @@ const ActionKanbanOrList = ({
                         horizontal: 'right'
                     }}
                 >
-                    <MenuItem
-                        onClick={() => {
-                            handleClose();
-                            onClickAssignee?.();
-                        }}
-                        sx={{ color: '#008345', fontSize: 12, fontWeight: 'bold' }}
-                    >
-                        Assignee
-                    </MenuItem>
+                    {isManager && (
+                        <MenuItem
+                            onClick={() => {
+                                handleClose();
+                                onClickAssignee?.();
+                            }}
+                            sx={{ color: '#008345', fontSize: 12, fontWeight: 'bold' }}
+                        >
+                            Assignee
+                        </MenuItem>
+                    )}
                     <MenuItem
                         onClick={() => {
                             handleClose();
@@ -176,15 +179,17 @@ const ActionKanbanOrList = ({
                     </MenuItem>
                 </Menu>
 
-                <Button
-                    variant="outlined"
-                    sx={{ borderColor: '#E5E5E5', color: '#008345', borderRadius: 2, height: 36, fontSize: 12, fontWeight: 'bold' }}
-                    startIcon={<IconPlus color="#008345" size={18} />}
-                    component={Link}
-                    to={urlAddTicket}
-                >
-                    Add Ticket
-                </Button>
+                {ROLE.PARTNER === user?.role && (
+                    <Button
+                        variant="outlined"
+                        sx={{ borderColor: '#E5E5E5', color: '#008345', borderRadius: 2, height: 36, fontSize: 12, fontWeight: 'bold' }}
+                        startIcon={<IconPlus color="#008345" size={18} />}
+                        component={Link}
+                        to={urlAddTicket}
+                    >
+                        Add Ticket
+                    </Button>
+                )}
             </Stack>
         </>
     );
