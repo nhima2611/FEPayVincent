@@ -129,7 +129,7 @@ const ActionKanbanOrList = ({
                     />
                 </Box>
 
-                {ROLE.SUPER_ADMIN === user?.role && (
+                {isManager && (
                     <Button
                         disabled={!_.keys(selectedIds).length}
                         variant="outlined"

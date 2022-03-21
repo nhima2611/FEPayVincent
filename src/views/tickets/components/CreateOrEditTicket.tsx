@@ -146,6 +146,7 @@ const CreateOrEditTicket = ({ onSubmit, onCancel, data }: Props) => {
                             <InputLabel sx={{ color: '#4C4C4C', fontWeight: 'bold' }}>Transaction Date</InputLabel>
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                                 <DatePicker
+                                    maxDate={new Date()}
                                     inputFormat="dd/MM/yyyy"
                                     renderInput={(props) => <TextField fullWidth {...props} />}
                                     value={formik.values.transaction_date}
