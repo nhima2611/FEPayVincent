@@ -47,7 +47,7 @@ const ActionKanbanOrList = ({
 }) => {
     const theme = useTheme();
     const { user } = useAuth();
-    const isManager = [ROLE.REPAYMENT_MANAGER, ROLE.DISBURSEMENT_STAFF, ROLE.SUPER_ADMIN].includes(user?.role as any);
+    const isManager = [ROLE.SUPER_ADMIN, ROLE.CARD_MANAGER, ROLE.LOAN_MANAGER].includes(user?.role as any);
 
     const { mode } = useSelector((state) => state.kanban);
     const [{ selectedIds }] = useContext(TableContext);
