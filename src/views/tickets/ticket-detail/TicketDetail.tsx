@@ -34,7 +34,7 @@ export const refTicketDetail = createRef<{ handleClose: () => void }>();
 const TicketDetail = ({ data, onSaveChanges, onClickAssignee, onClickSupporter }: Props) => {
     const { user } = useAuth();
     const isPartner = user?.role === ROLE.PARTNER;
-    const isManager = [ROLE.REPAYMENT_MANAGER, ROLE.DISBURSEMENT_STAFF, ROLE.SUPER_ADMIN].includes(user?.role as any);
+    const isManager = [ROLE.SUPER_ADMIN, ROLE.CARD_MANAGER, ROLE.LOAN_MANAGER].includes(user?.role as any);
 
     const statusData = !isPartner ? _.omit(lastStatusType, ['0']) : lastStatusType;
     const [selected, setSelected] = useState<any>({ action: 0 });
