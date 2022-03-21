@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useMutation, useQuery } from 'react-query';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import toastService from 'services/core/toast.service';
 import ticketsServices from 'services/tickets-services';
 import { AssignToModel, UpdateStatusAndActionModel } from 'types/ticket';
@@ -12,8 +12,7 @@ import TicketDetail, { refTicketDetail } from './TicketDetail';
 const TicketDetailPage = () => {
     const { ticketID } = useParams();
     const qTicketDetail = useQuery(`qTicketDetail_${ticketID}`, () => ticketsServices.getById(ticketID), { keepPreviousData: false });
-
-    console.log(qTicketDetail);
+    const navi = useNavigate();
 
     useEffect(() => {
         eventEmitter.addListener('ADD_DESCRIPTION_SUCCESS', (success: boolean) => success && qTicketDetail.refetch());
@@ -35,6 +34,7 @@ const TicketDetailPage = () => {
         onSuccess: (res) => {
             qTicketDetail.refetch();
             toastify.showToast('success', 'Update Success!');
+            navi(-1);
         },
         onError: (err: any) => {
             toastify.showToast('error', err.message);

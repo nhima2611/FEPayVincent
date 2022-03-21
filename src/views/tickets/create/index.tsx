@@ -19,6 +19,7 @@ const CreateTicketPage = () => {
 
     const onSubmit = (values: any) => {
         const { attachments } = values;
+
         const formData: any = new FormData();
 
         attachments.forEach((element: any, i: number) => {
@@ -26,7 +27,7 @@ const CreateTicketPage = () => {
         });
 
         _.forEach(_.omit(values, 'attachments'), (item, key) => {
-            formData.append(`${key}`, item);
+            formData.append(`${key}`, key === 'transaction_date' ? moment(item).format('DD/MM/YYYY') : item);
         });
         mCreateTicket.mutate(formData);
     };

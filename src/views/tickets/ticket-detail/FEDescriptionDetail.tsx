@@ -1,4 +1,17 @@
-import { Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
+import {
+    IconButton,
+    InputAdornment,
+    OutlinedInput,
+    Stack,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Typography
+} from '@mui/material';
+import { IconSend } from '@tabler/icons';
 import useAuth from 'hooks/useAuth';
 import { useState } from 'react';
 import { useMutation } from 'react-query';
@@ -6,15 +19,6 @@ import ticketsServices from 'services/tickets-services';
 import { AddDescriptionModel } from 'types/ticket';
 import eventEmitter from 'utils/eventEmitter';
 import toastify from 'utils/toastify';
-
-function createData(content: string, updatedByUsers: string, updatedByRole: string, timestamp: Date) {
-    return {
-        content,
-        updatedByUsers,
-        updatedByRole,
-        timestamp
-    };
-}
 
 const FEDescriptionDetail = ({ data = [], ticketId }: { data: any[]; ticketId: number }) => {
     const [value, setValue] = useState<string>('');
@@ -78,13 +82,20 @@ const FEDescriptionDetail = ({ data = [], ticketId }: { data: any[]; ticketId: n
                 </Table>
             </TableContainer>
 
-            <TextField
+            <OutlinedInput
                 sx={{ marginTop: 2 }}
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
                 fullWidth
                 rows={4}
                 placeholder="Enter Description"
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                endAdornment={
+                    <InputAdornment position="end">
+                        <IconButton aria-label="toggle password visibility" edge="end" onClick={handleOnSend}>
+                            <IconSend />
+                        </IconButton>
+                    </InputAdornment>
+                }
             />
         </form>
     );

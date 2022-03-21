@@ -19,6 +19,7 @@ import Board from 'components/kanban';
 import WaitingTicketList from './list';
 import AssignToDialog, { refAssignTo } from '../components/AssignToDialog';
 import { AssignToModel } from 'types/ticket';
+import { STATUS } from 'constants/status';
 
 export default function WaitingTicketPage() {
     const dispatchs = useDispatch();
@@ -166,6 +167,17 @@ export default function WaitingTicketPage() {
     };
 
     const onClickTrash = () => {
+        const checkStatus = _.some(
+            _.filter(dataTable?.data?.data, (item) =>
+                _.keys(selectedIds)
+                    .map((it) => _.toNumber(it))
+                    .includes(item.ticket_id)
+            ),
+            (it) => [STATUS.NEW, STATUS.PROCESSING, STATUS.REJECTED, STATUS.REVERTED, STATUS.SOLVED].includes(it.last_status)
+        );
+
+        if (checkStatus) return toastify.showToast('error', 'Can not delete');
+
         if (!ids.length) {
             return toastify.showToast('warning', 'Please choose row!');
         }

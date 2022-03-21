@@ -34,11 +34,14 @@ export const refTicketDetail = createRef<{ handleClose: () => void }>();
 const TicketDetail = ({ data, onSaveChanges, onClickAssignee, onClickSupporter }: Props) => {
     const { user } = useAuth();
     const isPartner = user?.role === ROLE.PARTNER;
+    const isManager = [ROLE.REPAYMENT_MANAGER, ROLE.DISBURSEMENT_STAFF, ROLE.SUPER_ADMIN].includes(user?.role as any);
+
     const statusData = !isPartner ? _.omit(lastStatusType, ['0']) : lastStatusType;
     const [selected, setSelected] = useState<any>({ action: 0 });
+
     const handleSubmit = () => {
         if (isPartner) return;
-        if (data.status === selected.status) return;
+        if (selected.action === 0 && selected.status === data.status) return;
         onSaveChanges?.({ ...selected, transaction_type: data.transaction_type, issue_type: data.issue_type });
     };
 
@@ -62,52 +65,68 @@ const TicketDetail = ({ data, onSaveChanges, onClickAssignee, onClickSupporter }
         <MainCard title="Ticket Handling" contentSX={{ paddingRight: 0, paddingBottom: `0px !important` }}>
             <Grid container spacing={2}>
                 <Grid item xs={12} md={8}>
-                    <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between">
-                        <Highlighter
-                            highlightStyle={{ ...styles.ticket, fontWeight: 'bold' }}
-                            unhighlightStyle={styles.ticket}
-                            searchWords={['Ticket ID: ']}
-                            autoEscape
-                            textToHighlight={`Ticket ID: ${data?.id}`}
-                        />
-                        {isPartner ? (
-                            <Highlighter
-                                highlightStyle={{ ...styles.ticket, fontWeight: 'bold' }}
-                                unhighlightStyle={styles.ticket}
-                                searchWords={['Status: ']}
-                                autoEscape
-                                textToHighlight={`Status: ${_.get(lastStatusType, [data?.status])}`}
-                            />
-                        ) : (
-                            <FESelectDetail
-                                title="Status"
-                                data={statusData}
-                                status={data?.status}
-                                onDataSelect={(val) => setSelected({ ...selected, ...val })}
-                            />
-                        )}
+                    <Grid container alignItems="center" spacing={2} justifyContent="space-between">
+                        <Grid item>
+                            <Stack direction="row" alignItems="center" spacing={2}>
+                                <Highlighter
+                                    highlightStyle={{ ...styles.ticket, fontWeight: 'bold' }}
+                                    unhighlightStyle={styles.ticket}
+                                    searchWords={['Ticket ID: ']}
+                                    autoEscape
+                                    textToHighlight={`Ticket ID: ${data?.id}`}
+                                />
 
-                        {isPartner ? (
-                            <Highlighter
-                                highlightStyle={{ ...styles.ticket, fontWeight: 'bold' }}
-                                unhighlightStyle={styles.ticket}
-                                searchWords={['Action: ']}
-                                autoEscape
-                                textToHighlight={`Action: ${_.get(productTypeRightContractNumberType, [
-                                    data?.product_type_of_right_contact
-                                ])}`}
-                            />
-                        ) : (
-                            <FESelectDetail
-                                title="Action"
-                                data={actionTicketTypes}
-                                onDataSelect={(val) => setSelected({ ...selected, ...val })}
-                            />
-                        )}
-                        <Button variant="contained" sx={{ background: '#27AE60' }} onClick={handleSubmit}>
-                            Save Changes
-                        </Button>
-                    </Stack>
+                                {isPartner ? (
+                                    <Highlighter
+                                        highlightStyle={{ ...styles.ticket, fontWeight: 'bold' }}
+                                        unhighlightStyle={styles.ticket}
+                                        searchWords={['Status: ']}
+                                        autoEscape
+                                        textToHighlight={`Status: ${_.get(lastStatusType, [data?.status])}`}
+                                    />
+                                ) : (
+                                    <FESelectDetail
+                                        title="Status"
+                                        data={statusData}
+                                        status={data?.status}
+                                        onDataSelect={(val) => setSelected({ ...selected, ...val })}
+                                    />
+                                )}
+                                {isPartner ? (
+                                    <Highlighter
+                                        highlightStyle={{ ...styles.ticket, fontWeight: 'bold' }}
+                                        unhighlightStyle={styles.ticket}
+                                        searchWords={['Action: ']}
+                                        autoEscape
+                                        textToHighlight={`Action: ${_.get(
+                                            productTypeRightContractNumberType,
+                                            [data?.product_type_of_right_contact],
+                                            'N/A'
+                                        )}`}
+                                    />
+                                ) : (
+                                    <FESelectDetail
+                                        title="Action"
+                                        data={actionTicketTypes}
+                                        onDataSelect={(val) => setSelected({ ...selected, ...val })}
+                                    />
+                                )}
+                            </Stack>
+                        </Grid>
+
+                        <Grid item>
+                            <Stack direction="row" alignItems="center" spacing={2}>
+                                {isPartner && (
+                                    <Button variant="contained" sx={{ background: '#FF0015' }} onClick={() => {}}>
+                                        Cancel Ticket
+                                    </Button>
+                                )}
+                                <Button variant="outlined" onClick={handleSubmit}>
+                                    Save Changes
+                                </Button>
+                            </Stack>
+                        </Grid>
+                    </Grid>
 
                     <Grid item xs={12} sx={{ marginY: 2 }}>
                         <Divider />
@@ -170,9 +189,11 @@ const TicketDetail = ({ data, onSaveChanges, onClickAssignee, onClickSupporter }
                                 unhighlightStyle={styles.ticket}
                                 searchWords={['Product of Right Contract: ']}
                                 autoEscape
-                                textToHighlight={`Product of Right Contract: ${_.get(productTypeRightContractNumberType, [
-                                    data?.product_type_of_right_contact
-                                ])}`}
+                                textToHighlight={`Product of Right Contract: ${_.get(
+                                    productTypeRightContractNumberType,
+                                    [data?.product_type_of_right_contact],
+                                    'N/A'
+                                )}`}
                             />
                         </div>
                     </Stack>
@@ -245,9 +266,11 @@ const TicketDetail = ({ data, onSaveChanges, onClickAssignee, onClickSupporter }
                                     horizontal: 'right'
                                 }}
                             >
-                                <MenuItem onClick={onClickAssignee} sx={{ color: '#008345', fontSize: 12, fontWeight: 'bold' }}>
-                                    Assignee
-                                </MenuItem>
+                                {isManager && (
+                                    <MenuItem onClick={onClickAssignee} sx={{ color: '#008345', fontSize: 12, fontWeight: 'bold' }}>
+                                        Assignee
+                                    </MenuItem>
+                                )}
                                 <MenuItem onClick={onClickSupporter} sx={{ color: '#008345', fontSize: 12, fontWeight: 'bold' }}>
                                     Supporter
                                 </MenuItem>
