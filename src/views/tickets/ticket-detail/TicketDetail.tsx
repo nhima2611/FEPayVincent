@@ -148,7 +148,7 @@ const TicketDetail = ({ data, onSaveChanges, onClickAssignee, onClickSupporter }
                                 unhighlightStyle={styles.ticket}
                                 searchWords={['Transaction Amount: ']}
                                 autoEscape
-                                textToHighlight={`Transaction Amount: ${data?.transaction_amount}`}
+                                textToHighlight={`Transaction Amount: ${numeral(data?.transaction_amount).format('0, 0')}`}
                             />
                         </div>
                     </Stack>
