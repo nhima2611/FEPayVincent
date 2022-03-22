@@ -208,7 +208,7 @@ const Step1 = ({ onSubmit, loading }: { onSubmit: (res) => void; loading: boolea
                                 size="large"
                                 type="submit"
                                 variant="contained"
-                                color="secondary"
+                                color="primary"
                                 endIcon={<ArrowForwardIcon />}
                                 loading={loading}
                                 loadingPosition="end"
@@ -268,7 +268,7 @@ const Step2 = ({ onSubmit, loading }: { onSubmit: (res) => void; loading: boolea
                                 size="large"
                                 type="submit"
                                 variant="contained"
-                                color="secondary"
+                                color="primary"
                                 endIcon={<ArrowForwardIcon />}
                                 loading={loading}
                                 loadingPosition="end"
@@ -418,7 +418,7 @@ const Step3 = ({ onSubmit, loading }: { onSubmit: (res) => void; loading: boolea
                                 size="large"
                                 type="submit"
                                 variant="contained"
-                                color="secondary"
+                                color="primary"
                                 loading={loading}
                                 loadingPosition="end"
                             >

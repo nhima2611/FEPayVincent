@@ -163,5 +163,6 @@
     "settings": "Settings",
     "my_tickets": "My Tickets",
     "waiting_tickets": "Waiting Tickets",
-    "information": "Information"
+    "information": "Information",
+    "msg_user_incorrect": "Your account and/or password is incorrect, please try again !"
 }

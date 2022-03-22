@@ -7,75 +7,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 import dataService from 'services/api-services/data.service';
 import toastService from 'services/core/toast.service';
 import partnerServices from 'services/partner-services';
-// third party
-import * as Yup from 'yup';
 import FEUpdatePartnerFrm from './components/FEUpdatePartnerFrm';
 
 // ==============================|| CREATE PARTNER ||============================== //
 
-interface IFormProps {
-    name: string;
-    email: string;
-    phone: string;
-    code: string;
-    address: string;
-    address2: string;
-    ward: string;
-    district: string;
-    province: string;
-    contract_number: number;
-    contract_from: Date;
-    contract_to: Date;
-    sign_contract_date: Date;
-    created_contract_date: Date;
-    fullname: string;
-    password: string;
-    [name: string]: any;
-}
-const initialValues: IFormProps = {
-    name: '',
-    email: '',
-    phone: '',
-    code: faker.internet.password(),
-    address: '',
-    address2: '',
-    ward: '',
-    district: '',
-    province: '',
-    contract_number: 0,
-    sign_contract_date: new Date(),
-    contract_from: new Date(),
-    contract_to: new Date(),
-    created_contract_date: new Date(),
-    fullname: '',
-    password: '',
-    status: 1,
-    partner_id: 1
-};
-// yup validation-schema
-const validationSchema = Yup.object({
-    name: Yup.string().required('Partner is required'),
-    email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-    phone: Yup.string()
-        .min(10, 'Phone must be 10 characters')
-        .max(10, 'Phone must be 10 characters')
-        .trim()
-        .required('Phone is required')
-        .matches(/^\d+$/, 'Phone is not in correct format'),
-    code: Yup.string(),
-    address: Yup.string().required('Address is required'),
-    address2: Yup.string().required('Street is required'),
-    ward: Yup.string().required('Ward is required'),
-    district: Yup.string().required('District is required'),
-    province: Yup.string().required('City is required'),
-    contract_number: Yup.number().required('Contract Number is required'),
-    sign_contract_date: Yup.date().required(),
-    contract_from: Yup.date().required(),
-    contract_to: Yup.date().required(),
-    created_contract_date: Yup.date().required(),
-    fullname: Yup.string().required('Fullname is required'),
-    password: Yup.string().max(255).required('Pasword is required')
-});
 const UpdatePartnerPage = ({ ...others }) => {
     const navi = useNavigate();
     const { partnerId } = useParams();

@@ -67,15 +67,16 @@ const AuthLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
                     password: Yup.string().max(255).required('Password is required'),
                     token: Yup.string().required().nullable()
                 })}
-                onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-                    console.log(1);
+                onSubmit={async (values, { setErrors, setStatus, setSubmitting, setFieldValue }) => {
                     try {
+                        setFieldValue('token', '');
+                        recaptchaRef.current.reset();
                         login(values.email, values.password)
                             .then((res) => {})
                             .catch((err) => {
                                 toastService.showError({
                                     title: err.status,
-                                    text: err.message,
+                                    text: `<FormattedMessage id="${err.message}" />`,
                                     position: 'center-start'
                                 });
                             });

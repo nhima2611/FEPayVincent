@@ -1,4 +1,4 @@
-import { Divider, Grid, Stack, Typography, useMediaQuery } from '@mui/material';
+import { Grid, Stack, Typography, useMediaQuery } from '@mui/material';
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import useAuth from 'hooks/useAuth';
@@ -38,11 +38,7 @@ const Login = () => {
                                 >
                                     <Grid item>
                                         <Stack alignItems="center" justifyContent="center" spacing={1}>
-                                            <Typography
-                                                color={theme.palette.secondary.main}
-                                                gutterBottom
-                                                variant={matchDownSM ? 'h3' : 'h2'}
-                                            >
+                                            <Typography color={theme.palette.primary.main} gutterBottom variant={matchDownSM ? 'h3' : 'h2'}>
                                                 Hello
                                             </Typography>
                                             <Typography variant="caption" fontSize="16px" textAlign={matchDownSM ? 'center' : 'inherit'}>
@@ -55,10 +51,10 @@ const Login = () => {
                             <Grid item xs={12}>
                                 <AuthLogin />
                             </Grid>
-                            <Grid item xs={12}>
+                            {/* <Grid item xs={12}>
                                 <Divider />
                             </Grid>
-                            {/* <Grid item xs={12}>
+                            <Grid item xs={12}>
                                 <Grid item container direction="column" alignItems="center" xs={12}>
                                     <Typography
                                         component={Link}
