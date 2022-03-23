@@ -7,13 +7,13 @@ export const JWT_API = {
 };
 
 export const FIREBASE_API = {
-    apiKey: 'AIzaSyBernKzdSojh_vWXBHt0aRhf5SC9VLChbM',
-    authDomain: 'berry-material-react.firebaseapp.com',
-    projectId: 'berry-material-react',
-    storageBucket: 'berry-material-react.appspot.com',
-    messagingSenderId: '901111229354',
-    appId: '1:901111229354:web:a5ae5aa95486297d69d9d3',
-    measurementId: 'G-MGJHSL8XW3'
+    apiKey: 'AIzaSyA7UNLCOY0llYv3la3e2PQZZLGhG7GXUtE',
+    authDomain: 'payment-portal-5d663.firebaseapp.com',
+    projectId: 'payment-portal-5d663',
+    storageBucket: 'payment-portal-5d663.appspot.com',
+    messagingSenderId: '989028546540',
+    appId: '1:989028546540:web:b0951c5ac05a49fe7372c9',
+    measurementId: 'G-QM50Z46SNN'
 };
 
 export const AUTH0_API = {

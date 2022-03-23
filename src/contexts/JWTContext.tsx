@@ -1,20 +1,16 @@
-import React, { createContext, useEffect, useReducer } from 'react';
-
 // third-party
 import { Chance } from 'chance';
 import jwtDecode from 'jwt-decode';
-
+import React, { createContext, useEffect, useReducer } from 'react';
+import accountReducer from 'store/accountReducer';
 // reducer - state management
 import { LOGIN, LOGOUT } from 'store/actions';
-import accountReducer from 'store/accountReducer';
-
-// project imports
-import Loader from 'ui-component/Loader';
-import axios from 'utils/axios';
-
 // types
 import { KeyedObject } from 'types';
 import { InitialLoginContextProps, JWTContextType } from 'types/auth';
+// project imports
+import Loader from 'ui-component/Loader';
+import axios from 'utils/axios';
 
 const chance = new Chance();
 
@@ -86,9 +82,10 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
     const login = async (email: string, password: string) => {
         const response = await axios.post('/auth', { email, password });
         const { token } = response.data?.data;
-
         setSession(token);
         if (token) {
+            // todo: Call Api Set DeviceId
+
             init();
         }
         return response;

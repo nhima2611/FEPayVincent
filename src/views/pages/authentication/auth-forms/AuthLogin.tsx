@@ -26,6 +26,7 @@ import useScriptRef from 'hooks/useScriptRef';
 import React from 'react';
 // third party
 import ReCAPTCHA from 'react-google-recaptcha';
+import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import toastService from 'services/core/toast.service';
 import AnimateButton from 'ui-component/extended/AnimateButton';
@@ -37,6 +38,7 @@ const recaptchaRef: any = React.createRef();
 
 const AuthLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
     const theme = useTheme();
+    const intl = useIntl();
     const scriptedRef = useScriptRef();
     const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
     const { borderRadius } = useConfig();
@@ -67,17 +69,26 @@ const AuthLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
                     password: Yup.string().max(255).required('Password is required'),
                     token: Yup.string().required().nullable()
                 })}
-                onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-                    console.log(1);
+                onSubmit={async (values, { setErrors, setStatus, setSubmitting, setFieldValue }) => {
                     try {
+                        setFieldValue('token', '');
+                        recaptchaRef.current.reset();
                         login(values.email, values.password)
                             .then((res) => {})
                             .catch((err) => {
-                                toastService.showError({
-                                    title: err.status,
-                                    text: err.message,
-                                    position: 'center-start'
-                                });
+                                if (err.error === 10) {
+                                    toastService.showInfo({
+                                        title: intl.formatMessage({ id: err.message }),
+                                        text: err.sub_message ? intl.formatMessage({ id: err.sub_message }) : '',
+                                        position: 'center-start'
+                                    });
+                                } else {
+                                    toastService.showError({
+                                        title: intl.formatMessage({ id: err.message }),
+                                        text: err.sub_message ? intl.formatMessage({ id: err.sub_message }) : '',
+                                        position: 'center-start'
+                                    });
+                                }
                             });
 
                         if (scriptedRef.current) {

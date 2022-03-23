@@ -4,24 +4,29 @@ import { FormikHelpers } from 'formik';
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import { useNavigate, useParams } from 'react-router-dom';
-import dataService from 'services/api-services/data.service';
+import userService from 'services/api-services/user.service';
 import toastService from 'services/core/toast.service';
 import partnerServices from 'services/partner-services';
-import FEUpdatePartnerFrm from './components/FEUpdatePartnerFrm';
+import FEUpdateUserFrm from './components/FEUpdateUserFrm';
 
 // ==============================|| CREATE PARTNER ||============================== //
+const staffRoles = ['Partner Staff', 'Ticket Staff', 'Repayment Staff', 'Disbursement Staff'];
+const managerRoles = ['Partner', 'Ticket Manager', 'Repayment Manager', 'Disbursement Manager'];
 
 const UpdatePartnerPage = ({ ...others }) => {
     const navi = useNavigate();
     const { partnerId } = useParams();
     const [isEdit, setIsEdit] = useState(false);
-    const [provinceId, setProvinceId] = useState<any>(null);
-    const [districtId, setDistrictId] = useState<any>(null);
-
-    const qProvincesQuery = useQuery(
-        ['qProvincesQuery'],
+    const [groupId, setGroupId] = useState<any>(null);
+    const [roles, setRoles] = useState<any>(
+        _.map(staffRoles, (item) => {
+            return { id: item, name: item };
+        })
+    );
+    const qGroupsQuery = useQuery(
+        ['qGroupsQuery'],
         () => {
-            return dataService.getCities();
+            return userService.getGroups(0);
         },
         {
             keepPreviousData: true,
@@ -33,29 +38,11 @@ const UpdatePartnerPage = ({ ...others }) => {
         }
     );
 
-    const qDistrictsQuery = useQuery(
-        ['qDistrictsQuery', provinceId],
+    const qSubGroupsQuery = useQuery(
+        ['qSubGroupsQuery', groupId],
         () => {
-            if (provinceId) {
-                return dataService.getDistricts(provinceId);
-            }
-            return null;
-        },
-        {
-            keepPreviousData: true,
-            // staleTime: Infinity
-            onError: (err: any) => {
-                toastService.toast('error', err?.message || 'Something went error !');
-            },
-            onSuccess: (res) => {}
-        }
-    );
-
-    const qWardsQuery = useQuery(
-        ['qWardsQuery', districtId],
-        () => {
-            if (districtId) {
-                return dataService.getWards(districtId);
+            if (groupId) {
+                return userService.getGroups(groupId);
             }
             return null;
         },
@@ -86,8 +73,7 @@ const UpdatePartnerPage = ({ ...others }) => {
                 toastService.toast('error', err?.message || 'Something went error !');
             },
             onSuccess: (res: any) => {
-                setProvinceId(_.get(res, 'data.data.province'));
-                setDistrictId(_.get(res, 'data.data.district'));
+                setGroupId(_.get(res, 'data.data.group_id'));
             }
         }
     );
@@ -95,10 +81,12 @@ const UpdatePartnerPage = ({ ...others }) => {
     const onSubmit = async (values, formikHelpers: FormikHelpers<any>) => {
         try {
             if (!isEdit) {
-                partnerServices
+                console.log(values);
+
+                userService
                     .insert(values)
                     .then((res) => {
-                        toastService.toast('success', 'Created new Partner');
+                        toastService.toast('success', 'Created new User');
                         formikHelpers.resetForm();
                         navi(-1);
                     })
@@ -161,25 +149,33 @@ const UpdatePartnerPage = ({ ...others }) => {
     };
 
     return (
-        <FEUpdatePartnerFrm
+        <FEUpdateUserFrm
             onSubmit={onSubmit}
             dataInitial={_.get(qDetailQuery, 'data.data.data', null)}
-            onChangeWard={(item) => {}}
-            onChangeProvince={(item) => {
-                setProvinceId(item.code);
+            onChangeGroup={(item) => {
+                setGroupId(item.id);
             }}
-            onChangeDistrict={(item) => {
-                setDistrictId(item.code);
+            onChangePosition={(itemS) => {
+                switch (itemS.name) {
+                    case 'Staff':
+                        setRoles(
+                            _.map(staffRoles, (item) => {
+                                return { id: item, name: item };
+                            })
+                        );
+                        break;
+                    case 'Manager':
+                        setRoles(
+                            _.map(managerRoles, (item) => {
+                                return { id: item, name: item };
+                            })
+                        );
+                        break;
+                }
             }}
-            cities={_.map(_.get(qProvincesQuery, 'data.data.data', []), (item) => {
-                return { ...item, id: item.code };
-            })}
-            districts={_.map(_.get(qDistrictsQuery, 'data.data.data', []), (item) => {
-                return { ...item, id: item.code };
-            })}
-            wards={_.map(_.get(qWardsQuery, 'data.data.data', []), (item) => {
-                return { ...item, id: item.code };
-            })}
+            groups={_.get(qGroupsQuery, 'data.data.data', [])}
+            subGroups={_.get(qSubGroupsQuery, 'data.data.data', [])}
+            roles={roles}
             isLoading={qDetailQuery.isLoading}
             isEdit={isEdit}
         />

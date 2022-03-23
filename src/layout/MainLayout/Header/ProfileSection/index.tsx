@@ -1,8 +1,3 @@
-import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-
-// material-ui
-import { useTheme } from '@mui/material/styles';
 import {
     Avatar,
     Box,
@@ -12,32 +7,29 @@ import {
     ClickAwayListener,
     Divider,
     Grid,
-    InputAdornment,
     List,
     ListItemButton,
     ListItemIcon,
     ListItemText,
-    OutlinedInput,
     Paper,
     Popper,
     Stack,
     Switch,
     Typography
 } from '@mui/material';
-
+// material-ui
+import { useTheme } from '@mui/material/styles';
+// assets
+import { IconLogout, IconSettings } from '@tabler/icons';
+import useAuth from 'hooks/useAuth';
+import useConfig from 'hooks/useConfig';
+import { useEffect, useRef, useState } from 'react';
 // third-party
 import PerfectScrollbar from 'react-perfect-scrollbar';
-
+import { useNavigate } from 'react-router-dom';
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
 import Transitions from 'ui-component/extended/Transitions';
-import UpgradePlanCard from './UpgradePlanCard';
-import useAuth from 'hooks/useAuth';
-import User1 from 'assets/images/users/user-round.svg';
-
-// assets
-import { IconLogout, IconSearch, IconSettings, IconUser } from '@tabler/icons';
-import useConfig from 'hooks/useConfig';
 
 // ==============================|| PROFILE MENU ||============================== //
 
@@ -162,7 +154,14 @@ const ProfileSection = () => {
                                         <Box sx={{ p: 2, pb: 0 }}>
                                             <Stack>
                                                 <Stack direction="row" spacing={0.5} alignItems="center">
-                                                    <Typography variant="h4">Good Morning,</Typography>
+                                                    <Typography variant="h4">
+                                                        {new Date().getHours() < 12
+                                                            ? 'Good Morning'
+                                                            : new Date().getHours() < 18
+                                                            ? 'Good Afternoon'
+                                                            : 'Good Evening'}
+                                                        ,
+                                                    </Typography>
                                                     <Typography component="span" variant="h4" sx={{ fontWeight: 400 }}>
                                                         {user?.fullname}
                                                     </Typography>

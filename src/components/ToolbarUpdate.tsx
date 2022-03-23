@@ -28,12 +28,12 @@ export default function ToolbarUpdate({ onBack, loading }: { onBack?: () => void
                 // size="small"
                 type="button"
                 variant="contained"
-                color="success"
+                // color="secondary"
                 startIcon={<KeyboardBackspaceIcon />}
                 onClick={() => {
                     onBack ? onBack?.() : navigate(-1);
                 }}
-                sx={{ mr: 2 }}
+                sx={{ mr: 2, bgcolor: theme.palette.grey.A200, color: '#000' }}
             >
                 Back
             </Button>
@@ -43,7 +43,7 @@ export default function ToolbarUpdate({ onBack, loading }: { onBack?: () => void
                 // size="small"
                 type="submit"
                 variant="contained"
-                color="secondary"
+                color="primary"
                 startIcon={<SaveIcon />}
                 loading={loading}
                 loadingPosition="start"
