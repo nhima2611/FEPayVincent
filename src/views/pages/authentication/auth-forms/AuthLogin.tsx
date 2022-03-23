@@ -76,11 +76,19 @@ const AuthLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
                         login(values.email, values.password)
                             .then((res) => {})
                             .catch((err) => {
-                                toastService.showError({
-                                    title: err.error,
-                                    text: intl.formatMessage({ id: err.message }),
-                                    position: 'center-start'
-                                });
+                                if (err.error === 10) {
+                                    toastService.showInfo({
+                                        title: intl.formatMessage({ id: err.message }),
+                                        text: err.sub_message ? intl.formatMessage({ id: err.sub_message }) : '',
+                                        position: 'center-start'
+                                    });
+                                } else {
+                                    toastService.showError({
+                                        title: intl.formatMessage({ id: err.message }),
+                                        text: err.sub_message ? intl.formatMessage({ id: err.sub_message }) : '',
+                                        position: 'center-start'
+                                    });
+                                }
                             });
 
                         if (scriptedRef.current) {

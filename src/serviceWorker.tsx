@@ -1,6 +1,11 @@
 // This optional code is used to register a service worker.
 // register() is not called by default.
 
+import { FIREBASE_API } from 'config';
+import { getAnalytics } from 'firebase/analytics';
+import { initializeApp } from 'firebase/app';
+import { getMessaging } from 'firebase/messaging';
+
 // This lets the app load faster on subsequent visits in production, and gives
 // it offline capabilities. However, it also means that developers (and users)
 // will only see deployed updates on subsequent visits to a page, after all the
@@ -9,6 +14,10 @@
 
 // To learn more about the benefits of this model and instructions on how to
 // opt-in, read https://bit.ly/CRA-PWA
+
+export const firebaseApp = initializeApp(FIREBASE_API);
+export const analytics = getAnalytics(firebaseApp);
+export const messaging = getMessaging(firebaseApp);
 
 const isLocalhost = Boolean(
     window.location.hostname === 'localhost' ||

@@ -12,6 +12,7 @@ declare global {
         v4: {};
         numeral: any;
         getDaysInMonth: (currentMoment?: moment.MomentInput) => moment.Moment[];
+        clients: any;
         appInfo: {
             version: string;
         };

@@ -164,5 +164,8 @@
     "my_tickets": "My Tickets",
     "waiting_tickets": "Waiting Tickets",
     "information": "Information",
-    "msg_user_incorrect": "Your account and/or password is incorrect, please try again !"
+    "msg_user_login_fail": "You have entered the wrong password {count_wrong} times. If you log in the wrong {count_wrong_max} time, your account will be locked !",
+    "msg_user_not_exist": "User not exits",
+    "msg_password_invalid": "Your password is incorrect, please try again !",
+    "msg_your_account_is_locked": "Your account is locked"
 }

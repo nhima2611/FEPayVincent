@@ -49,6 +49,20 @@ const showError = (args: SweetAlertOptions): Promise<any> => {
     });
 };
 
+const showInfo = (args: SweetAlertOptions): Promise<any> => {
+    return Swal.fire({
+        ...args,
+        icon: 'info'
+    });
+};
+
+const showWarning = (args: SweetAlertOptions): Promise<any> => {
+    return Swal.fire({
+        ...args,
+        icon: 'warning'
+    });
+};
+
 const showConfirm = async (args: SweetAlertOptions & SweetAlertConfirm): Promise<any> => {
     return Swal.fire({
         backdrop: true,
@@ -97,5 +111,7 @@ export default {
     showConfirm,
     showDeleteConfirm,
     showError,
-    showSuccess
+    showSuccess,
+    showInfo,
+    showWarning
 };
