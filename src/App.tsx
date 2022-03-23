@@ -7,8 +7,7 @@ import { JWTProvider as AuthProvider } from 'contexts/JWTContext';
 import { TableProvider } from 'contexts/TableContext';
 import { getAnalytics } from 'firebase/analytics';
 import { initializeApp } from 'firebase/app';
-import { getToken, MessagePayload, onMessage } from 'firebase/messaging';
-import { getMessaging } from 'firebase/messaging/sw';
+import { getMessaging, getToken, MessagePayload, onMessage } from 'firebase/messaging';
 import NavigationScroll from 'layout/NavigationScroll';
 import { ToastContainer } from 'react-toastify';
 import Routes from 'routes';
@@ -27,6 +26,7 @@ const analytics = getAnalytics(app);
 const messaging = getMessaging(app);
 const App = () => {
     // Add the public key generated from the console here.
+    console.log(faker.internet.password());
     getToken(messaging, { vapidKey: 'BF8U0r1YSF4m93pBjjrqgjFX4bdxoR_JkV4m5cOJsuKOW7eMzoBPsjg4pylElTvEtkcJSVNIJ8q-yB72si3om2Y' })
         .then((currentToken) => {
             if (currentToken) {

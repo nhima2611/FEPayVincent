@@ -1,3 +1,4 @@
+import faker from '@faker-js/faker';
 import _, { LoDashStatic } from 'lodash';
 import moment from 'moment';
 import numeral from 'numeral';
@@ -7,6 +8,7 @@ declare global {
     interface Window {
         _: LoDashStatic;
         moment: {};
+        faker: any;
         v4: {};
         numeral: any;
         getDaysInMonth: (currentMoment?: moment.MomentInput) => moment.Moment[];
@@ -22,6 +24,7 @@ window.appInfo = {
 window._ = _;
 window.numeral = numeral;
 window.moment = moment;
+window.faker = faker;
 window.v4 = v4;
 window.getDaysInMonth = (currentMoment?: moment.MomentInput) => {
     const daysInMonth: moment.Moment[] = [];

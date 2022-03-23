@@ -26,6 +26,7 @@ import useScriptRef from 'hooks/useScriptRef';
 import React from 'react';
 // third party
 import ReCAPTCHA from 'react-google-recaptcha';
+import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import toastService from 'services/core/toast.service';
 import AnimateButton from 'ui-component/extended/AnimateButton';
@@ -37,6 +38,7 @@ const recaptchaRef: any = React.createRef();
 
 const AuthLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
     const theme = useTheme();
+    const intl = useIntl();
     const scriptedRef = useScriptRef();
     const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
     const { borderRadius } = useConfig();
@@ -75,8 +77,8 @@ const AuthLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
                             .then((res) => {})
                             .catch((err) => {
                                 toastService.showError({
-                                    title: err.status,
-                                    text: `<FormattedMessage id="${err.message}" />`,
+                                    title: err.error,
+                                    text: intl.formatMessage({ id: err.message }),
                                     position: 'center-start'
                                 });
                             });
