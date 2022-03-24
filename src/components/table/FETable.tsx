@@ -9,7 +9,8 @@ import {
     TableHead,
     TablePagination,
     TableRow,
-    TableSortLabel
+    TableSortLabel,
+    Typography
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 import TableContext from 'contexts/TableContext';
@@ -17,7 +18,26 @@ import React, { useContext } from 'react';
 import { useFilters, usePagination, useRowSelect, useSortBy, useTable } from 'react-table';
 import eventEmitter from 'utils/eventEmitter';
 
-const FETable = ({ data, columns, onClickRowItem, showCustomFilter = false, rowId }) => {
+interface Props {
+    data: any;
+    columns: any;
+    onClickRowItem?: (it?: any) => void;
+    showCustomFilter?: boolean;
+    rowId?: string;
+    disableCheckbox?: boolean;
+    manualSortBy?: boolean;
+    manualPagination?: boolean;
+}
+const FETable = ({
+    data,
+    columns,
+    onClickRowItem,
+    showCustomFilter = false,
+    rowId = '',
+    disableCheckbox,
+    manualSortBy = true,
+    manualPagination = true
+}: Props) => {
     const filterTypes = React.useMemo(
         () => ({
             // Add a new fuzzyTextFilterFn filter type.
@@ -55,6 +75,7 @@ const FETable = ({ data, columns, onClickRowItem, showCustomFilter = false, rowI
         setPageSize,
         selectedFlatRows,
         toggleAllPageRowsSelected,
+        setAllFilters,
         state: { pageIndex, pageSize, sortBy, filters, selectedRowIds }
     } = useTable(
         {
@@ -64,20 +85,21 @@ const FETable = ({ data, columns, onClickRowItem, showCustomFilter = false, rowI
                 pageIndex: queryPageIndex,
                 pageSize: queryPageSize
             },
-            manualSortBy: true,
+            manualSortBy,
             disableSortRemove: true,
-            manualPagination: true,
+            manualPagination,
             manualFilters: true,
             pageCount: totalCount,
             filterTypes,
             autoResetSelectedRows: false,
-            getRowId: (row) => row[rowId]
+            getRowId: (row: any) => _.get(row, rowId)
         },
         useFilters,
         useSortBy,
         usePagination,
         useRowSelect,
         (hooks) => {
+            if (disableCheckbox) return;
             hooks.visibleColumns.push((columnss) => [
                 // Let's make a column for selection
                 {
@@ -101,6 +123,8 @@ const FETable = ({ data, columns, onClickRowItem, showCustomFilter = false, rowI
             ]);
         }
     );
+
+    const onClear = () => setAllFilters([]);
 
     const handleDeselectAllRow = (flag: boolean) => {
         if (flag) {
@@ -178,7 +202,7 @@ const FETable = ({ data, columns, onClickRowItem, showCustomFilter = false, rowI
                                         {...(column.id === 'selection'
                                             ? column.getHeaderProps()
                                             : column.getHeaderProps(column.getSortByToggleProps()))}
-                                        sx={{ padding: 0.5 }}
+                                        sx={{ padding: 0.5, minWidth: column.minWidth, textAlign: 'left' }}
                                     >
                                         <TableSortLabel
                                             active={column.isSorted}
@@ -201,11 +225,16 @@ const FETable = ({ data, columns, onClickRowItem, showCustomFilter = false, rowI
                     {showCustomFilter && (
                         <TableHead>
                             {headerGroups.map((headerGroup) => (
-                                <TableRow {...headerGroup.getHeaderGroupProps()}>
+                                <TableRow {...headerGroup.getHeaderGroupProps()} sx={{ textAlign: 'center' }}>
                                     {headerGroup.headers.map((column) => {
-                                        if (column.id === 'selection') return <TableCell {...column.getHeaderProps()}>Filter</TableCell>;
+                                        if (column.id === 'selection')
+                                            return (
+                                                <TableCell {...column.getHeaderProps()} onClick={onClear}>
+                                                    <Typography sx={{ cursor: 'pointer' }}>Clear</Typography>
+                                                </TableCell>
+                                            );
                                         return (
-                                            <TableCell {...column.getHeaderProps()} sx={{ minWidth: 200, px: 1 }}>
+                                            <TableCell {...column.getHeaderProps()} sx={{ px: 1 }}>
                                                 {column.canFilter ? column.render('Filter') : null}
                                             </TableCell>
                                         );
@@ -224,7 +253,7 @@ const FETable = ({ data, columns, onClickRowItem, showCustomFilter = false, rowI
                                 <TableRow
                                     hover
                                     {...row.getRowProps()}
-                                    onClick={() => onClickRowItem(row)}
+                                    onClick={() => onClickRowItem?.(row)}
                                     sx={{ textDecoration: 'none', cursor: 'pointer' }}
                                 >
                                     {row.cells.map((cell) => {
@@ -252,7 +281,7 @@ const FETable = ({ data, columns, onClickRowItem, showCustomFilter = false, rowI
             </TableContainer>
             <TablePagination
                 component="div"
-                rowsPerPageOptions={[10, 15, 20]}
+                rowsPerPageOptions={[10, 20, 50]}
                 count={pageOptions.length}
                 rowsPerPage={pageSize}
                 page={pageIndex}

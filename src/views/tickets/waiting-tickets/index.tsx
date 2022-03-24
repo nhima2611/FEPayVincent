@@ -16,12 +16,14 @@ import MainCard from 'ui-component/cards/MainCard';
 import eventEmitter from 'utils/eventEmitter';
 import toastify from 'utils/toastify';
 import Board from 'components/kanban';
-import WaitingTicketList from './list';
+import TicketList from './list';
 import AssignToDialog, { refAssignTo } from '../components/AssignToDialog';
 import { AssignToModel } from 'types/ticket';
 import { STATUS } from 'constants/status';
+import PreviewTable, { refPreviewTable } from 'components/PreviewTable';
+import { refLoading } from 'components/Loading';
 
-export default function WaitingTicketPage() {
+export default function MyTicketsPage() {
     const dispatchs = useDispatch();
     const [{ queryPageIndex, queryPageSize, sortByObject, filters, selectedIds, resetState }, dispatch] = useContext(TableContext);
 
@@ -45,7 +47,12 @@ export default function WaitingTicketPage() {
     const navi = useNavigate();
 
     const onClickRowItem = (row) => {
-        navi(row.values?.ticket_id?.toString());
+        const { original } = row;
+        if (original.last_status === 0) {
+            navi(`edit-ticket/${row.values?.ticket_id?.toString()}`);
+        } else {
+            navi(`/tickets/${row.values?.ticket_id?.toString()}`);
+        }
     };
 
     const { mode } = useSelector((state) => state.kanban);
@@ -137,13 +144,24 @@ export default function WaitingTicketPage() {
         }
     });
 
-    const mUploadTicket = useMutation((file) => ticketsServices.uploadTicket(file), {
+    const mVerifyImportFile = useMutation((file) => ticketsServices.verifyImportFile(file), {
         onSuccess: (res) => {
-            refetchTable();
+            refPreviewTable.current?.handleClickOpen(res.data);
             toastify.showToast('success', res.data);
         },
         onError: (err: any) => {
             toastify.showToast('error', err.message);
+        }
+    });
+
+    const mUploadFile = useMutation(({ data }: { data: any[] }) => ticketsServices.importFile(data), {
+        onSuccess: (res) => {
+            refetchTable();
+            refPreviewTable.current?.handleClose();
+            toastify.showToast('success', res.data);
+        },
+        onError: (err: any) => {
+            toastify.showToast('error', err.message || 'Upload failed');
         }
     });
 
@@ -158,14 +176,20 @@ export default function WaitingTicketPage() {
         }
     });
 
-    const ids: number[] = _.map(selectedIds, (value, key) => _.toNumber(key));
+    const sIds: number[] = _.map(selectedIds, (value, key) => _.toNumber(key));
+
     const onClickDownload = () => {
-        if (!ids.length) {
+        if (!sIds.length) {
             return toastify.showToast('warning', 'Please choose row!');
         }
-        return mDownloadTicket.mutate({ ids });
+        return toastService.showConfirm({
+            onConfirm: async () => {
+                mDownloadTicket.mutate({ ids: sIds });
+            },
+            title: 'Are you sure download it?',
+            icon: 'warning'
+        });
     };
-
     const onClickTrash = () => {
         const checkStatus = _.some(
             _.filter(dataTable?.data?.data, (item) =>
@@ -178,19 +202,28 @@ export default function WaitingTicketPage() {
 
         if (checkStatus) return toastify.showToast('error', 'Can not delete');
 
-        if (!ids.length) {
+        if (!sIds.length) {
             return toastify.showToast('warning', 'Please choose row!');
         }
         return toastService.showDeleteConfirm({
             onConfirm: async () => {
-                mDeleteTicket.mutate(ids);
+                mDeleteTicket.mutate(sIds);
             }
         });
     };
 
-    const onUploadFile = (file: any) => {
-        if (!file) return;
-        mUploadTicket.mutate(file);
+    const onVerifyImport = (file: any) => {
+        mVerifyImportFile.mutate(file);
+    };
+
+    const onUploadFile = (data: any) => {
+        return toastService.showConfirm({
+            onConfirm: async () => {
+                mUploadFile.mutate({ data });
+            },
+            title: 'Are you sure submit it?',
+            icon: 'warning'
+        });
     };
 
     const onClickAssignee = () => {
@@ -203,7 +236,6 @@ export default function WaitingTicketPage() {
     const mAssignTo = useMutation((model: AssignToModel) => ticketsServices.assignTo(model), {
         onSuccess: (res) => {
             refetchTable();
-            console.log(res);
             toastify.showToast('success', res.data?.message);
             refAssignTo.current?.handleClose();
             eventEmitter.emit('DESELECT_ALL_ROWS', true);
@@ -213,14 +245,16 @@ export default function WaitingTicketPage() {
         }
     });
 
-    const onSubmitAssignTo = (values: any) => {
+    const onSubmitAssignTo = (data: AssignToModel) => {
         mAssignTo.mutate({
-            email: values.email,
-            name: values.username,
-            ticket_ids: ids,
-            type: values.type
+            ...data,
+            ticket_ids: sIds
         });
     };
+
+    if (mVerifyImportFile.isLoading) {
+        refLoading.current?.handleToggle();
+    }
 
     return (
         <Box sx={{ display: 'flex' }}>
@@ -231,23 +265,24 @@ export default function WaitingTicketPage() {
                             onClickDownload={onClickDownload}
                             onClickTransfer={() => dispatchs(setMode())}
                             urlAddTicket="/tickets/create-ticket"
-                            onUploadFile={onUploadFile}
+                            onUploadFile={onVerifyImport}
                             onClickTrash={onClickTrash}
-                            title="Waiting Ticket"
                             onClickAssignee={onClickAssignee}
                             onClickSupporter={onClickSupporter}
+                            title="Waiting Ticket"
                         />
                         {mode === 'kanban' ? (
                             <Board />
                         ) : (
-                            <WaitingTicketList
+                            <TicketList
                                 onClickRowItem={onClickRowItem}
                                 loading={isLoading}
                                 data={dataTable?.data?.data}
                                 cols={dataTable?.data?.cols}
                             />
                         )}
-                        <AssignToDialog onSubmit={onSubmitAssignTo} />
+                        <AssignToDialog onSubmit={onSubmitAssignTo} loading={mAssignTo.isLoading} />
+                        <PreviewTable onSubmit={onUploadFile} loading={mUploadFile.isLoading} />
                     </MainCard>
                 </Grid>
             </Grid>

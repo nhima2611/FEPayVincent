@@ -43,10 +43,17 @@ const TasksCard = ({ data = [] }: { data: any[] }) => (
                                 </Avatar>
                             </Grid>
                             <Grid item xs zeroMinWidth>
-                                <Stack direction="row" justifyContent="space-between">
-                                    <Typography sx={{ fontSize: 10 }}>{`${item?.user_fullname} ${item?.content}`}</Typography>
-                                    <Typography sx={{ fontSize: 10 }}>{moment(item?.created_at).format('DD/MM/YYYY - HH:mm a')}</Typography>
-                                </Stack>
+                                <Grid container justifyContent="space-between" spacing={2}>
+                                    <Grid item xs={12} md={6}>
+                                        <Typography noWrap sx={{ fontSize: 10 }}>{`${item?.user_fullname} ${item?.content}`}</Typography>
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6}>
+                                        <Typography noWrap sx={{ fontSize: 10, textAlign: 'right' }}>
+                                            {moment(item?.created_at).format('DD/MM/YYYY - HH:mm a')}
+                                        </Typography>
+                                    </Grid>
+                                </Grid>
                             </Grid>
                         </Grid>
                     </Grid>

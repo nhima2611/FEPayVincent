@@ -24,6 +24,12 @@ const productTypeRightContractNumberType = {
     2: 'Card'
 };
 
+const productTypeWrongContractNumberType = {
+    1: 'Loan',
+    2: 'Card',
+    3: 'Banca'
+};
+
 const requestedBy = {
     1: 'By Teller’s mistake',
     2: 'By Customer’s request',
@@ -168,5 +174,6 @@ export {
     columnsOrderData,
     columnsData,
     actionTicketTypes,
-    productTypeRightContractNumberType
+    productTypeRightContractNumberType,
+    productTypeWrongContractNumberType
 };

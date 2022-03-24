@@ -28,21 +28,31 @@ interface Props {
     onSaveChanges: (data: any) => void;
     onClickAssignee: () => void;
     onClickSupporter: () => void;
+    onCancelTicket: () => void;
 }
 
 export const refTicketDetail = createRef<{ handleClose: () => void }>();
-const TicketDetail = ({ data, onSaveChanges, onClickAssignee, onClickSupporter }: Props) => {
+const TicketDetail = ({ data, onSaveChanges, onClickAssignee, onClickSupporter, onCancelTicket }: Props) => {
     const { user } = useAuth();
     const isPartner = user?.role === ROLE.PARTNER;
     const isManager = [ROLE.SUPER_ADMIN, ROLE.CARD_MANAGER, ROLE.LOAN_MANAGER].includes(user?.role as any);
+    const isStaff = [ROLE.DISBURSEMENT_STAFF, ROLE.REPAYMENT_STAFF].includes(user?.role as any);
 
-    const statusData = !isPartner ? _.omit(lastStatusType, ['0']) : lastStatusType;
+    const statusData = isStaff ? _.pick(lastStatusType, ['2', '3', '4', '5']) : lastStatusType;
+    const isSolvedRejectCancel = [4, 5, 6].includes(data?.status) && isPartner;
+
     const [selected, setSelected] = useState<any>({ action: 0 });
 
     const handleSubmit = () => {
         if (isPartner) return;
         if (selected.action === 0 && selected.status === data.status) return;
         onSaveChanges?.({ ...selected, transaction_type: data.transaction_type, issue_type: data.issue_type });
+    };
+
+    const handleCancel = () => {
+        if (isPartner) {
+            onCancelTicket?.();
+        }
     };
 
     const [anchorEl, setAnchorEl] = useState<Element | ((element: Element) => Element) | null | undefined>(null);
@@ -117,11 +127,16 @@ const TicketDetail = ({ data, onSaveChanges, onClickAssignee, onClickSupporter }
                         <Grid item>
                             <Stack direction="row" alignItems="center" spacing={2}>
                                 {isPartner && (
-                                    <Button variant="contained" sx={{ background: '#FF0015' }} onClick={() => {}}>
+                                    <Button
+                                        variant="contained"
+                                        sx={{ background: '#FF0015' }}
+                                        onClick={handleCancel}
+                                        disabled={isSolvedRejectCancel}
+                                    >
                                         Cancel Ticket
                                     </Button>
                                 )}
-                                <Button variant="outlined" onClick={handleSubmit}>
+                                <Button variant="outlined" onClick={handleSubmit} disabled={isSolvedRejectCancel}>
                                     Save Changes
                                 </Button>
                             </Stack>
@@ -222,13 +237,13 @@ const TicketDetail = ({ data, onSaveChanges, onClickAssignee, onClickSupporter }
                         <Divider />
                     </Grid>
 
-                    <FEDescriptionDetail data={data?.descriptions} ticketId={data?.id} />
+                    <FEDescriptionDetail data={data?.descriptions} ticketId={data?.id} disabled={isSolvedRejectCancel} />
 
                     <Grid item xs={12} sx={{ marginY: 2 }}>
                         <Divider />
                     </Grid>
 
-                    <FEAttachmentsUpload ticketId={data?.id} />
+                    <FEAttachmentsUpload ticketId={data?.id} disabled={isSolvedRejectCancel} />
 
                     <Grid item xs={12} sx={{ marginY: 2 }}>
                         <Divider />
@@ -244,11 +259,11 @@ const TicketDetail = ({ data, onSaveChanges, onClickAssignee, onClickSupporter }
                             justifyContent="space-between"
                             style={{ height: 60, background: '#27AE60', borderTop: 1, borderTopLeftRadius: 14, padding: 16 }}
                         >
-                            <Typography sx={{ color: 'white' }}>Detail</Typography>
+                            <Typography sx={{ color: 'white', fontWeight: 'bold' }}>Detail</Typography>
                             {!isPartner && (
-                                <IconButton onClick={handleClick}>
+                                <Button variant="outlined" onClick={handleClick} sx={{ borderColor: '#fff' }}>
                                     <IconUserPlus color="white" />
-                                </IconButton>
+                                </Button>
                             )}
                             <Menu
                                 id="menu-followers-card"
@@ -278,8 +293,23 @@ const TicketDetail = ({ data, onSaveChanges, onClickAssignee, onClickSupporter }
                         </Stack>
                         <Box sx={{ paddingX: 2 }}>
                             <FEItemDetail title="Partner" value={data?.partner ?? '-'} />
-                            <FEItemDetail title="Assignee" value={data?.assignee ?? '-'} />
-                            <FEItemDetail title="Supporter" value={data?.supporter ?? '-'} />
+                            <Stack direction="row" justifyContent="space-between" sx={{ marginY: 3 }} spacing={2}>
+                                <Typography sx={{ fontWeight: 'bold', color: '#4c4c4c' }}>Assignee:</Typography>
+                                <Stack direction="column" spacing={1.5}>
+                                    {_.map(data?.assignee, (it: any, i) => (
+                                        <Typography key={i} sx={{ color: '#4c4c4c' }}>{`${it?.email}`}</Typography>
+                                    ))}
+                                </Stack>
+                            </Stack>
+                            <Stack direction="row" justifyContent="space-between" sx={{ marginY: 3 }} spacing={2}>
+                                <Typography sx={{ fontWeight: 'bold', color: '#4c4c4c' }}>Supporter:</Typography>
+                                <Stack direction="column" spacing={1.5}>
+                                    {_.map(data?.supporter, (it: any, i) => (
+                                        <Typography key={i} sx={{ color: '#4c4c4c' }}>{`${it?.email}`}</Typography>
+                                    ))}
+                                </Stack>
+                            </Stack>
+
                             <FEItemDetail title="Transaction Type" value={_.get(transactionType, [data?.transaction_type])} />
                             <FEItemDetail title="Issue Type" value={_.get(issueType, [data?.issue_type])} />
                             <FEItemDetail title="Sub Issue Type" value={_.get(subIssueType, [data?.sub_issue_type])} />

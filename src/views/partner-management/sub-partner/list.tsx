@@ -1,6 +1,6 @@
 import { IconButton, Menu, MenuItem } from '@mui/material';
 import { IconDotsVertical } from '@tabler/icons';
-import FETable from 'components/FETable';
+import FETable from 'components/table/FETable';
 import { camelCase, startCase } from 'lodash';
 import React, { SyntheticEvent, useState } from 'react';
 // project imports

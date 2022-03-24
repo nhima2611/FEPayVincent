@@ -1,9 +1,16 @@
 import { DatePicker, LocalizationProvider } from '@mui/lab';
 // material-ui
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import { Box, Button, Grid, IconButton, Stack, styled, TextField, Typography } from '@mui/material';
+import { Box, Button, Grid, IconButton, InputAdornment, Stack, styled, TextField, Typography } from '@mui/material';
 import { IconUpload, IconX } from '@tabler/icons';
-import { issueType, productTypeRightContractNumberType, requestedBy, subIssueType, transactionType } from 'constants/tickets';
+import {
+    issueType,
+    productTypeRightContractNumberType,
+    productTypeWrongContractNumberType,
+    requestedBy,
+    subIssueType,
+    transactionType
+} from 'constants/tickets';
 import { useFormik } from 'formik';
 import React, { useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
@@ -28,15 +35,14 @@ const validationSchema = yup.object({
     requested_by: yup.string().required('Requested By is Required'),
     ref_number: yup.string().required('Ref Number is Required'),
     transaction_date: yup.string().required('Transaction Date is Required'),
-    transaction_amount: yup.number().typeError('Transaction Amount must be a number').required('Transaction Amount is Required'),
+    transaction_amount: yup.string().typeError('Transaction Amount must be a number').required('Transaction Amount is Required'),
     contract_number: yup.string().required('Contract Number is Required'),
-    wrong_transaction: yup.string().required('Wrong Transaction is Required'),
+    wrong_transaction: yup.number().required('Wrong Transaction is Required'),
     right_contract_number: yup.string().required('Right Contract Number is Required'),
     right_product_type: yup.number().when('issue_type', { is: 3, then: yup.number().required('Right Product Type is Required') }),
     requester_national_id: yup
         .string()
-        .min(12, "Requested's Nation ID should be of minimum 12 characters")
-        .max(12, "Requested's Nation ID should be of minimum 12 characters")
+        .matches(/^(\d{9}|\d{12})$/, "Requested's Nation ID to match 9 or 12 digits only")
         .required("Requested's Nation ID is Required")
         .typeError("Requested's Nation ID must be a number"),
     requester_phone: yup
@@ -64,7 +70,7 @@ export const initialValues = {
     transaction_date: new Date(),
     transaction_amount: '',
     contract_number: '',
-    wrong_transaction: '',
+    wrong_transaction: 0,
     right_contract_number: '',
     right_amount: '',
     right_product_type: 0,
@@ -156,14 +162,27 @@ const CreateOrEditTicket = ({ onSubmit, onCancel, data }: Props) => {
                         </Stack>
                     </Grid>
                     <Grid item xs={12} md={3}>
-                        <FETextField formik={formik} title="Transaction Amount" name="transaction_amount" />
+                        <FETextField
+                            formik={formik}
+                            title="Transaction Amount"
+                            name="transaction_amount"
+                            value={numeral(formik.values.transaction_amount).format('0,0')}
+                            InputProps={{
+                                endAdornment: <InputAdornment position="end">VND</InputAdornment>
+                            }}
+                        />
                     </Grid>
                     <Grid item xs={12} md={3}>
                         <FETextField formik={formik} title="Contract Number" name="contract_number" />
                     </Grid>
 
                     <Grid item xs={12} md={3}>
-                        <FETextField formik={formik} title="Product Type of Wrong Transaction" name="wrong_transaction" />
+                        <FEDropDown
+                            name="wrong_transaction"
+                            formik={formik}
+                            title="Product Type of Wrong Contract"
+                            data={productTypeWrongContractNumberType}
+                        />
                     </Grid>
                     <Grid item xs={12} md={3}>
                         <FETextField formik={formik} title="Right Contract Number" name="right_contract_number" />

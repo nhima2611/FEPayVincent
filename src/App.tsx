@@ -14,6 +14,7 @@ import ThemeCustomization from 'themes';
 import { JWTProvider as AuthProvider } from 'contexts/JWTContext';
 import { TableProvider } from 'contexts/TableContext';
 import { ToastContainer } from 'react-toastify';
+import Loading from 'components/Loading';
 // import { Auth0Provider as AuthProvider } from 'contexts/Auth0Context';
 
 // ==============================|| APP ||============================== //
@@ -30,6 +31,7 @@ const App = () => (
                                 <Routes />
                                 <Snackbar />
                                 <ToastContainer />
+                                <Loading />
                             </>
                         </TableProvider>
                     </AuthProvider>

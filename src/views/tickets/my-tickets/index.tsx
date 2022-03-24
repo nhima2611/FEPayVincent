@@ -20,6 +20,8 @@ import TicketList from './list';
 import AssignToDialog, { refAssignTo } from '../components/AssignToDialog';
 import { AssignToModel } from 'types/ticket';
 import { STATUS } from 'constants/status';
+import PreviewTable, { refPreviewTable } from 'components/PreviewTable';
+import { refLoading } from 'components/Loading';
 
 export default function MyTicketsPage() {
     const dispatchs = useDispatch();
@@ -143,13 +145,24 @@ export default function MyTicketsPage() {
         }
     });
 
-    const mUploadTicket = useMutation((file) => ticketsServices.uploadTicket(file), {
+    const mVerifyImportFile = useMutation((file) => ticketsServices.verifyImportFile(file), {
         onSuccess: (res) => {
-            refetchTable();
+            refPreviewTable.current?.handleClickOpen(res.data);
             toastify.showToast('success', res.data);
         },
         onError: (err: any) => {
             toastify.showToast('error', err.message);
+        }
+    });
+
+    const mUploadFile = useMutation(({ data }: { data: any[] }) => ticketsServices.importFile(data), {
+        onSuccess: (res) => {
+            refetchTable();
+            refPreviewTable.current?.handleClose();
+            toastify.showToast('success', res.data);
+        },
+        onError: (err: any) => {
+            toastify.showToast('error', err.message || 'Upload failed');
         }
     });
 
@@ -170,7 +183,13 @@ export default function MyTicketsPage() {
         if (!sIds.length) {
             return toastify.showToast('warning', 'Please choose row!');
         }
-        return mDownloadTicket.mutate({ ids: sIds });
+        return toastService.showConfirm({
+            onConfirm: async () => {
+                mDownloadTicket.mutate({ ids: sIds });
+            },
+            title: 'Are you sure download it?',
+            icon: 'warning'
+        });
     };
     const onClickTrash = () => {
         const checkStatus = _.some(
@@ -194,8 +213,18 @@ export default function MyTicketsPage() {
         });
     };
 
-    const onUploadFile = (file: any) => {
-        mUploadTicket.mutate(file);
+    const onVerifyImport = (file: any) => {
+        mVerifyImportFile.mutate(file);
+    };
+
+    const onUploadFile = (data: any) => {
+        return toastService.showConfirm({
+            onConfirm: async () => {
+                mUploadFile.mutate({ data });
+            },
+            title: 'Are you sure submit it?',
+            icon: 'warning'
+        });
     };
 
     const onClickAssignee = () => {
@@ -208,7 +237,6 @@ export default function MyTicketsPage() {
     const mAssignTo = useMutation((model: AssignToModel) => ticketsServices.assignTo(model), {
         onSuccess: (res) => {
             refetchTable();
-            console.log(res);
             toastify.showToast('success', res.data?.message);
             refAssignTo.current?.handleClose();
             eventEmitter.emit('DESELECT_ALL_ROWS', true);
@@ -218,14 +246,16 @@ export default function MyTicketsPage() {
         }
     });
 
-    const onSubmitAssignTo = (values: any) => {
+    const onSubmitAssignTo = (data: AssignToModel) => {
         mAssignTo.mutate({
-            email: values.email,
-            name: values.username,
-            ticket_ids: sIds,
-            type: values.type
+            ...data,
+            ticket_ids: sIds
         });
     };
+
+    if (mVerifyImportFile.isLoading) {
+        refLoading.current?.handleToggle();
+    }
 
     return (
         <Box sx={{ display: 'flex' }}>
@@ -236,7 +266,7 @@ export default function MyTicketsPage() {
                             onClickDownload={onClickDownload}
                             onClickTransfer={() => dispatchs(setMode())}
                             urlAddTicket="/tickets/create-ticket"
-                            onUploadFile={onUploadFile}
+                            onUploadFile={onVerifyImport}
                             onClickTrash={onClickTrash}
                             onClickAssignee={onClickAssignee}
                             onClickSupporter={onClickSupporter}
@@ -251,7 +281,8 @@ export default function MyTicketsPage() {
                                 cols={dataTable?.data?.cols}
                             />
                         )}
-                        <AssignToDialog onSubmit={onSubmitAssignTo} />
+                        <AssignToDialog onSubmit={onSubmitAssignTo} loading={mAssignTo.isLoading} />
+                        <PreviewTable onSubmit={onUploadFile} loading={mUploadFile.isLoading} />
                     </MainCard>
                 </Grid>
             </Grid>

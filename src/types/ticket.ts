@@ -87,13 +87,12 @@ export interface EditTicketModel extends CreateTicketModel {
 export type UpdateStatusAndActionModel = {
     id?: number | string;
     ticket_id?: number;
-    status: number;
-    action: number;
+    status?: number;
+    action?: number;
 };
 
 export type AssignToModel = {
     ticket_ids: number[];
-    email: string;
-    name: string;
+    emails: string[];
     type: 1 | 2;
 };

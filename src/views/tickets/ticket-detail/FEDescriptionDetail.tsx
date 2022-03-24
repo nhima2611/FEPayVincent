@@ -20,7 +20,7 @@ import { AddDescriptionModel } from 'types/ticket';
 import eventEmitter from 'utils/eventEmitter';
 import toastify from 'utils/toastify';
 
-const FEDescriptionDetail = ({ data = [], ticketId }: { data: any[]; ticketId: number }) => {
+const FEDescriptionDetail = ({ disabled, data = [], ticketId }: { data: any[]; ticketId: number; disabled: boolean }) => {
     const [value, setValue] = useState<string>('');
     const { user } = useAuth();
 
@@ -83,6 +83,7 @@ const FEDescriptionDetail = ({ data = [], ticketId }: { data: any[]; ticketId: n
             </TableContainer>
 
             <OutlinedInput
+                disabled={disabled}
                 sx={{ marginTop: 2 }}
                 fullWidth
                 rows={4}

@@ -91,11 +91,19 @@ const showDeleteConfirm = (args: SweetAlertOptions & SweetAlertConfirm): Promise
     });
 };
 
+const showLoading = () => {
+    return Swal.fire({
+        title: 'Loading',
+        timerProgressBar: true
+    });
+};
+
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
     toast,
     showConfirm,
     showDeleteConfirm,
     showError,
-    showSuccess
+    showSuccess,
+    showLoading
 };

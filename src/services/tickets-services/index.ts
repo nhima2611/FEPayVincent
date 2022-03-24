@@ -15,11 +15,15 @@ class TicketService extends BaseApiService {
         return axiosServices.post(`/v1/tickets/deleteTickets`, { ids: model });
     };
 
-    uploadTicket = (file?: any) => {
+    verifyImportFile = (file?: any) => {
         const formData = new FormData();
         formData.append('file', file);
 
-        return axiosServices.post('/v1/tickets/import', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+        return axiosServices.post('/v1/tickets/verifyImportFile', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+    };
+
+    importFile = (data?: any[]) => {
+        return axiosServices.post('/v1/tickets/importData', { data });
     };
 
     addDescription = (data: AddDescriptionModel) => {
