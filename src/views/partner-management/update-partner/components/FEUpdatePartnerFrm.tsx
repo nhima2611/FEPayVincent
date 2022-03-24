@@ -1,6 +1,7 @@
 // assets
 import faker from '@faker-js/faker';
 import { Grid, Typography } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import FEDatePickerField from 'components/forms/FEDatePickerField';
 import FEDateRangePickerField from 'components/forms/FEDateRangePickerField';
 import FESelect from 'components/forms/FESelect';
@@ -50,7 +51,7 @@ const initialValues: IFormProps = {
     contract_to: new Date(),
     created_contract_date: new Date(),
     fullname: '',
-    password: '',
+    password: faker.internet.password(),
     status: 1,
     partner_id: 1
 };
@@ -78,6 +79,7 @@ const FEUpdatePartnerFrm = ({
     isLoading,
     isEdit
 }: Props) => {
+    const theme = useTheme();
     const formik = useFormik<IFormProps>({
         initialValues,
         validationSchema: Yup.object({
@@ -137,7 +139,7 @@ const FEUpdatePartnerFrm = ({
                     >
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
-                                <Typography variant="h3">
+                                <Typography variant="h3" sx={{ color: theme.palette.primary.main }}>
                                     {/* <FormattedMessage id="information" /> */}
                                     {Boolean(isEdit) ? 'Partner Details - Edit' : 'Add New Partner'}
                                 </Typography>
@@ -145,15 +147,10 @@ const FEUpdatePartnerFrm = ({
                             <Grid item xs={12}>
                                 <Grid container spacing={2}>
                                     <Grid item xs={12} md>
-                                        <FETextField formik={formik} title="Partner" name="name" inputProps={{ disabled: isEdit }} />
+                                        <FETextField formik={formik} title="Partner" name="name" disabled={isEdit} />
                                     </Grid>
                                     <Grid item xs={12} md>
-                                        <FETextField
-                                            formik={formik}
-                                            title="Contract Number"
-                                            name="contract_number"
-                                            inputProps={{ disabled: isEdit }}
-                                        />
+                                        <FETextField formik={formik} title="Contract Number" name="contract_number" disabled={isEdit} />
                                     </Grid>
                                     <Grid item xs={12} md>
                                         <FEDatePickerField
@@ -231,14 +228,7 @@ const FEUpdatePartnerFrm = ({
                                 />
                             </Grid>
                             <Grid item xs={12} md={6}>
-                                <FETextField
-                                    formik={formik}
-                                    title="Address"
-                                    name="address"
-                                    inputProps={{
-                                        helperText: '(Street address, P.O box, Apartment, Floor, Unit, Building, etc)'
-                                    }}
-                                />
+                                <FETextField formik={formik} title="Address" name="address" />
                             </Grid>
                             <Grid item xs={12} md={6}>
                                 <FETextField formik={formik} title="Street" name="address2" />
@@ -247,7 +237,9 @@ const FEUpdatePartnerFrm = ({
                             {!Boolean(isEdit) && (
                                 <>
                                     <Grid item xs={12}>
-                                        <Typography variant="h3">Main User information (*)</Typography>
+                                        <Typography variant="h3" sx={{ color: theme.palette.primary.main }}>
+                                            Main User information (*)
+                                        </Typography>
                                     </Grid>
                                     <Grid item xs={12}>
                                         <Grid container spacing={2}>
@@ -270,7 +262,9 @@ const FEUpdatePartnerFrm = ({
                             {Boolean(isEdit && dataInitial) && (
                                 <>
                                     <Grid item xs={12}>
-                                        <Typography variant="h3">User List</Typography>
+                                        <Typography variant="h3" sx={{ color: theme.palette.primary.main }}>
+                                            User List
+                                        </Typography>
                                     </Grid>
                                     <Grid item xs={12}>
                                         <FETableUserOfPartner rows={_.get(dataInitial, 'users', [])} />

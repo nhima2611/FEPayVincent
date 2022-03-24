@@ -1,16 +1,14 @@
-import { Link } from 'react-router-dom';
-
+import { Divider, Grid, Typography, useMediaQuery } from '@mui/material';
 // material-ui
 import { useTheme } from '@mui/material/styles';
-import { Divider, Grid, Typography, useMediaQuery } from '@mui/material';
-
-// project imports
-import AuthWrapper from '../AuthWrapper';
-import AuthCardWrapper from '../AuthCardWrapper';
+import useAuth from 'hooks/useAuth';
+import { Link } from 'react-router-dom';
+import AuthFooter from 'ui-component/cards/AuthFooter';
 import Logo from 'ui-component/Logo';
 import AuthForgotPassword from '../auth-forms/AuthForgotPassword';
-import AuthFooter from 'ui-component/cards/AuthFooter';
-import useAuth from 'hooks/useAuth';
+import AuthCardWrapper from '../AuthCardWrapper';
+// project imports
+import AuthWrapper from '../AuthWrapper';
 
 // ============================|| AUTH3 - FORGOT PASSWORD ||============================ //
 
@@ -36,7 +34,7 @@ const ForgotPassword = () => {
                                         <Grid container alignItems="center" justifyContent="center" textAlign="center" spacing={2}>
                                             <Grid item xs={12}>
                                                 <Typography
-                                                    color={theme.palette.secondary.main}
+                                                    color={theme.palette.primary.main}
                                                     gutterBottom
                                                     variant={matchDownSM ? 'h3' : 'h2'}
                                                 >
@@ -45,7 +43,7 @@ const ForgotPassword = () => {
                                             </Grid>
                                             <Grid item xs={12}>
                                                 <Typography variant="caption" fontSize="16px" textAlign="center">
-                                                    Enter your email address below and we&apos;ll send you password reset OTP.
+                                                    Enter your email address below and we&apos;ll send you password reset link.
                                                 </Typography>
                                             </Grid>
                                         </Grid>
@@ -63,6 +61,7 @@ const ForgotPassword = () => {
                                                 to={isLoggedIn ? '/pages/login/login3' : '/login'}
                                                 variant="subtitle1"
                                                 sx={{ textDecoration: 'none' }}
+                                                color="secondary"
                                             >
                                                 Already have an account?
                                             </Typography>

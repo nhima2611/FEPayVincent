@@ -25,7 +25,7 @@ const FEDatePickerField = ({
     const [open, setOpen] = useState<boolean>(false);
     return (
         <>
-            <InputLabel sx={{ color: '#4C4C4C', fontWeight: 'bold' }} required={required} htmlFor={name}>
+            <InputLabel sx={{ color: inputProps?.disabled ? '#CCCCCC' : '#4C4C4C', fontWeight: '700' }} required={required} htmlFor={name}>
                 {label}
             </InputLabel>
             <FormControl fullWidth error={Boolean(touched[`${name}`] && errors[`${name}`])} sx={{ ...theme.typography.customInput }}>

@@ -27,7 +27,11 @@ const FEDateRangePickerField = ({
 
     return (
         <>
-            <InputLabel sx={{ color: '#4C4C4C', fontWeight: 'bold' }} required={required} htmlFor={nameFrom}>
+            <InputLabel
+                sx={{ color: inputProps?.disabled ? '#CCCCCC' : '#4C4C4C', fontWeight: '700' }}
+                required={required}
+                htmlFor={nameFrom}
+            >
                 {label}
             </InputLabel>
             <FormControl
@@ -49,9 +53,9 @@ const FEDateRangePickerField = ({
                         showToolbar
                         renderInput={(startProps, endProps) => (
                             <>
-                                <TextField {...startProps} label={null} sx={{ textAlign: 'center' }} fullWidth />
+                                <TextField {...startProps} {...inputProps} label={null} sx={{ textAlign: 'center' }} fullWidth />
                                 <Box sx={{ mx: 1 }}> to </Box>
-                                <TextField {...endProps} label={null} sx={{ textAlign: 'center' }} fullWidth />
+                                <TextField {...endProps} {...inputProps} label={null} sx={{ textAlign: 'center' }} fullWidth />
                                 {/* <TextField
                                     {...startProps}
                                     {...inputProps}
