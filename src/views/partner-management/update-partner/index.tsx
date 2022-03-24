@@ -74,7 +74,7 @@ const UpdatePartnerPage = ({ ...others }) => {
         () => {
             if (partnerId) {
                 setIsEdit(true);
-                return partnerServices.getById(partnerId);
+                return partnerServices.getById(`${partnerId}?include_User=1`);
             }
             setIsEdit(false);
             return null;
@@ -103,6 +103,8 @@ const UpdatePartnerPage = ({ ...others }) => {
                         navi(-1);
                     })
                     .catch((err) => {
+                        console.log(err);
+
                         toastService.toast(
                             'error',
                             `${err?.message} ${_.map(err.details, (item) => {

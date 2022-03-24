@@ -35,6 +35,8 @@ export type UserProfile = {
     Progress?: ProfileProgress;
     fullname?: string;
     token?: string;
+    partner_id?: number;
+    user_type?: number;
 };
 
 export type Profile = {

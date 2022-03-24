@@ -1,6 +1,6 @@
 // assets
 import faker from '@faker-js/faker';
-import { Grid, Typography } from '@mui/material';
+import { Box, Button, Grid, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import FEDatePickerField from 'components/forms/FEDatePickerField';
 import FEDateRangePickerField from 'components/forms/FEDateRangePickerField';
@@ -9,6 +9,7 @@ import FETextField from 'components/forms/FETextField';
 import ToolbarUpdate from 'components/ToolbarUpdate';
 import { FormikHelpers, useFormik } from 'formik';
 import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import MainCard from 'ui-component/cards/MainCard';
 // third party
 import * as Yup from 'yup';
@@ -26,7 +27,7 @@ interface IFormProps {
     ward: string;
     district: string;
     province: string;
-    contract_number: number;
+    contract_number: string;
     contract_from: Date;
     contract_to: Date;
     sign_contract_date: Date;
@@ -45,7 +46,7 @@ const initialValues: IFormProps = {
     ward: '',
     district: '',
     province: '',
-    contract_number: 0,
+    contract_number: '',
     sign_contract_date: new Date(),
     contract_from: new Date(),
     contract_to: new Date(),
@@ -80,6 +81,7 @@ const FEUpdatePartnerFrm = ({
     isEdit
 }: Props) => {
     const theme = useTheme();
+    const navi = useNavigate();
     const formik = useFormik<IFormProps>({
         initialValues,
         validationSchema: Yup.object({
@@ -97,7 +99,7 @@ const FEUpdatePartnerFrm = ({
             ward: Yup.string().required('Ward is required'),
             district: Yup.string().required('District is required'),
             province: Yup.string().required('City is required'),
-            contract_number: Yup.number().required('Contract Number is required'),
+            contract_number: Yup.string().required('Contract Number is required'),
             sign_contract_date: Yup.date().required(),
             contract_from: Yup.date().required(),
             contract_to: Yup.date().required(),
@@ -146,7 +148,47 @@ const FEUpdatePartnerFrm = ({
                             </Grid>
                             <Grid item xs={12}>
                                 <Grid container spacing={2}>
-                                    <Grid item xs={12} md>
+                                    {Boolean(isEdit) && (
+                                        <Grid item xs={12}>
+                                            <MainCard
+                                                sx={{
+                                                    border: '1px solid #E5E5E5 !important',
+                                                    my: 3
+                                                }}
+                                            >
+                                                <Box
+                                                    sx={{
+                                                        display: 'flex',
+                                                        justifyContent: 'space-between',
+                                                        bgcolor: 'background.paper',
+                                                        alignItems: 'center'
+                                                    }}
+                                                >
+                                                    <Typography sx={{ color: '#4C4C4C', fontWeight: 700 }}>
+                                                        Partner: {_.get(dataInitial, 'name', 'N/A')}
+                                                    </Typography>
+                                                    <Typography
+                                                        sx={{ color: '#4C4C4C', fontWeight: 700, alignItems: 'center', display: 'flex' }}
+                                                    >
+                                                        Sub-Partner: {_.get(dataInitial, 'count_subPartner', 'N/A')}
+                                                        <Button
+                                                            color="secondary"
+                                                            sx={{ ml: 2, borderRadius: 20 }}
+                                                            size="small"
+                                                            variant="outlined"
+                                                            onClick={(e) => navi(`/sub-partner?partner_id=${_.get(dataInitial, 'id', '')}`)}
+                                                        >
+                                                            View Detail
+                                                        </Button>
+                                                    </Typography>
+                                                    <Typography sx={{ color: '#4C4C4C', fontWeight: 700 }}>
+                                                        POS#: {_.get(dataInitial, 'count_pos', 'N/A')}
+                                                    </Typography>
+                                                </Box>
+                                            </MainCard>
+                                        </Grid>
+                                    )}
+                                    <Grid item xs={12} md sx={{ display: isEdit ? 'none' : 'initial' }}>
                                         <FETextField formik={formik} title="Partner" name="name" disabled={isEdit} />
                                     </Grid>
                                     <Grid item xs={12} md>
@@ -292,4 +334,4 @@ const FEUpdatePartnerFrm = ({
     );
 };
 
-export default FEUpdatePartnerFrm;
+export default React.memo(FEUpdatePartnerFrm);

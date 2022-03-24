@@ -2,38 +2,41 @@ import { Grid } from '@mui/material';
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import { Box } from '@mui/system';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useDispatch } from 'react-redux';
+import Slider, { Settings } from 'react-slick';
 import { gridSpacing } from 'store/constant';
 import { setMode } from 'store/slices/kanban';
 import MainCard from 'ui-component/cards/MainCard';
-// chart data
-import chartData from './chart-data';
+import FECardRM from './components/FECardRM';
 import LimitationListActions from './LimitationListActions';
 import LimitationListStylePage1 from './List';
-import RevenueChartCard from './RevenueChartCard';
-import RevenueChartCardRed from './RevenueChartCardRed';
 
 // ================================|| CHART ||================================ //
 export default function ManagementPage() {
     const theme = useTheme();
     const dispatch = useDispatch();
-
+    const settings: Settings = {
+        dots: false,
+        infinite: true,
+        speed: 500,
+        slidesToShow: 4,
+        slidesToScroll: 2
+    };
     return (
         <>
+            <div>
+                <Slider {...settings}>
+                    {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
+                        <Box sx={{ px: 1 }} key={item}>
+                            <h3>
+                                <FECardRM />
+                            </h3>
+                        </Box>
+                    ))}
+                </Slider>
+            </div>
             <Grid container spacing={gridSpacing} alignItems="center">
-                <Grid item xs={12} sm={6} lg={3}>
-                    <RevenueChartCard chartData={chartData.RevenueChartCardData} />
-                </Grid>
-                <Grid item xs={12} sm={6} lg={3}>
-                    <RevenueChartCard chartData={chartData.RevenueChartCardData} />
-                </Grid>
-                <Grid item xs={12} sm={6} lg={3}>
-                    <RevenueChartCardRed chartData={chartData.RevenueChartCardDataRed} />
-                </Grid>
-                <Grid item xs={12} sm={6} lg={3}>
-                    <RevenueChartCard chartData={chartData.RevenueChartCardData} />
-                </Grid>
                 <Grid item xs={12} sm={12}>
                     <Grid item xs={12}>
                         <Box sx={{ display: 'flex' }}>

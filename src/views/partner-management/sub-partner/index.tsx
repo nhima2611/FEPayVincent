@@ -4,7 +4,9 @@ import TableContext from 'contexts/TableContext';
 import React, { useContext, useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useNavigate } from 'react-router-dom';
+import { useSearchParam } from 'react-use';
 import partnerServices from 'services/partner-services';
+import subPartnerServices from 'services/sub-partner-services';
 import MainCard from 'ui-component/cards/MainCard';
 import eventEmitter from 'utils/eventEmitter';
 import toastify from 'utils/toastify';
@@ -13,6 +15,8 @@ import PartnerList from './list';
 const PartnerPage = () => {
     const [{ queryPageIndex, queryPageSize, sortByObject, filters, selectedIds, resetState }, dispatch] = useContext(TableContext);
     const [searchTerm, setSearchTerm] = useState('');
+    const navi = useNavigate();
+    const partnerIdParam = useSearchParam('partner_id');
 
     const {
         isLoading,
@@ -51,8 +55,6 @@ const PartnerPage = () => {
         }
     );
 
-    const navi = useNavigate();
-
     const onClickRowItem = (row) => {
         // navi(row.values?.ticket_id?.toString());
     };
@@ -69,11 +71,17 @@ const PartnerPage = () => {
 
     useEffect(() => {
         eventEmitter.addListener('SEARCH_TICKET_LIST', handleSearch);
-
+        resetState();
         return () => {
             eventEmitter.removeAllListeners();
         };
     }, []);
+
+    useEffect(() => {
+        if (partnerIdParam) {
+            dispatch({ type: 'FILTERS_CHANGED', payload: [{ id: 'partner_id', value: partnerIdParam }] });
+        }
+    }, [partnerIdParam]);
 
     const onClickDownload = () => {};
     const onUploadFile = () => {};

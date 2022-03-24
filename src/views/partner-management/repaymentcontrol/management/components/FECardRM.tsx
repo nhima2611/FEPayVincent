@@ -5,22 +5,21 @@ import RectangleRoundedIcon from '@mui/icons-material/RectangleRounded';
 import { Box, ButtonBase, Grid, IconButton, Menu, MenuItem, Typography, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useState } from 'react';
-// third party
-import Chart, { Props as ChartProps } from 'react-apexcharts';
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
+import FEChartRM from './FEChartRM';
+import AnimatedNumber from 'animated-number-react';
+import numeral from 'numeral';
 
-// ===========================|| REVENUE CHART CARD ||=========================== //
-
-const RevenueChartCardRed = ({ chartData }: { chartData: ChartProps }) => {
+const FECardRM = () => {
     const theme = useTheme();
     const matchDownMd = useMediaQuery(theme.breakpoints.down('md'));
     const matchDownXs = useMediaQuery(theme.breakpoints.down('sm'));
 
-    const blockSXWarning = {
+    const blockSXBlue = {
         p: 1,
         border: 1,
-        borderColor: 'error.main'
+        borderColor: '#E5E5E5'
     };
 
     const [anchorEl, setAnchorEl] = useState<Element | ((element: Element) => Element) | null | undefined>(null);
@@ -33,27 +32,27 @@ const RevenueChartCardRed = ({ chartData }: { chartData: ChartProps }) => {
         setAnchorEl(null);
     };
 
-    const iconSXWarning = {
+    const iconSXBlue = {
         fontSize: '0.875rem',
         marginRight: 0.2,
         verticalAlign: 'sub',
-        color: 'error.main'
+        color: '#2F80ED'
     };
 
-    const iconSXOrange = {
+    const iconSXPurple = {
         fontSize: '0.875rem',
         marginRight: 0.2,
         verticalAlign: 'sub',
-        color: '#F2994A'
+        color: '#BB6BD9'
     };
 
     return (
-        <MainCard sx={blockSXWarning}>
+        <MainCard sx={blockSXBlue}>
             <Grid container spacing={2} direction={matchDownMd && !matchDownXs ? 'row' : 'column'}>
                 <Grid container justifyContent="space-between" alignItems="center">
                     <Grid item>
                         <Typography variant="h3" color="error.main">
-                            VIETTEL
+                            SMARTNET
                         </Typography>
                     </Grid>
                     <Grid item>
@@ -102,41 +101,17 @@ const RevenueChartCardRed = ({ chartData }: { chartData: ChartProps }) => {
                                 Delete
                             </MenuItem>
                         </Menu>
-                        {/* <Menu
-                            id="menu-popular-card"
-                            anchorEl={anchorEl}
-                            keepMounted
-                            open={Boolean(anchorEl)}
-                            onClose={handleClose}
-                            variant="selectedMenu"
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'right'
-                            }}
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right'
-                            }}
-                        >
-                            <MenuItem onClick={handleClose}> Today</MenuItem>
-                            <MenuItem onClick={handleClose}> This Month</MenuItem>
-                            <MenuItem onClick={handleClose}> This Year </MenuItem>
-                        </Menu> */}
                     </Grid>
                 </Grid>
                 <Grid item xs={12} sm={7} md={12}>
-                    <Chart {...chartData} />
+                    {/* <Chart {...chartData} /> */}
+                    <FEChartRM />
                 </Grid>
-                {/* <Box sx={{ display: { xs: 'none', sm: 'block', md: 'none' } }}>
-                    <Grid item>
-                        <Divider />
-                    </Grid>
-                </Box> */}
                 <Grid item container justifyContent="space-around" alignItems="center" xs={12} sm={5} md={12}>
                     <Grid item sm={6}>
                         <Grid container direction="column">
                             <Typography variant="h6">
-                                <RectangleRoundedIcon sx={iconSXWarning} />
+                                <RectangleRoundedIcon sx={iconSXBlue} />
                                 Daily Limit
                             </Typography>
                         </Grid>
@@ -144,15 +119,25 @@ const RevenueChartCardRed = ({ chartData }: { chartData: ChartProps }) => {
                     <Grid item sm={6}>
                         <Grid container direction="column">
                             <Typography variant="h6" align="right">
-                                75%
+                                Total: $
+                                <AnimatedNumber
+                                    value={Math.floor(Math.random() * 900000)}
+                                    formatValue={(res) => numeral(res).format('0,0')}
+                                    duration={500}
+                                />
                             </Typography>
                         </Grid>
                     </Grid>
                     <Grid item sm={12}>
                         <Grid container direction="column">
                             <Box sx={{ color: theme.palette.primary.main }}>
-                                <Typography variant="h4" align="right" style={{ color: theme.palette.error.main }}>
-                                    $263,040,000
+                                <Typography variant="h4" align="right" style={{ color: '#3D83EA' }}>
+                                    $
+                                    <AnimatedNumber
+                                        value={Math.floor(Math.random() * 900000000)}
+                                        formatValue={(res) => numeral(res).format('0,0')}
+                                        duration={500}
+                                    />
                                 </Typography>
                             </Box>
                         </Grid>
@@ -162,22 +147,32 @@ const RevenueChartCardRed = ({ chartData }: { chartData: ChartProps }) => {
                     <Grid item sm={6}>
                         <Grid container direction="column">
                             <Typography variant="h6">
-                                <RectangleRoundedIcon sx={iconSXOrange} /> Monthly Limit
+                                <RectangleRoundedIcon sx={iconSXPurple} /> Monthly Limit
                             </Typography>
                         </Grid>
                     </Grid>
                     <Grid item sm={6}>
                         <Grid container direction="column">
                             <Typography variant="h6" align="right">
-                                25%
+                                Total: $
+                                <AnimatedNumber
+                                    value={Math.floor(Math.random() * 900000)}
+                                    formatValue={(res) => numeral(res).format('0,0')}
+                                    duration={500}
+                                />
                             </Typography>
                         </Grid>
                     </Grid>
                     <Grid item sm={12}>
                         <Grid container direction="column">
                             <Box sx={{ color: theme.palette.primary.main }}>
-                                <Typography variant="h4" align="right" color="inherit" style={{ color: '#F2994A' }}>
-                                    $263,040,000
+                                <Typography variant="h4" align="right" color="inherit" style={{ color: '#285598' }}>
+                                    $
+                                    <AnimatedNumber
+                                        value={Math.floor(Math.random() * 900000000)}
+                                        formatValue={(res) => numeral(res).format('0,0')}
+                                        duration={500}
+                                    />
                                 </Typography>
                             </Box>
                         </Grid>
@@ -216,4 +211,4 @@ const RevenueChartCardRed = ({ chartData }: { chartData: ChartProps }) => {
     );
 };
 
-export default RevenueChartCardRed;
+export default FECardRM;
