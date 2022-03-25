@@ -15,9 +15,9 @@ import { getMessaging } from 'firebase/messaging';
 // To learn more about the benefits of this model and instructions on how to
 // opt-in, read https://bit.ly/CRA-PWA
 
-export const firebaseApp = initializeApp(FIREBASE_API);
-export const analytics = getAnalytics(firebaseApp);
-export const messaging = getMessaging(firebaseApp);
+// export const firebaseApp = initializeApp(FIREBASE_API);
+// export const analytics = getAnalytics(firebaseApp);
+// export const messaging = getMessaging(firebaseApp);
 
 const isLocalhost = Boolean(
     window.location.hostname === 'localhost' ||

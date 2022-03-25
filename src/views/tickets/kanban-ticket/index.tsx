@@ -40,12 +40,16 @@ const KanbanTicketPage = () => {
             dispatch(getItems(res.data?.data));
         }
     });
+
+    const onClickTransfer = () => {
+        navi(-1);
+    };
     return (
         <Box sx={{ display: 'flex' }}>
             <Grid container>
                 <Grid item xs={12}>
                     <MainCard contentSX={{ p: 2 }}>
-                        <ActionKanbanOrList mode="kanban" urlAddTicket="/tickets/create-ticket" onClickTransfer={() => navi(-1)} />
+                        <ActionKanbanOrList mode="kanban" urlAddTicket="/tickets/create-ticket" onClickTransfer={onClickTransfer} />
                         {qGetKanban.isLoading ? <div>loading</div> : <Board />}
                     </MainCard>
                 </Grid>

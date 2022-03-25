@@ -41,7 +41,7 @@ const getDragWrapper = (
 ): CSSProperties | undefined => {
     const bgcolor = theme.palette.mode === 'dark' ? theme.palette.background.default : theme.palette.primary.light;
     return {
-        minWidth: 198,
+        minWidth: 200,
         border: '1px solid',
         borderColor: color,
         // borderColor: theme.palette.mode === 'dark' ? theme.palette.background.default : theme.palette.primary[200] + 75,

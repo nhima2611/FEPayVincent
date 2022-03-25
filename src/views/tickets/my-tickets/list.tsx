@@ -4,7 +4,7 @@ import FETable from 'components/table/FETable';
 import { SelectColumnFilter } from 'components/table/SelectColumnFilter';
 import { getColorAndNameStatus, issueType, lastStatusType, productTypes, requestedBy, transactionType } from 'constants/tickets';
 import { camelCase, startCase } from 'lodash';
-import React from 'react';
+import React, { memo } from 'react';
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
 
@@ -97,4 +97,4 @@ const TicketList = ({ data = [], loading, cols = [], onClickRowItem }) => {
     );
 };
 
-export default TicketList;
+export default memo(TicketList);

@@ -3,6 +3,7 @@ import { Box, Grid } from '@mui/material';
 import ActionKanbanOrList from 'components/ActionKanbanOrList';
 import { refLoading } from 'components/Loading';
 import PreviewTable, { refPreviewTable } from 'components/PreviewTable';
+import { refFETable } from 'components/table/FETable';
 import { STATUS } from 'constants/status';
 import TableContext from 'contexts/TableContext';
 import React, { useContext, useEffect, useState } from 'react';
@@ -32,6 +33,7 @@ export default function MyTicketsPage() {
     }, []);
 
     const navi = useNavigate();
+    const location = useLocation();
 
     const onClickRowItem = (row) => {
         const { original } = row;
@@ -99,6 +101,10 @@ export default function MyTicketsPage() {
             eventEmitter.removeAllListeners();
         };
     }, []);
+
+    useEffect(() => {
+        refFETable.current?.setFilter('last_status', location.state);
+    }, [location.state]);
 
     const mDownloadTicket = useMutation(({ ids }: { ids: number[] }) => ticketsServices.downloadTicket(ids), {
         onSuccess: (data) => {

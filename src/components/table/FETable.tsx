@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 import TableContext from 'contexts/TableContext';
-import React, { useContext } from 'react';
+import React, { createRef, useContext, useImperativeHandle } from 'react';
 import { useFilters, usePagination, useRowSelect, useSortBy, useTable } from 'react-table';
 import eventEmitter from 'utils/eventEmitter';
 
@@ -28,6 +28,7 @@ interface Props {
     manualSortBy?: boolean;
     manualPagination?: boolean;
 }
+export const refFETable = createRef<any>();
 const FETable = ({
     data,
     columns,
@@ -76,6 +77,7 @@ const FETable = ({
         selectedFlatRows,
         toggleAllPageRowsSelected,
         setAllFilters,
+        setFilter,
         state: { pageIndex, pageSize, sortBy, filters, selectedRowIds }
     } = useTable(
         {
@@ -131,6 +133,10 @@ const FETable = ({
             toggleAllPageRowsSelected(false);
         }
     };
+
+    useImperativeHandle(refFETable, () => ({
+        setFilter
+    }));
 
     React.useEffect(() => {
         eventEmitter.addListener('DESELECT_ALL_ROWS', handleDeselectAllRow);
