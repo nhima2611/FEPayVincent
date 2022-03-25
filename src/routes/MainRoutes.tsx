@@ -9,6 +9,7 @@ import AuthGuard from 'utils/route-guard/AuthGuard';
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard')));
 
 // tickets routing
+const KanbanTicketPage = Loadable(lazy(() => import('views/tickets/kanban-ticket')));
 const MyTicketsPage = Loadable(lazy(() => import('views/tickets/my-tickets')));
 const WaitingTicketsPage = Loadable(lazy(() => import('views/tickets/waiting-tickets')));
 const CreateTicketPage = Loadable(lazy(() => import('views/tickets/create')));
@@ -49,12 +50,12 @@ const MainRoutes = {
             element: <MyTicketsPage />
         },
         {
-            path: '/waiting-tickets',
-            element: <WaitingTicketsPage />
+            path: '/kanban-ticket',
+            element: <KanbanTicketPage />
         },
         {
-            path: `/waiting-tickets/:ticketID`,
-            element: <TicketDetailPage />
+            path: '/waiting-tickets',
+            element: <WaitingTicketsPage />
         },
         {
             path: '/tickets/create-ticket',

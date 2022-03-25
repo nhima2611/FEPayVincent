@@ -20,7 +20,7 @@ const Input = styled('input')({
     display: 'none'
 });
 
-const FEAttachmentsUpload = ({ ticketId }) => {
+const FEAttachmentsUpload = ({ ticketId, disabled }) => {
     const [files, setFiles] = useState<any>([]);
 
     const mUploadFile = useMutation((file: any) => ticketsServices.addAttachment(file), {
@@ -38,7 +38,7 @@ const FEAttachmentsUpload = ({ ticketId }) => {
         setFiles([...file, ...files]);
     };
 
-    const { getRootProps, getInputProps } = useDropzone({ onDrop: onDropFile, maxFiles: 5 });
+    const { getRootProps, getInputProps } = useDropzone({ onDrop: onDropFile, maxFiles: 5, disabled });
 
     const onRemoveItem = (index: any) => {
         setFiles(() => files.filter((it: any, indexFile: number) => indexFile !== index));
@@ -70,8 +70,8 @@ const FEAttachmentsUpload = ({ ticketId }) => {
     return (
         <div>
             <BoxStyle
-                sx={{ padding: 3, backgroundColor: 'rgba(39, 174, 96, .15)', cursor: 'pointer' }}
-                {...getRootProps({ className: 'dropzone' })}
+                sx={{ padding: 3, backgroundColor: disabled ? '#B3B3B3' : 'rgba(39, 174, 96, .15)', cursor: 'pointer' }}
+                {...getRootProps({ className: `dropzone` })}
             >
                 <Stack direction="row" justifyContent="center" alignItems="center" spacing={1}>
                     <Input id="contained-button-file" {...getInputProps()} />

@@ -92,7 +92,7 @@ const NotificationSection = () => {
         setTabValue(newValue);
     };
 
-    const qNotifications = useQuery('qNotifications', () => notificationServices.getAll());
+    // const qNotifications = useQuery('qNotifications', () => notificationServices.getAll());
 
     return (
         <>
@@ -160,7 +160,7 @@ const NotificationSection = () => {
                                                             <Typography variant="subtitle1">Notification</Typography>
                                                             <Chip
                                                                 size="small"
-                                                                label={qNotifications.data?.data?.data?.length}
+                                                                label={0}
                                                                 sx={{
                                                                     color: theme.palette.background.default,
                                                                     bgcolor: theme.palette.warning.dark
@@ -193,10 +193,10 @@ const NotificationSection = () => {
                                                                     </Tabs>
                                                                 </Box>
                                                                 <TabPanel value={tabValue} index={0}>
-                                                                    <NotificationList data={qNotifications.data?.data?.data} />
+                                                                    <NotificationList data={[]} />
                                                                 </TabPanel>
                                                                 <TabPanel value={tabValue} index={1}>
-                                                                    <NotificationList data={qNotifications.data?.data?.data} />
+                                                                    <NotificationList data={[]} />
                                                                 </TabPanel>
                                                             </Box>
                                                         </Grid>

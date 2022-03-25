@@ -1,5 +1,12 @@
 import { BaseApiService } from 'services/core/baseApi.service';
-import { AddAttachmentModel, AddDescriptionModel, CreateTicketModel, AssignToModel, EditTicketModel } from 'types/ticket';
+import {
+    AddAttachmentModel,
+    AddDescriptionModel,
+    CreateTicketModel,
+    AssignToModel,
+    EditTicketModel,
+    UpdateStatusAndActionModel
+} from 'types/ticket';
 import axiosServices from 'utils/axios';
 
 class TicketService extends BaseApiService {
@@ -15,11 +22,15 @@ class TicketService extends BaseApiService {
         return axiosServices.post(`/v1/tickets/deleteTickets`, { ids: model });
     };
 
-    uploadTicket = (file?: any) => {
+    verifyImportFile = (file?: any) => {
         const formData = new FormData();
         formData.append('file', file);
 
-        return axiosServices.post('/v1/tickets/import', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+        return axiosServices.post('/v1/tickets/verifyImportFile', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+    };
+
+    importFile = (data?: any[]) => {
+        return axiosServices.post('/v1/tickets/importData', { data });
     };
 
     addDescription = (data: AddDescriptionModel) => {
@@ -40,6 +51,10 @@ class TicketService extends BaseApiService {
 
     assignTo = (data: AssignToModel) => {
         return axiosServices.post('v1/tickets/assigneesandsupporters', data);
+    };
+
+    updateStatusTicket = (model: UpdateStatusAndActionModel, ticket_id: number) => {
+        return axiosServices.put(`v1/tickets/${ticket_id}`, model);
     };
 }
 

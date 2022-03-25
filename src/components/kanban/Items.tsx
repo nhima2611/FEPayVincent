@@ -111,8 +111,12 @@ const Items = ({ item, index, columnColor }: Props) => {
 
     const navi = useNavigate();
 
-    const onClickRowItem = (id: string) => {
-        navi(id);
+    const onClickRowItem = (ticket: TicketItem) => {
+        if (ticket.last_status === 0) {
+            navi(`edit-ticket/${ticket?.ticket_id?.toString()}`);
+        } else {
+            navi(`/tickets/${ticket?.ticket_id?.toString()}`);
+        }
     };
 
     return (
@@ -125,7 +129,7 @@ const Items = ({ item, index, columnColor }: Props) => {
                     style={getDragWrapper(snapshot.isDragging, provided.draggableProps.style, theme, `${borderRadius}px`, columnColor)}
                 >
                     <Stack
-                        onClick={() => onClickRowItem(item.ticket_id.toString())}
+                        onClick={() => onClickRowItem(item)}
                         direction="column"
                         justifyContent="space-between"
                         alignItems="flex-start"

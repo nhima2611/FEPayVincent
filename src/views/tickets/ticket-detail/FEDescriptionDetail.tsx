@@ -20,7 +20,7 @@ import { AddDescriptionModel } from 'types/ticket';
 import eventEmitter from 'utils/eventEmitter';
 import toastify from 'utils/toastify';
 
-const FEDescriptionDetail = ({ data = [], ticketId }: { data: any[]; ticketId: number }) => {
+const FEDescriptionDetail = ({ disabled, data = [], ticketId }: { data: any[]; ticketId: number; disabled: boolean }) => {
     const [value, setValue] = useState<string>('');
     const { user } = useAuth();
 
@@ -70,8 +70,8 @@ const FEDescriptionDetail = ({ data = [], ticketId }: { data: any[]; ticketId: n
                                 <TableCell component="th" scope="row">
                                     {index + 1}
                                 </TableCell>
-                                <TableCell align="left">
-                                    <div style={{ maxWidth: 200, overflow: 'hidden' }}>{row.content}</div>
+                                <TableCell align="left" sx={{}}>
+                                    <div style={{ wordBreak: 'break-all' }}>{row.content}</div>
                                 </TableCell>
                                 <TableCell align="left">{row?.fullname}</TableCell>
                                 <TableCell align="left">{row?.user?.role}</TableCell>
@@ -83,18 +83,23 @@ const FEDescriptionDetail = ({ data = [], ticketId }: { data: any[]; ticketId: n
             </TableContainer>
 
             <OutlinedInput
+                disabled={disabled}
                 sx={{ marginTop: 2 }}
                 fullWidth
                 rows={4}
+                inputProps={{ maxLength: 500 }}
                 placeholder="Enter Description"
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
                 endAdornment={
-                    <InputAdornment position="end">
-                        <IconButton aria-label="toggle password visibility" edge="end" onClick={handleOnSend}>
-                            <IconSend />
-                        </IconButton>
-                    </InputAdornment>
+                    <>
+                        <div>{`${value.length}/500`}</div>
+                        <InputAdornment position="end">
+                            <IconButton aria-label="toggle password visibility" edge="end" onClick={handleOnSend}>
+                                <IconSend />
+                            </IconButton>
+                        </InputAdornment>
+                    </>
                 }
             />
         </form>

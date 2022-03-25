@@ -11,12 +11,16 @@ import TicketDetail, { refTicketDetail } from './TicketDetail';
 
 const TicketDetailPage = () => {
     const { ticketID } = useParams();
-    const qTicketDetail = useQuery(`qTicketDetail_${ticketID}`, () => ticketsServices.getById(ticketID), { keepPreviousData: false });
+    const qTicketDetail = useQuery(`qTicketDetail_${ticketID}`, () => ticketsServices.getById(ticketID), {
+        keepPreviousData: false,
+        onError: (err: any) => {
+            toastify.showToast('error', err.message || err);
+        }
+    });
     const navi = useNavigate();
 
     useEffect(() => {
         eventEmitter.addListener('ADD_DESCRIPTION_SUCCESS', (success: boolean) => success && qTicketDetail.refetch());
-
         return () => {
             eventEmitter.removeAllListeners();
         };
@@ -24,27 +28,29 @@ const TicketDetailPage = () => {
 
     useEffect(() => {
         eventEmitter.addListener('UPLOAD_ATTACHMENT_SUCCESS', (success: boolean) => success && qTicketDetail.refetch());
-
         return () => {
             eventEmitter.removeAllListeners();
         };
     }, []);
 
-    const mUpdateTicket = useMutation((model: UpdateStatusAndActionModel) => ticketsServices.updatePut(model), {
-        onSuccess: (res) => {
-            qTicketDetail.refetch();
-            toastify.showToast('success', 'Update Success!');
-            navi(-1);
-        },
-        onError: (err: any) => {
-            toastify.showToast('error', err.message);
+    const mUpdateTicket = useMutation(
+        (model: UpdateStatusAndActionModel) => ticketsServices.updateStatusTicket(model, _.toNumber(ticketID)),
+        {
+            onSuccess: (res) => {
+                qTicketDetail.refetch();
+                toastify.showToast('success', 'Update Success!');
+                navi(-1);
+            },
+            onError: (err: any) => {
+                toastify.showToast('error', err.message || err);
+            }
         }
-    });
+    );
 
     const onSaveChanges = (model: any) => {
         return toastService.showConfirm({
             onConfirm: async () => {
-                mUpdateTicket.mutate({ ...model, id: ticketID });
+                mUpdateTicket.mutate(model);
             },
             title: 'Are you sure change it?',
             icon: 'warning'
@@ -58,26 +64,35 @@ const TicketDetailPage = () => {
             refAssignTo.current?.handleClose();
         },
         onError: (err: any) => {
-            toastify.showToast('error', err.message);
+            toastify.showToast('error', err.message || err);
         }
     });
 
-    const onSubmitAssignTo = (values: any) => {
+    const onSubmitAssignTo = (data: AssignToModel) => {
         mAssignTo.mutate({
-            email: values.email,
-            name: values.username,
-            ticket_ids: [_.toNumber(ticketID)],
-            type: values.type
+            ...data,
+            ticket_ids: [_.toNumber(ticketID)]
         });
     };
 
     const onClickAssignee = () => {
         refTicketDetail.current?.handleClose();
-        refAssignTo.current?.handleClickOpen({ title: 'Assignee' });
+        refAssignTo.current?.handleClickOpen({ title: 'Assignee', data: qTicketDetail.data?.data?.data?.assignee });
     };
+
     const onClickSupporter = () => {
         refTicketDetail.current?.handleClose();
-        refAssignTo.current?.handleClickOpen({ title: 'Supporter' });
+        refAssignTo.current?.handleClickOpen({ title: 'Supporter', data: qTicketDetail.data?.data?.data?.supporter });
+    };
+
+    const onCancelTicket = () => {
+        return toastService.showConfirm({
+            onConfirm: async () => {
+                mUpdateTicket.mutate({ status: 6, id: ticketID });
+            },
+            title: 'Are you sure cancel ticket?',
+            icon: 'warning'
+        });
     };
 
     return (
@@ -87,9 +102,9 @@ const TicketDetailPage = () => {
                 onSaveChanges={onSaveChanges}
                 onClickAssignee={onClickAssignee}
                 onClickSupporter={onClickSupporter}
+                onCancelTicket={onCancelTicket}
             />
-            ;
-            <AssignToDialog onSubmit={onSubmitAssignTo} />
+            <AssignToDialog onSubmit={onSubmitAssignTo} loading={mAssignTo.isLoading} />
         </>
     );
 };

@@ -1,13 +1,11 @@
-import { ChangeEvent } from 'react';
-
+import { Box } from '@mui/material';
 // material-ui
 import { useTheme } from '@mui/material/styles';
-import { Box, OutlinedInput } from '@mui/material';
-
+import { ChangeEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 // project imports
 import { useDispatch, useSelector } from 'store';
 import { editColumn } from 'store/slices/kanban';
-
 // types
 import { KanbanColumn } from 'types/kanban';
 
@@ -20,6 +18,7 @@ interface Props {
 const EditColumn = ({ column }: Props) => {
     const theme = useTheme();
     const dispatch = useDispatch();
+    const navi = useNavigate();
 
     const { columns } = useSelector((state) => state.kanban);
 
@@ -35,6 +34,14 @@ const EditColumn = ({ column }: Props) => {
                 columns
             )
         );
+    };
+
+    const onNaviList = () => {
+        if (column.type === 1) {
+            navi('/waiting-tickets', { state: column.type });
+        } else {
+            navi('/tickets', { state: column.type });
+        }
     };
 
     return (
@@ -65,9 +72,13 @@ const EditColumn = ({ column }: Props) => {
                 textAlign: 'center',
                 color: column.color,
                 fontSize: 12,
-                fontWeight: 'bold'
+                fontWeight: 'bold',
+                cursor: 'pointer'
             }}
-        >{`${column.title} (${column.itemIds?.length})`}</Box>
+            onClick={onNaviList}
+        >
+            {`${column.title} (${column.itemIds?.length})`}
+        </Box>
     );
 };
 

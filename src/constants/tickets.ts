@@ -24,6 +24,12 @@ const productTypeRightContractNumberType = {
     2: 'Card'
 };
 
+const productTypeWrongContractNumberType = {
+    1: 'Loan',
+    2: 'Card',
+    3: 'Banca'
+};
+
 const requestedBy = {
     1: 'By Teller’s mistake',
     2: 'By Customer’s request',
@@ -49,7 +55,7 @@ const lastStatusType = {
     3: 'Reverted',
     4: 'Solved',
     5: 'Rejected',
-    6: 'Cancel'
+    6: 'Canceled'
 };
 
 const getColorAndNameStatus = (status: number) => {
@@ -80,7 +86,7 @@ const getColorAndNameStatus = (status: number) => {
             color = '#FF0015';
             name = 'Rejected';
             break;
-        case STATUS.CANCEL:
+        case STATUS.CANCELED:
             color = '#F2994A';
             name = 'Cancel';
             break;
@@ -116,42 +122,49 @@ const columnsData: any[] = [
     {
         id: columnIdsData.column1,
         title: STATUS_NAME.DRAFT,
+        type: 0,
         color: '#808080',
         itemIds: [31]
     },
     {
         id: columnIdsData.column2,
         title: STATUS_NAME.NEW,
+        type: 1,
         itemIds: [],
         color: '#2F80ED'
     },
     {
         id: columnIdsData.column3,
         title: STATUS_NAME.PROCESSING,
+        type: 2,
         itemIds: [],
         color: '#BB6BD9'
     },
     {
         id: columnIdsData.column4,
         title: STATUS_NAME.REVERTED,
+        type: 3,
         itemIds: [],
         color: '#F8D548'
     },
     {
         id: columnIdsData.column5,
         title: STATUS_NAME.SOLVED,
+        type: 4,
         itemIds: [],
         color: '#27AE60'
     },
     {
         id: columnIdsData.column6,
         title: STATUS_NAME.REJECTED,
+        type: 5,
         itemIds: [],
         color: '#FF0015'
     },
     {
         id: columnIdsData.column7,
-        title: STATUS_NAME.CANCEL,
+        title: STATUS_NAME.CANCELED,
+        type: 6,
         itemIds: [],
         color: '#F2994A'
     }
@@ -168,5 +181,6 @@ export {
     columnsOrderData,
     columnsData,
     actionTicketTypes,
-    productTypeRightContractNumberType
+    productTypeRightContractNumberType,
+    productTypeWrongContractNumberType
 };
