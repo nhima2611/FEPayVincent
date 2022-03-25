@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 
 export const DatePickerColumnFilter = ({ column: { filterValue, setFilter } }) => {
     useEffect(() => {
-        if (filterValue === 'Invalid date' || undefined) {
+        if (filterValue === 'Invalid date' || filterValue === undefined) {
             setFilter('');
         }
     }, [filterValue]);
@@ -27,18 +27,25 @@ export const DatePickerColumnFilter = ({ column: { filterValue, setFilter } }) =
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DatePicker
-                renderInput={({ inputRef, inputProps, InputProps }) => (
-                    <Stack direction="row" alignItems="center" sx={{ border: 1, borderRadius: 2, height: 35, padding: '0px 8px' }}>
-                        <input
+                inputFormat="dd/MM/yyyy"
+                renderInput={({ inputRef, inputProps, InputProps }) => {
+                    return (
+                        <Stack
                             ref={inputRef}
-                            onFocus={onFocus}
-                            onBlur={onBlur}
-                            style={{ border: 'none', outline: 'none', width: 100 }}
-                            {...inputProps}
-                        />
-                        {InputProps?.endAdornment}
-                    </Stack>
-                )}
+                            direction="row"
+                            alignItems="center"
+                            sx={{ border: 1, borderRadius: 2, height: 35, padding: '0px 8px' }}
+                        >
+                            <input
+                                onFocus={onFocus}
+                                onBlur={onBlur}
+                                style={{ border: 'none', outline: 'none', width: 100 }}
+                                {...inputProps}
+                            />
+                            {InputProps?.endAdornment}
+                        </Stack>
+                    );
+                }}
                 value={filterValue || ''}
                 onChange={onChange}
             />

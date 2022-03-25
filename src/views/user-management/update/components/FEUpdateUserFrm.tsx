@@ -28,7 +28,7 @@ const initialValues: IFormProps = {
     email: '',
     phone: '',
     position: 'Staff',
-    group_id: '',
+    group_id: '0',
     sub_group_id: '0',
     role: '',
     password: ''

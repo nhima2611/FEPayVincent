@@ -1,6 +1,9 @@
 import { Box } from '@mui/material';
 // material-ui
 import { useTheme } from '@mui/material/styles';
+import useAuth from 'hooks/useAuth';
+import { ROLE } from 'constants/auth';
+
 import { ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 // project imports
@@ -19,6 +22,7 @@ const EditColumn = ({ column }: Props) => {
     const theme = useTheme();
     const dispatch = useDispatch();
     const navi = useNavigate();
+    const { user } = useAuth();
 
     const { columns } = useSelector((state) => state.kanban);
 
@@ -37,10 +41,14 @@ const EditColumn = ({ column }: Props) => {
     };
 
     const onNaviList = () => {
+        if (user?.role === ROLE.PARTNER) {
+            navi(`/tickets?status=${column.type}`);
+            return;
+        }
         if (column.type === 1) {
-            navi('/waiting-tickets', { state: column.type });
+            navi(`/waiting-tickets?status=${column.type}`);
         } else {
-            navi('/tickets', { state: column.type });
+            navi(`/tickets?status=${column.type}`);
         }
     };
 

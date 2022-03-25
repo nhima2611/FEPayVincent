@@ -33,6 +33,7 @@ const NavGroup = ({ item }: NavGroupProps) => {
     const theme = useTheme();
     const { user } = useAuth();
     const menuTicket = user?.role === ROLE.PARTNER ? ticketPartner : tickets;
+    console.log(user);
 
     const [childrenItem, setChildrenItem] = useState<any>(item.children);
 
