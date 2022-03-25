@@ -38,6 +38,13 @@ const ProfileSection = () => {
     const { borderRadius } = useConfig();
     const navigate = useNavigate();
 
+    const styleObjTime =
+        new Date().getHours() < 12
+            ? { title: 'Good Morning', bgUrl: 'url(images/morning.jpg)', color: '#000' }
+            : new Date().getHours() < 18
+            ? { title: 'Good Afternoon', bgUrl: 'url(images/afternoon.jpg)', color: '#fff' }
+            : { title: 'Good Evening', bgUrl: 'url(images/night.jpg)', color: '#fff' };
+
     const [sdm, setSdm] = useState(true);
     const [value, setValue] = useState('');
     const [notification, setNotification] = useState(false);
@@ -152,22 +159,35 @@ const ProfileSection = () => {
                                 {open && (
                                     <MainCard border={false} elevation={16} content={false} boxShadow shadow={theme.shadows[16]}>
                                         <Box sx={{ p: 2, pb: 0 }}>
-                                            <Stack>
+                                            <Card
+                                                sx={{
+                                                    backgroundImage: styleObjTime.bgUrl,
+                                                    /* Add the blur effect */
+                                                    // filter: 'blur(8px)',
+                                                    height: '100%',
+                                                    backgroundPosition: 'center',
+                                                    backgroundRepeat: 'no-repeat',
+                                                    backgroundSize: 'cover',
+                                                    p: 2,
+                                                    py: 4
+                                                }}
+                                            >
                                                 <Stack direction="row" spacing={0.5} alignItems="center">
-                                                    <Typography variant="h4">
-                                                        {new Date().getHours() < 12
-                                                            ? 'Good Morning'
-                                                            : new Date().getHours() < 18
-                                                            ? 'Good Afternoon'
-                                                            : 'Good Evening'}
-                                                        ,
+                                                    <Typography variant="h4" sx={{ color: styleObjTime.color }}>
+                                                        {styleObjTime.title},
                                                     </Typography>
-                                                    <Typography component="span" variant="h4" sx={{ fontWeight: 400 }}>
+                                                    <Typography
+                                                        component="span"
+                                                        variant="h4"
+                                                        sx={{ fontWeight: 400, color: styleObjTime.color }}
+                                                    >
                                                         {user?.fullname}
                                                     </Typography>
                                                 </Stack>
-                                                <Typography variant="subtitle2">{_.startCase(_.camelCase(user?.role))}</Typography>
-                                            </Stack>
+                                                <Typography variant="subtitle2" sx={{ color: styleObjTime.color }}>
+                                                    {_.startCase(_.camelCase(user?.role))}
+                                                </Typography>
+                                            </Card>
                                             {/* <OutlinedInput
                                                 sx={{ width: '100%', pr: 1, pl: 2, my: 2 }}
                                                 id="input-search-profile"
@@ -305,7 +325,7 @@ const ProfileSection = () => {
                                                         <ListItemIcon>
                                                             <IconLogout stroke={1.5} size="1.3rem" />
                                                         </ListItemIcon>
-                                                        <ListItemText primary={<Typography variant="body2">Logout</Typography>} />
+                                                        <ListItemText primary={<Typography variant="body2">Sign Out</Typography>} />
                                                     </ListItemButton>
                                                 </List>
                                             </Box>

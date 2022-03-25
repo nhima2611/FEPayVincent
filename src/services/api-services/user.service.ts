@@ -9,6 +9,10 @@ class UserApiService extends BaseApiService {
     getGroups(parent_id: any) {
         return axiosServices.get(`${this.apiName}/group?parent_id=${parent_id}`);
     }
+
+    getRoles() {
+        return axiosServices.get(`${this.apiName}/role`);
+    }
 }
 
 export default new UserApiService();
