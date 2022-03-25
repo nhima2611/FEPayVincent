@@ -164,8 +164,11 @@
     "my_tickets": "My Tickets",
     "waiting_tickets": "Waiting Tickets",
     "information": "Information",
-    "msg_user_login_fail": "You have entered the wrong password {count_wrong} times. If you log in the wrong {count_wrong_max} time, your account will be locked !",
+    "msg_user_login_fail": "You have entered the wrong password {count_wrong} times. \n If you log in the wrong {count_wrong_max} time, your account will be locked !",
     "msg_user_not_exist": "User not exits",
     "msg_password_invalid": "Your password is incorrect, please try again !",
-    "msg_your_account_is_locked": "Your account is locked"
+    "msg_your_account_is_locked": "Your account has been locked",
+    "msg_contact_unlock": "Please contact technical side for assistance.",
+    "msg_something_err": "Something Error !",
+    "msg_empty": " "
 }

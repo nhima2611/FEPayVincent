@@ -5,25 +5,24 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import { useSearchParam } from 'react-use';
-import partnerServices from 'services/partner-services';
-import subPartnerServices from 'services/sub-partner-services';
+import userService from 'services/api-services/user.service';
 import MainCard from 'ui-component/cards/MainCard';
 import eventEmitter from 'utils/eventEmitter';
 import toastify from 'utils/toastify';
 import PartnerList from './list';
 
-const PartnerPage = () => {
+const UserPage = () => {
     const [{ queryPageIndex, queryPageSize, sortByObject, filters, selectedIds, resetState }, dispatch] = useContext(TableContext);
     const [searchTerm, setSearchTerm] = useState('');
     const navi = useNavigate();
-    const partnerIdParam = useSearchParam('partner_id');
+    const userIdParam = useSearchParam('user_id');
 
     const {
         isLoading,
         data: dataTable,
         refetch: refetchTable
     } = useQuery(
-        ['sub_partner_table', queryPageIndex, queryPageSize, searchTerm, sortByObject, filters],
+        ['sub_user_table', queryPageIndex, queryPageSize, searchTerm, sortByObject, filters],
         () => {
             const page_size = `per_page=${queryPageSize}&page=${queryPageIndex + 1}`;
             const search = searchTerm?.length === 0 ? '' : `&keyword=${searchTerm}`;
@@ -38,7 +37,7 @@ const PartnerPage = () => {
                   }).join('')
                 : '';
 
-            return partnerServices.getAll(`${page_size}${search}&${view_type}${sortByProps}${filtersByData}`);
+            return userService.getAll(`${page_size}${search}&${view_type}${sortByProps}${filtersByData}`);
         },
         {
             keepPreviousData: true,
@@ -56,7 +55,7 @@ const PartnerPage = () => {
     );
 
     const onClickRowItem = (row) => {
-        // navi(row.values?.ticket_id?.toString());
+        navi(row.values?.user_id?.toString());
     };
 
     const handleSearch = _.debounce(
@@ -77,10 +76,10 @@ const PartnerPage = () => {
     }, []);
 
     useEffect(() => {
-        if (partnerIdParam) {
-            dispatch({ type: 'FILTERS_CHANGED', payload: [{ id: 'partner_id', value: partnerIdParam }] });
+        if (userIdParam) {
+            dispatch({ type: 'FILTERS_CHANGED', payload: [{ id: 'user_id', value: userIdParam }] });
         }
-    }, [partnerIdParam]);
+    }, [userIdParam]);
 
     const onClickDownload = () => {};
     const onUploadFile = () => {};
@@ -94,10 +93,10 @@ const PartnerPage = () => {
                         <ActionPartner
                             onClickDownload={onClickDownload}
                             onClickUser={onClickUser}
-                            urlAddTicket=""
+                            urlAddTicket="create"
                             onUploadFile={onUploadFile}
                             onClickTrash={onClickTrash}
-                            title="Sub Partner List"
+                            title="User List"
                         />
                         <PartnerList
                             onClickRowItem={onClickRowItem}
@@ -112,4 +111,4 @@ const PartnerPage = () => {
     );
 };
 
-export default PartnerPage;
+export default UserPage;

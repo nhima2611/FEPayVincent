@@ -86,7 +86,7 @@ const LimitationListActions = ({ onClickTransfer, urlAddTicket }) => {
                         key={index}
                         sx={{ minWidth: 32, padding: 0, marginX: 1, mb: 1 }}
                     >
-                        <img src={icon} />
+                        <img alt="" src={icon} />
                     </Button>
                 ))}
 
