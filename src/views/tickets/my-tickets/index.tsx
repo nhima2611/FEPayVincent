@@ -8,7 +8,8 @@ import { STATUS } from 'constants/status';
 import TableContext from 'contexts/TableContext';
 import React, { useContext, useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useSearchParam } from 'react-use';
 import toastService from 'services/core/toast.service';
 import ticketsServices from 'services/tickets-services';
 // project imports
@@ -33,11 +34,10 @@ export default function MyTicketsPage() {
     }, []);
 
     const navi = useNavigate();
-    const location = useLocation();
+    const statusParams = useSearchParam('status');
 
     const onClickRowItem = (row) => {
         const { original } = row;
-        console.log(original);
         if (original.last_status === 0) {
             navi(`edit-ticket/${row.values?.ticket_id?.toString()}`);
         } else {
@@ -103,8 +103,8 @@ export default function MyTicketsPage() {
     }, []);
 
     useEffect(() => {
-        refFETable.current?.setFilter('last_status', location.state);
-    }, [location.state]);
+        refFETable.current?.setFilter('last_status', statusParams);
+    }, [statusParams, isLoading]);
 
     const mDownloadTicket = useMutation(({ ids }: { ids: number[] }) => ticketsServices.downloadTicket(ids), {
         onSuccess: (data) => {

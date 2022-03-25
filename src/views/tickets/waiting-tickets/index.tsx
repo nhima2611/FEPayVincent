@@ -8,7 +8,8 @@ import { STATUS } from 'constants/status';
 import TableContext from 'contexts/TableContext';
 import React, { useContext, useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useSearchParam } from 'react-use';
 import toastService from 'services/core/toast.service';
 import ticketsServices from 'services/tickets-services';
 // project imports
@@ -33,7 +34,7 @@ export default function WaitingTicketsPage() {
     }, []);
 
     const navi = useNavigate();
-    const location = useLocation();
+    const statusParams = useSearchParam('status');
 
     const onClickRowItem = (row) => {
         const { original } = row;
@@ -84,8 +85,8 @@ export default function WaitingTicketsPage() {
     );
 
     useEffect(() => {
-        refFETable.current?.setFilter('last_status', location.state);
-    }, [location.state]);
+        refFETable.current?.setFilter('last_status', statusParams);
+    }, [statusParams, isLoading]);
 
     const handleSearch = _.debounce(
         ({ value }) => {

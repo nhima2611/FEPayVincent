@@ -38,9 +38,9 @@ const EditColumn = ({ column }: Props) => {
 
     const onNaviList = () => {
         if (column.type === 1) {
-            navi('/waiting-tickets', { state: column.type });
+            navi(`/waiting-tickets?status=${column.type}`);
         } else {
-            navi('/tickets', { state: column.type });
+            navi(`/tickets?status=${column.type}`);
         }
     };
 
