@@ -11,13 +11,13 @@ export const userManagement = {
             id: 'user_list',
             title: <FormattedMessage id="user_list" />,
             type: 'item',
-            url: '#'
-        },
-        {
-            id: 'role_and_privileges',
-            title: <FormattedMessage id="role_and_privileges" />,
-            type: 'item',
-            url: '#'
+            url: 'user'
         }
+        // {
+        //     id: 'role_and_privileges',
+        //     title: <FormattedMessage id="role_and_privileges" />,
+        //     type: 'item',
+        //     url: '#'
+        // }
     ]
 };

@@ -1,5 +1,4 @@
 // #region Imports
-import faker from '@faker-js/faker';
 import { ROLE } from 'constants/auth';
 import { FormikHelpers } from 'formik';
 import useAuth from 'hooks/useAuth';
@@ -8,14 +7,13 @@ import { useQuery } from 'react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import userService from 'services/api-services/user.service';
 import toastService from 'services/core/toast.service';
-import partnerServices from 'services/partner-services';
 import FEUpdateUserFrm from './components/FEUpdateUserFrm';
 // #endregion
 
 const UpdatePartnerPage = ({ ...others }) => {
     // #region Fields
     const navi = useNavigate();
-    const { partnerId } = useParams();
+    const { id } = useParams();
     const [isEdit, setIsEdit] = useState(false);
     const [groupId, setGroupId] = useState<any>(null);
     const { user } = useAuth();
@@ -69,11 +67,11 @@ const UpdatePartnerPage = ({ ...others }) => {
         }
     );
     const qDetailQuery = useQuery(
-        ['detail_data', partnerId],
+        ['detail_data', id],
         () => {
-            if (partnerId) {
+            if (id) {
                 setIsEdit(true);
-                return partnerServices.getById(partnerId);
+                return userService.getById(id);
             }
             setIsEdit(false);
             return null;
@@ -95,8 +93,19 @@ const UpdatePartnerPage = ({ ...others }) => {
     const onSubmit = async (values, formikHelpers: FormikHelpers<any>) => {
         try {
             if (!isEdit) {
+                const payload = _.pick(values, [
+                    'fullname',
+                    'email',
+                    'phone',
+                    'position',
+                    'group_id',
+                    'sub_group_id',
+                    'role',
+                    'password'
+                ]) as any;
+                payload.sub_group_id = payload.position === 'Manager' ? '0' : payload.sub_group_id;
                 userService
-                    .insert(values)
+                    .insert(payload)
                     .then((res) => {
                         toastService.toast('success', 'Created new User');
                         formikHelpers.resetForm();
@@ -114,30 +123,23 @@ const UpdatePartnerPage = ({ ...others }) => {
             if (isEdit) {
                 const payload = _.pick(values, [
                     'id',
+                    'status',
+
+                    'fullname',
                     'email',
-                    'code',
-                    'name',
-                    'presentative',
-                    'pic_email',
-                    'pic_phone',
-                    'contract_number',
-                    'contract_from',
-                    'contract_to',
-                    'sign_contract_date',
                     'phone',
-                    'address',
-                    'address2',
-                    'ward',
-                    'district',
-                    'province'
+                    'position',
+                    'group_id',
+                    'sub_group_id',
+                    'role',
+                    'password'
                 ]) as any;
-                payload.code = faker.internet.password();
                 toastService.showConfirm({
                     onConfirm: async () => {
-                        partnerServices
+                        userService
                             .updatePut(payload)
                             .then((res) => {
-                                toastService.toast('success', 'Updated Partner');
+                                toastService.toast('success', 'Updated User');
                                 qDetailQuery.refetch();
                             })
                             .catch((err) => {

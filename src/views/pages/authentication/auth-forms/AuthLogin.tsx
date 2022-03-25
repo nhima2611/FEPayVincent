@@ -76,16 +76,23 @@ const AuthLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
                         login(values.email, values.password)
                             .then((res) => {})
                             .catch((err) => {
+                                console.log(err);
+
                                 if (err.error === 10) {
                                     toastService.showInfo({
-                                        title: intl.formatMessage({ id: err.message }),
-                                        text: err.sub_message ? intl.formatMessage({ id: err.sub_message }) : '',
+                                        title: intl.formatMessage({ id: `${_.get(err, 'message', 'msg_something_err')}` }),
+                                        text: intl.formatMessage({ id: `msg_contact_unlock` }),
                                         position: 'center-start'
                                     });
                                 } else {
                                     toastService.showError({
-                                        title: intl.formatMessage({ id: err.message }),
-                                        text: err.sub_message ? intl.formatMessage({ id: err.sub_message }) : '',
+                                        title: intl.formatMessage({ id: `${_.get(err, 'message', 'msg_something_err')}` }),
+                                        text: err.sub_message
+                                            ? intl
+                                                  .formatMessage({ id: `${_.get(err, 'sub_message', 'msg_empty')}` })
+                                                  .replace('{count_wrong}', _.get(err, 'countWrong', ''))
+                                                  .replace('{count_wrong_max}', _.get(err, 'countWrongMax', ''))
+                                            : '',
                                         position: 'center-start'
                                     });
                                 }

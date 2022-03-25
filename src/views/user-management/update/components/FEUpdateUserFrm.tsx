@@ -1,12 +1,11 @@
 // assets
-import faker from '@faker-js/faker';
 import { Grid, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import FESelect from 'components/forms/FESelect';
 import FETextField from 'components/forms/FETextField';
 import ToolbarUpdate from 'components/ToolbarUpdate';
 import { FormikHelpers, useFormik } from 'formik';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import MainCard from 'ui-component/cards/MainCard';
 // third party
 import * as Yup from 'yup';
@@ -29,14 +28,15 @@ const initialValues: IFormProps = {
     email: '',
     phone: '',
     position: 'Staff',
-    group_id: '0',
+    group_id: '',
     sub_group_id: '0',
     role: '',
-    password: faker.internet.password()
+    password: ''
 };
 interface Props {
     onSubmit: (values: IFormProps, formikConf: FormikHelpers<IFormProps>) => void | Promise<any>;
     onChangeGroup: (item: any) => void;
+    onChangePosition?: (item: any) => void;
     groups: any[];
     subGroups: any[];
     roles: any[];
@@ -45,9 +45,19 @@ interface Props {
     isEdit: boolean;
     isPartner: boolean;
 }
-const FEUpdateUserFrm = ({ onSubmit, dataInitial, isLoading, isEdit, groups, roles, subGroups, onChangeGroup, isPartner }: Props) => {
+const FEUpdateUserFrm = ({
+    onSubmit,
+    dataInitial,
+    isLoading,
+    isEdit,
+    groups,
+    roles,
+    subGroups,
+    onChangeGroup,
+    isPartner,
+    onChangePosition
+}: Props) => {
     const theme = useTheme();
-    const [resetKey, setResetKey] = useState(v4());
     const formik = useFormik<IFormProps>({
         initialValues,
         validationSchema: Yup.object({
@@ -72,7 +82,7 @@ const FEUpdateUserFrm = ({ onSubmit, dataInitial, isLoading, isEdit, groups, rol
         if (dataInitial) {
             formik.setValues({ ...formik.values, ...dataInitial });
         }
-    }, [dataInitial, resetKey]);
+    }, [dataInitial]);
 
     return (
         <>
@@ -116,7 +126,7 @@ const FEUpdateUserFrm = ({ onSubmit, dataInitial, isLoading, isEdit, groups, rol
                                     </Grid>
                                     {!Boolean(isPartner) && (
                                         <>
-                                            <Grid item xs={12} md={3}>
+                                            <Grid item xs={12} md>
                                                 <FESelect
                                                     formik={formik}
                                                     label="Position"
@@ -128,7 +138,7 @@ const FEUpdateUserFrm = ({ onSubmit, dataInitial, isLoading, isEdit, groups, rol
                                                     selectProps={{ notAllowSelectNull: true, value: formik.values.position }}
                                                 />
                                             </Grid>
-                                            <Grid item xs={12} md={3}>
+                                            <Grid item xs={12} md>
                                                 <FESelect
                                                     formik={formik}
                                                     label="Role"
@@ -137,7 +147,7 @@ const FEUpdateUserFrm = ({ onSubmit, dataInitial, isLoading, isEdit, groups, rol
                                                     selectProps={{ notAllowSelectNull: true, value: formik.values.role }}
                                                 />
                                             </Grid>
-                                            <Grid item xs={12} md={3}>
+                                            <Grid item xs={12} md>
                                                 <FESelect
                                                     formik={formik}
                                                     label="Group"
@@ -146,22 +156,24 @@ const FEUpdateUserFrm = ({ onSubmit, dataInitial, isLoading, isEdit, groups, rol
                                                     handleSelect={(item) => {
                                                         if (item) {
                                                             formik.setFieldValue('group_id', item.id);
-                                                            formik.setFieldValue('sub_group_id', '');
+                                                            formik.setFieldValue('sub_group_id', 0);
                                                             onChangeGroup(item);
                                                         }
                                                     }}
                                                     selectProps={{ notAllowSelectNull: true, value: formik.values.group_id }}
                                                 />
                                             </Grid>
-                                            <Grid item xs={12} md={3}>
-                                                <FESelect
-                                                    formik={formik}
-                                                    label="Sub-Group"
-                                                    name="sub_group_id"
-                                                    dataSource={subGroups}
-                                                    selectProps={{ notAllowSelectNull: true, value: formik.values.sub_group_id }}
-                                                />
-                                            </Grid>
+                                            {Boolean(formik.values.position !== 'Manager') && (
+                                                <Grid item xs={12} md>
+                                                    <FESelect
+                                                        formik={formik}
+                                                        label="Sub-Group"
+                                                        name="sub_group_id"
+                                                        dataSource={subGroups}
+                                                        selectProps={{ notAllowSelectNull: true, value: formik.values.sub_group_id }}
+                                                    />
+                                                </Grid>
+                                            )}
                                         </>
                                     )}
                                 </Grid>
