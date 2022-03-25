@@ -5,7 +5,7 @@ export enum STATUS {
     REVERTED = 3,
     SOLVED = 4,
     REJECTED = 5,
-    CANCEL = 6
+    CANCELED = 6
 }
 
 export enum STATUS_NAME {
@@ -15,5 +15,5 @@ export enum STATUS_NAME {
     REVERTED = 'Reverted',
     SOLVED = 'Solved',
     REJECTED = 'Rejected',
-    CANCEL = 'Cancel'
+    CANCELED = 'Canceled'
 }

@@ -1,5 +1,4 @@
 // assets
-import faker from '@faker-js/faker';
 import { Grid, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import FESelect from 'components/forms/FESelect';
@@ -30,20 +29,21 @@ const initialValues: IFormProps = {
     phone: '',
     position: 'Staff',
     group_id: '',
-    sub_group_id: '',
+    sub_group_id: '0',
     role: '',
-    password: faker.internet.password()
+    password: ''
 };
 interface Props {
     onSubmit: (values: IFormProps, formikConf: FormikHelpers<IFormProps>) => void | Promise<any>;
     onChangeGroup: (item: any) => void;
-    onChangePosition: (item: any) => void;
+    onChangePosition?: (item: any) => void;
     groups: any[];
     subGroups: any[];
     roles: any[];
     dataInitial?: any;
     isLoading: boolean;
     isEdit: boolean;
+    isPartner: boolean;
 }
 const FEUpdateUserFrm = ({
     onSubmit,
@@ -54,6 +54,7 @@ const FEUpdateUserFrm = ({
     roles,
     subGroups,
     onChangeGroup,
+    isPartner,
     onChangePosition
 }: Props) => {
     const theme = useTheme();
@@ -74,9 +75,7 @@ const FEUpdateUserFrm = ({
             role: Yup.string().required('Role is required')
         }),
         onSubmit,
-        onReset: (props) => {
-            console.log(props);
-        }
+        onReset: (props) => {}
     });
 
     useEffect(() => {
@@ -84,6 +83,7 @@ const FEUpdateUserFrm = ({
             formik.setValues({ ...formik.values, ...dataInitial });
         }
     }, [dataInitial]);
+
     return (
         <>
             {Boolean(isLoading) ? (
@@ -110,7 +110,7 @@ const FEUpdateUserFrm = ({
                             <Grid item xs={12}>
                                 <Typography variant="h3" sx={{ color: theme.palette.primary.main }}>
                                     {/* <FormattedMessage id="information" /> */}
-                                    {Boolean(isEdit) ? 'User Details - Edit' : 'Add New User'}
+                                    {Boolean(isEdit) ? 'User Details - Edit' : 'Add New User'} {Boolean(isPartner) ? ' Of Partner' : ''}
                                 </Typography>
                             </Grid>
                             <Grid item xs={12}>
@@ -124,59 +124,58 @@ const FEUpdateUserFrm = ({
                                     <Grid item xs={12} md={4}>
                                         <FETextField formik={formik} title="Phone" name="phone" />
                                     </Grid>
-                                    <Grid item xs={12} md={3}>
-                                        <FESelect
-                                            formik={formik}
-                                            label="Position"
-                                            name="position"
-                                            dataSource={[
-                                                { id: 'Manager', name: 'Manager' },
-                                                { id: 'Staff', name: 'Staff' }
-                                            ]}
-                                            handleSelect={(item) => {
-                                                if (item) {
-                                                    formik.setFieldValue('position', item.id);
-                                                    formik.setFieldValue('role', '');
-                                                    onChangePosition(item);
-                                                }
-                                            }}
-                                            selectProps={{ notAllowSelectNull: true, value: formik.values.position }}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} md={3}>
-                                        <FESelect
-                                            formik={formik}
-                                            label="Role"
-                                            name="role"
-                                            dataSource={roles}
-                                            selectProps={{ notAllowSelectNull: true, value: formik.values.role }}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} md={3}>
-                                        <FESelect
-                                            formik={formik}
-                                            label="Group"
-                                            name="group_id"
-                                            dataSource={groups}
-                                            handleSelect={(item) => {
-                                                if (item) {
-                                                    formik.setFieldValue('group_id', item.id);
-                                                    formik.setFieldValue('sub_group_id', '');
-                                                    onChangeGroup(item);
-                                                }
-                                            }}
-                                            selectProps={{ notAllowSelectNull: true, value: formik.values.group_id }}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} md={3}>
-                                        <FESelect
-                                            formik={formik}
-                                            label="Sub-Group"
-                                            name="sub_group_id"
-                                            dataSource={subGroups}
-                                            selectProps={{ notAllowSelectNull: true, value: formik.values.sub_group_id }}
-                                        />
-                                    </Grid>
+                                    {!Boolean(isPartner) && (
+                                        <>
+                                            <Grid item xs={12} md>
+                                                <FESelect
+                                                    formik={formik}
+                                                    label="Position"
+                                                    name="position"
+                                                    dataSource={[
+                                                        { id: 'Manager', name: 'Manager' },
+                                                        { id: 'Staff', name: 'Staff' }
+                                                    ]}
+                                                    selectProps={{ notAllowSelectNull: true, value: formik.values.position }}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={12} md>
+                                                <FESelect
+                                                    formik={formik}
+                                                    label="Role"
+                                                    name="role"
+                                                    dataSource={roles}
+                                                    selectProps={{ notAllowSelectNull: true, value: formik.values.role }}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={12} md>
+                                                <FESelect
+                                                    formik={formik}
+                                                    label="Group"
+                                                    name="group_id"
+                                                    dataSource={groups}
+                                                    handleSelect={(item) => {
+                                                        if (item) {
+                                                            formik.setFieldValue('group_id', item.id);
+                                                            formik.setFieldValue('sub_group_id', 0);
+                                                            onChangeGroup(item);
+                                                        }
+                                                    }}
+                                                    selectProps={{ notAllowSelectNull: true, value: formik.values.group_id }}
+                                                />
+                                            </Grid>
+                                            {Boolean(formik.values.position !== 'Manager') && (
+                                                <Grid item xs={12} md>
+                                                    <FESelect
+                                                        formik={formik}
+                                                        label="Sub-Group"
+                                                        name="sub_group_id"
+                                                        dataSource={subGroups}
+                                                        selectProps={{ notAllowSelectNull: true, value: formik.values.sub_group_id }}
+                                                    />
+                                                </Grid>
+                                            )}
+                                        </>
+                                    )}
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -187,4 +186,4 @@ const FEUpdateUserFrm = ({
     );
 };
 
-export default FEUpdateUserFrm;
+export default React.memo(FEUpdateUserFrm);

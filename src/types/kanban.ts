@@ -14,6 +14,7 @@ export interface KanbanStateProps {
 export type KanbanColumn = {
     id: string;
     title: string;
+    type?: number;
     itemIds: string[];
     color: string;
 };

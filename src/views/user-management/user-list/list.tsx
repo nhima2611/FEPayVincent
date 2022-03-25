@@ -1,18 +1,19 @@
 import { IconButton, Menu, MenuItem } from '@mui/material';
 import { IconDotsVertical } from '@tabler/icons';
-import FETable from 'components/table/FETable';
+import FETable from 'components/FETable';
 import { camelCase, startCase } from 'lodash';
 import React, { SyntheticEvent, useState } from 'react';
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
 
-const PartnerList = ({ data = [], loading, cols = [], onClickRowItem }) => {
+const UserList = ({ data = [], loading, cols = [], onClickRowItem }) => {
     const [anchorEl, setAnchorEl] = useState<Element | ((element: Element) => Element) | null | undefined>(null);
     const handleClick = (event: SyntheticEvent) => {
+        event.stopPropagation();
         setAnchorEl(event?.currentTarget);
     };
 
-    const handleClose = () => {
+    const handleClose = (e) => {
         setAnchorEl(null);
     };
     const productsColumns = React.useMemo(
@@ -90,4 +91,4 @@ const PartnerList = ({ data = [], loading, cols = [], onClickRowItem }) => {
     );
 };
 
-export default PartnerList;
+export default UserList;

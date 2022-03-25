@@ -5,6 +5,7 @@
 @import '~react-perfect-scrollbar/dist/css/styles.css';
 @import '~slick-carousel/slick/slick.css';
 @import '~slick-carousel/slick/slick-theme.css';
+@import '~@sweetalert2/theme-material-ui/material-ui.scss';
 
 // ==============================|| LIGHT BOX ||============================== //
 .slick-arrow:before {
@@ -27,6 +28,10 @@
 .swal2-container.swal2-noanimation {
     z-index: 1000000 !important;
 }
+.swal2-title {
+    line-height: 35px;
+}
+
 .scrollbar-container {
     .ps__rail-y {
         &:hover > .ps__thumb-y,

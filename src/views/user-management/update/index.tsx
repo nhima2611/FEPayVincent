@@ -1,28 +1,26 @@
-// assets
-import faker from '@faker-js/faker';
+// #region Imports
+import { ROLE } from 'constants/auth';
 import { FormikHelpers } from 'formik';
+import useAuth from 'hooks/useAuth';
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import userService from 'services/api-services/user.service';
 import toastService from 'services/core/toast.service';
-import partnerServices from 'services/partner-services';
 import FEUpdateUserFrm from './components/FEUpdateUserFrm';
-
-// ==============================|| CREATE PARTNER ||============================== //
-const staffRoles = ['Partner Staff', 'Ticket Staff', 'Repayment Staff', 'Disbursement Staff'];
-const managerRoles = ['Partner', 'Ticket Manager', 'Repayment Manager', 'Disbursement Manager'];
+// #endregion
 
 const UpdatePartnerPage = ({ ...others }) => {
+    // #region Fields
     const navi = useNavigate();
-    const { partnerId } = useParams();
+    const { id } = useParams();
     const [isEdit, setIsEdit] = useState(false);
     const [groupId, setGroupId] = useState<any>(null);
-    const [roles, setRoles] = useState<any>(
-        _.map(staffRoles, (item) => {
-            return { id: item, name: item };
-        })
-    );
+    const { user } = useAuth();
+    const isPartner = user?.role === ROLE.PARTNER;
+    // #endregion
+
+    // #region Queries
     const qGroupsQuery = useQuery(
         ['qGroupsQuery'],
         () => {
@@ -37,7 +35,6 @@ const UpdatePartnerPage = ({ ...others }) => {
             onSuccess: (res) => {}
         }
     );
-
     const qSubGroupsQuery = useQuery(
         ['qSubGroupsQuery', groupId],
         () => {
@@ -55,13 +52,26 @@ const UpdatePartnerPage = ({ ...others }) => {
             onSuccess: (res) => {}
         }
     );
-
-    const qDetailQuery = useQuery(
-        ['detail_data', partnerId],
+    const qRolesQuery = useQuery(
+        ['qRolesQuery'],
         () => {
-            if (partnerId) {
+            return userService.getRoles();
+        },
+        {
+            keepPreviousData: true,
+            // staleTime: Infinity
+            onError: (err: any) => {
+                toastService.toast('error', err?.message || 'Something went error !');
+            },
+            onSuccess: (res) => {}
+        }
+    );
+    const qDetailQuery = useQuery(
+        ['detail_data', id],
+        () => {
+            if (id) {
                 setIsEdit(true);
-                return partnerServices.getById(partnerId);
+                return userService.getById(id);
             }
             setIsEdit(false);
             return null;
@@ -77,18 +87,29 @@ const UpdatePartnerPage = ({ ...others }) => {
             }
         }
     );
+    // #endregion
 
+    // #region Functions
     const onSubmit = async (values, formikHelpers: FormikHelpers<any>) => {
         try {
             if (!isEdit) {
-                console.log(values);
-
+                const payload = _.pick(values, [
+                    'fullname',
+                    'email',
+                    'phone',
+                    'position',
+                    'group_id',
+                    'sub_group_id',
+                    'role',
+                    'password'
+                ]) as any;
+                payload.sub_group_id = payload.position === 'Manager' ? '0' : payload.sub_group_id;
                 userService
-                    .insert(values)
+                    .insert(payload)
                     .then((res) => {
                         toastService.toast('success', 'Created new User');
                         formikHelpers.resetForm();
-                        navi(-1);
+                        // navi(-1);
                     })
                     .catch((err) => {
                         toastService.toast(
@@ -102,30 +123,23 @@ const UpdatePartnerPage = ({ ...others }) => {
             if (isEdit) {
                 const payload = _.pick(values, [
                     'id',
+                    'status',
+
+                    'fullname',
                     'email',
-                    'code',
-                    'name',
-                    'presentative',
-                    'pic_email',
-                    'pic_phone',
-                    'contract_number',
-                    'contract_from',
-                    'contract_to',
-                    'sign_contract_date',
                     'phone',
-                    'address',
-                    'address2',
-                    'ward',
-                    'district',
-                    'province'
+                    'position',
+                    'group_id',
+                    'sub_group_id',
+                    'role',
+                    'password'
                 ]) as any;
-                payload.code = faker.internet.password();
                 toastService.showConfirm({
                     onConfirm: async () => {
-                        partnerServices
+                        userService
                             .updatePut(payload)
                             .then((res) => {
-                                toastService.toast('success', 'Updated Partner');
+                                toastService.toast('success', 'Updated User');
                                 qDetailQuery.refetch();
                             })
                             .catch((err) => {
@@ -147,39 +161,49 @@ const UpdatePartnerPage = ({ ...others }) => {
             formikHelpers.setSubmitting(false);
         }
     };
+    // #endregion
 
+    // #region Lifecycles
+
+    // #endregion
+
+    // #region Render
     return (
         <FEUpdateUserFrm
             onSubmit={onSubmit}
-            dataInitial={_.get(qDetailQuery, 'data.data.data', null)}
+            dataInitial={_.get(
+                qDetailQuery,
+                'data.data.data',
+                isPartner
+                    ? {
+                          status: 0,
+                          created_by: user?.id,
+                          partner_id: user?.partner_id,
+                          user_type: 2,
+                          role: ROLE.PARTNER_STAFF
+                      }
+                    : {
+                          status: 0,
+                          created_by: user?.id,
+                          partner_id: user?.partner_id,
+                          user_type: 1
+                      }
+            )}
             onChangeGroup={(item) => {
                 setGroupId(item.id);
             }}
-            onChangePosition={(itemS) => {
-                switch (itemS.name) {
-                    case 'Staff':
-                        setRoles(
-                            _.map(staffRoles, (item) => {
-                                return { id: item, name: item };
-                            })
-                        );
-                        break;
-                    case 'Manager':
-                        setRoles(
-                            _.map(managerRoles, (item) => {
-                                return { id: item, name: item };
-                            })
-                        );
-                        break;
-                }
-            }}
             groups={_.get(qGroupsQuery, 'data.data.data', [])}
             subGroups={_.get(qSubGroupsQuery, 'data.data.data', [])}
-            roles={roles}
+            roles={_.map(_.get(qRolesQuery, 'data.data.data', []), (item) => ({
+                id: item.code,
+                name: item.name
+            }))}
             isLoading={qDetailQuery.isLoading}
             isEdit={isEdit}
+            isPartner={isPartner}
         />
     );
+    // #endregion
 };
 
 export default React.memo(UpdatePartnerPage);

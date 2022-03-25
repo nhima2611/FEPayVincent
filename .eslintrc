@@ -39,6 +39,18 @@
         "@typescript-eslint/no-unused-vars": "off",
         "import/no-named-as-default": 0,
         "import/no-named-as-default-member": 0,
+        "import/no-anonymous-default-export": [
+            2,
+            {
+                "allowArray": true,
+                "allowArrowFunction": true,
+                "allowAnonymousClass": true,
+                "allowAnonymousFunction": true,
+                "allowCallExpression": true, // The true value here is for backward compatibility
+                "allowLiteral": true,
+                "allowObject": true
+            }
+        ],
         "prettier/prettier": [
             2,
             {

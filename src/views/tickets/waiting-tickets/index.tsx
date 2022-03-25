@@ -1,27 +1,27 @@
 // material-ui
 import { Box, Grid } from '@mui/material';
 import ActionKanbanOrList from 'components/ActionKanbanOrList';
-import { lastStatusType } from 'constants/tickets';
+import { refLoading } from 'components/Loading';
+import PreviewTable, { refPreviewTable } from 'components/PreviewTable';
+import { refFETable } from 'components/table/FETable';
+import { STATUS } from 'constants/status';
 import TableContext from 'contexts/TableContext';
 import React, { useContext, useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import toastService from 'services/core/toast.service';
 import ticketsServices from 'services/tickets-services';
 // project imports
-import { useDispatch, useSelector } from 'store';
-import { getColumns, getColumnsOrder, getItems, setMode } from 'store/slices/kanban';
+import { useDispatch } from 'store';
 import { openDrawer } from 'store/slices/menu';
+import { AssignToModel } from 'types/ticket';
 import MainCard from 'ui-component/cards/MainCard';
 import eventEmitter from 'utils/eventEmitter';
 import toastify from 'utils/toastify';
-import Board from 'components/kanban';
-import WaitingTicketList from './list';
 import AssignToDialog, { refAssignTo } from '../components/AssignToDialog';
-import { AssignToModel } from 'types/ticket';
-import { STATUS } from 'constants/status';
+import TicketList from './list';
 
-export default function WaitingTicketPage() {
+export default function WaitingTicketsPage() {
     const dispatchs = useDispatch();
     const [{ queryPageIndex, queryPageSize, sortByObject, filters, selectedIds, resetState }, dispatch] = useContext(TableContext);
 
@@ -32,23 +32,17 @@ export default function WaitingTicketPage() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    useEffect(() => {
-        dispatchs(getColumnsOrder());
-        // dispatch(getItems());
-        // dispatch(getUsersListStyle1());
-        // dispatch(getProfiles());
-        // dispatch(getComments());
-        // dispatch(getUserStory());
-        // dispatch(getUserStoryOrder());
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
     const navi = useNavigate();
+    const location = useLocation();
 
     const onClickRowItem = (row) => {
-        navi(row.values?.ticket_id?.toString());
+        const { original } = row;
+        if (original.last_status === 0) {
+            navi(`edit-ticket/${row.values?.ticket_id?.toString()}`);
+        } else {
+            navi(`/tickets/${row.values?.ticket_id?.toString()}`);
+        }
     };
-
-    const { mode } = useSelector((state) => state.kanban);
 
     const [searchTerm, setSearchTerm] = useState('');
 
@@ -78,21 +72,9 @@ export default function WaitingTicketPage() {
             keepPreviousData: true,
             // staleTime: Infinity
             onError: (err: any) => {
-                toastify.showToast('error', err.message);
+                toastify.showToast('error', err.message || err);
             },
             onSuccess: (res) => {
-                const d = _(res.data?.data)
-                    .groupBy('last_status')
-                    .map((items, status) => ({ status: _.get(lastStatusType, [_.toNumber(status)]), value: _.map(items, 'ticket_id') }))
-                    .value()
-                    .reduce((obj, param) => {
-                        obj[param.status] = param.value;
-                        return obj;
-                    }, {});
-
-                dispatchs(getColumns(d));
-                dispatchs(getItems(res.data?.data));
-
                 dispatch({
                     type: 'TOTAL_COUNT_CHANGED',
                     payload: res.data?.meta?.pagination?.total
@@ -100,6 +82,10 @@ export default function WaitingTicketPage() {
             }
         }
     );
+
+    useEffect(() => {
+        refFETable.current?.setFilter('last_status', location.state);
+    }, [location.state]);
 
     const handleSearch = _.debounce(
         ({ value }) => {
@@ -137,13 +123,24 @@ export default function WaitingTicketPage() {
         }
     });
 
-    const mUploadTicket = useMutation((file) => ticketsServices.uploadTicket(file), {
+    const mVerifyImportFile = useMutation((file) => ticketsServices.verifyImportFile(file), {
         onSuccess: (res) => {
-            refetchTable();
+            refPreviewTable.current?.handleClickOpen(res.data);
             toastify.showToast('success', res.data);
         },
         onError: (err: any) => {
             toastify.showToast('error', err.message);
+        }
+    });
+
+    const mUploadFile = useMutation(({ data }: { data: any[] }) => ticketsServices.importFile(data), {
+        onSuccess: (res) => {
+            refetchTable();
+            refPreviewTable.current?.handleClose();
+            toastify.showToast('success', res.data);
+        },
+        onError: (err: any) => {
+            toastify.showToast('error', err.message || 'Upload failed');
         }
     });
 
@@ -158,14 +155,20 @@ export default function WaitingTicketPage() {
         }
     });
 
-    const ids: number[] = _.map(selectedIds, (value, key) => _.toNumber(key));
+    const sIds: number[] = _.map(selectedIds, (value, key) => _.toNumber(key));
+
     const onClickDownload = () => {
-        if (!ids.length) {
+        if (!sIds.length) {
             return toastify.showToast('warning', 'Please choose row!');
         }
-        return mDownloadTicket.mutate({ ids });
+        return toastService.showConfirm({
+            onConfirm: async () => {
+                mDownloadTicket.mutate({ ids: sIds });
+            },
+            title: 'Are you sure download it?',
+            icon: 'warning'
+        });
     };
-
     const onClickTrash = () => {
         const checkStatus = _.some(
             _.filter(dataTable?.data?.data, (item) =>
@@ -178,24 +181,34 @@ export default function WaitingTicketPage() {
 
         if (checkStatus) return toastify.showToast('error', 'Can not delete');
 
-        if (!ids.length) {
+        if (!sIds.length) {
             return toastify.showToast('warning', 'Please choose row!');
         }
         return toastService.showDeleteConfirm({
             onConfirm: async () => {
-                mDeleteTicket.mutate(ids);
+                mDeleteTicket.mutate(sIds);
             }
         });
     };
 
-    const onUploadFile = (file: any) => {
-        if (!file) return;
-        mUploadTicket.mutate(file);
+    const onVerifyImport = (file: any) => {
+        mVerifyImportFile.mutate(file);
+    };
+
+    const onUploadFile = (data: any) => {
+        return toastService.showConfirm({
+            onConfirm: async () => {
+                mUploadFile.mutate({ data });
+            },
+            title: 'Are you sure submit it?',
+            icon: 'warning'
+        });
     };
 
     const onClickAssignee = () => {
         refAssignTo.current?.handleClickOpen({ title: 'Assignee' });
     };
+
     const onClickSupporter = () => {
         refAssignTo.current?.handleClickOpen({ title: 'Supporter' });
     };
@@ -203,7 +216,6 @@ export default function WaitingTicketPage() {
     const mAssignTo = useMutation((model: AssignToModel) => ticketsServices.assignTo(model), {
         onSuccess: (res) => {
             refetchTable();
-            console.log(res);
             toastify.showToast('success', res.data?.message);
             refAssignTo.current?.handleClose();
             eventEmitter.emit('DESELECT_ALL_ROWS', true);
@@ -213,14 +225,18 @@ export default function WaitingTicketPage() {
         }
     });
 
-    const onSubmitAssignTo = (values: any) => {
+    const onSubmitAssignTo = (data: AssignToModel) => {
         mAssignTo.mutate({
-            email: values.email,
-            name: values.username,
-            ticket_ids: ids,
-            type: values.type
+            ...data,
+            ticket_ids: sIds
         });
     };
+
+    const onClickTransfer = () => navi('/kanban-ticket');
+
+    if (mVerifyImportFile.isLoading) {
+        refLoading.current?.handleToggle();
+    }
 
     return (
         <Box sx={{ display: 'flex' }}>
@@ -229,25 +245,22 @@ export default function WaitingTicketPage() {
                     <MainCard contentSX={{ p: 2 }}>
                         <ActionKanbanOrList
                             onClickDownload={onClickDownload}
-                            onClickTransfer={() => dispatchs(setMode())}
+                            onClickTransfer={onClickTransfer}
                             urlAddTicket="/tickets/create-ticket"
-                            onUploadFile={onUploadFile}
+                            onUploadFile={onVerifyImport}
                             onClickTrash={onClickTrash}
-                            title="Waiting Ticket"
                             onClickAssignee={onClickAssignee}
                             onClickSupporter={onClickSupporter}
+                            title="Waiting Ticket"
                         />
-                        {mode === 'kanban' ? (
-                            <Board />
-                        ) : (
-                            <WaitingTicketList
-                                onClickRowItem={onClickRowItem}
-                                loading={isLoading}
-                                data={dataTable?.data?.data}
-                                cols={dataTable?.data?.cols}
-                            />
-                        )}
-                        <AssignToDialog onSubmit={onSubmitAssignTo} />
+                        <TicketList
+                            onClickRowItem={onClickRowItem}
+                            loading={isLoading}
+                            data={dataTable?.data?.data}
+                            cols={dataTable?.data?.cols}
+                        />
+                        <AssignToDialog onSubmit={onSubmitAssignTo} loading={mAssignTo.isLoading} />
+                        <PreviewTable onSubmit={onUploadFile} loading={mUploadFile.isLoading} />
                     </MainCard>
                 </Grid>
             </Grid>

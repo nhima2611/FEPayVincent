@@ -35,6 +35,18 @@ const Input = styled('input')({
     display: 'none'
 });
 
+interface Props {
+    title?: string;
+    onClickTransfer?: () => void;
+    urlAddTicket: string;
+    onClickDownload?: () => void;
+    onUploadFile?: (file: any) => void;
+    onClickTrash?: () => void;
+    onClickAssignee?: () => void;
+    onClickSupporter?: () => void;
+    mode?: string;
+}
+
 const ActionKanbanOrList = ({
     title = 'My Ticket',
     onClickTransfer,
@@ -43,13 +55,13 @@ const ActionKanbanOrList = ({
     onUploadFile,
     onClickTrash,
     onClickAssignee,
-    onClickSupporter
-}) => {
+    onClickSupporter,
+    mode = 'list'
+}: Props) => {
     const theme = useTheme();
     const { user } = useAuth();
     const isManager = [ROLE.SUPER_ADMIN, ROLE.CARD_MANAGER, ROLE.LOAN_MANAGER].includes(user?.role as any);
 
-    const { mode } = useSelector((state) => state.kanban);
     const [{ selectedIds }] = useContext(TableContext);
 
     const [anchorEl, setAnchorEl] = useState<Element | ((element: Element) => Element) | null | undefined>(null);
@@ -201,15 +213,17 @@ const ActionKanbanOrList = ({
                 <Button sx={{ ...styles.btn, minWidth: 36, padding: 0 }} variant="outlined" onClick={onClickTransfer}>
                     <IconArrowsLeftRight size={18} />
                 </Button>
-                <Button
-                    variant="outlined"
-                    sx={{ ...styles.btn, borderRadius: 2, fontSize: 12, fontWeight: 'bold' }}
-                    startIcon={<IconPlus color="#008345" size={18} />}
-                    component={Link}
-                    to={urlAddTicket}
-                >
-                    Add Ticket
-                </Button>
+                {ROLE.PARTNER === user?.role && (
+                    <Button
+                        variant="outlined"
+                        sx={{ ...styles.btn, borderRadius: 2, fontSize: 12, fontWeight: 'bold' }}
+                        startIcon={<IconPlus color="#008345" size={18} />}
+                        component={Link}
+                        to={urlAddTicket}
+                    >
+                        Add Ticket
+                    </Button>
+                )}
             </Stack>
         </>
     );

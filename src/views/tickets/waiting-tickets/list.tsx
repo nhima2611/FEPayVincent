@@ -1,12 +1,12 @@
-import { DatePicker, LocalizationProvider, DesktopDatePicker } from '@mui/lab';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import { MenuItem, OutlinedInput, Select, Stack, TextField } from '@mui/material';
-import FETable from 'components/FETable';
+import { DatePickerColumnFilter } from 'components/table/DatePickerColumnFilter';
+import { DefaultColumnFilter } from 'components/table/DefaultColumnFilter';
+import FETable from 'components/table/FETable';
+import { SelectColumnFilter } from 'components/table/SelectColumnFilter';
+import { getColorAndNameStatus, issueType, lastStatusType, productTypes, requestedBy, transactionType } from 'constants/tickets';
 import { camelCase, startCase } from 'lodash';
-import React, { useEffect } from 'react';
+import React from 'react';
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
-import { getColorAndNameStatus, issueType, lastStatusType, productTypes, requestedBy, transactionType } from 'constants/tickets';
 
 const renderValue = (key: string, value: any) => {
     const isDateType = ['created_date', 'last_status_date'].includes(key);
@@ -25,7 +25,20 @@ const renderValue = (key: string, value: any) => {
     return value;
 };
 
-const WaitingTicketList = ({ data = [], loading, cols = [], onClickRowItem }) => {
+const dataSelect = (id: string) =>
+    id === 'last_status'
+        ? lastStatusType
+        : id === 'transaction_type'
+        ? transactionType
+        : id === 'issue_type'
+        ? issueType
+        : id === 'product_type'
+        ? productTypes
+        : id === 'requested_by'
+        ? requestedBy
+        : [];
+
+const WaitingList = ({ data = [], loading, cols = [], onClickRowItem }) => {
     const productsColumns = React.useMemo(
         () =>
             cols[0]
@@ -33,15 +46,26 @@ const WaitingTicketList = ({ data = [], loading, cols = [], onClickRowItem }) =>
                       const typeSelect = ['last_status', 'transaction_type', 'issue_type', 'product_type', 'requested_by'].includes(key);
                       const dateSelect = ['created_date', 'last_status_date'].includes(key);
                       const isStatusType = ['last_status'].includes(key);
+                      const WIDTH_130 = [
+                          'ticket_id',
+                          'contract_id',
+                          'ref_number',
+                          'created_date',
+                          'last_status_date',
+                          'last_status',
+                          'product_type'
+                      ].includes(key);
+                      const WIDTH_160 = ['transaction_type'].includes(key);
+                      const WIDTH_190 = ['issue_type'].includes(key);
 
                       return {
                           Header: startCase(camelCase(key)),
                           accessor: key,
+                          minWidth: WIDTH_130 ? 130 : WIDTH_160 ? 160 : WIDTH_190 ? 190 : 200,
                           Cell: ({ value }) => (
                               <div
                                   style={{
                                       color: isStatusType ? getColorAndNameStatus(value)?.color : 'black',
-                                      minWidth: 200,
                                       maxHeight: 40,
                                       overflow: 'hidden'
                                   }}
@@ -49,7 +73,11 @@ const WaitingTicketList = ({ data = [], loading, cols = [], onClickRowItem }) =>
                                   {renderValue(key, value)}
                               </div>
                           ),
-                          Filter: typeSelect ? SelectColumnFilter : dateSelect ? DatePickerColumnFilter : DefaultColumnFilter
+                          Filter: typeSelect
+                              ? (props) => <SelectColumnFilter {...props} dataSelect={dataSelect} />
+                              : dateSelect
+                              ? DatePickerColumnFilter
+                              : DefaultColumnFilter
                       };
                   })
                 : [],
@@ -69,89 +97,4 @@ const WaitingTicketList = ({ data = [], loading, cols = [], onClickRowItem }) =>
     );
 };
 
-export default WaitingTicketList;
-
-const SelectColumnFilter = ({ column: { filterValue, setFilter, id } }) => {
-    const dataSelect =
-        id === 'last_status'
-            ? lastStatusType
-            : id === 'transaction_type'
-            ? transactionType
-            : id === 'issue_type'
-            ? issueType
-            : id === 'product_type'
-            ? productTypes
-            : id === 'requested_by'
-            ? requestedBy
-            : [];
-
-    return (
-        <Select
-            id="category"
-            value={filterValue || ''}
-            onChange={(e) => {
-                setFilter(e.target.value);
-            }}
-            sx={{ height: 35, borderRadius: 8, width: '100%' }}
-        >
-            <MenuItem value="">All</MenuItem>
-            {_.map(dataSelect, (key, value) => {
-                return (
-                    <MenuItem key={value} value={value.toString()}>
-                        {key || 'N/A'}
-                    </MenuItem>
-                );
-            })}
-        </Select>
-    );
-};
-
-export const DefaultColumnFilter = ({ column: { filterValue, setFilter } }) => {
-    const onChange = (e) => {
-        setFilter(e.target.value);
-    };
-    return <OutlinedInput value={filterValue || ''} onChange={onChange} sx={{ height: 35, borderRadius: 8 }} />;
-};
-
-export const DatePickerColumnFilter = ({ column: { filterValue, setFilter } }) => {
-    useEffect(() => {
-        if (filterValue === 'Invalid date') {
-            setFilter('');
-        }
-    }, [filterValue]);
-
-    const [focused, setFocused] = React.useState(false);
-    const onFocus = () => setFocused(true);
-    const onBlur = () => setFocused(false);
-
-    const onChange = _.debounce(
-        (newValue: Date | null) => {
-            setFilter(newValue);
-        },
-        focused ? 1500 : 0,
-        {
-            maxWait: 1500
-        }
-    );
-
-    return (
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <DatePicker
-                renderInput={({ inputRef, inputProps, InputProps }) => (
-                    <Stack direction="row" alignItems="center" sx={{ border: 1, borderRadius: 2, height: 35, padding: '0px 8px' }}>
-                        <input
-                            ref={inputRef}
-                            {...inputProps}
-                            style={{ border: 'none', outline: 'none' }}
-                            onFocus={onFocus}
-                            onBlur={onBlur}
-                        />
-                        {InputProps?.endAdornment}
-                    </Stack>
-                )}
-                value={filterValue || ''}
-                onChange={onChange}
-            />
-        </LocalizationProvider>
-    );
-};
+export default WaitingList;

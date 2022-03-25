@@ -9,6 +9,7 @@ import AuthGuard from 'utils/route-guard/AuthGuard';
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard')));
 
 // tickets routing
+const KanbanTicketPage = Loadable(lazy(() => import('views/tickets/kanban-ticket')));
 const MyTicketsPage = Loadable(lazy(() => import('views/tickets/my-tickets')));
 const WaitingTicketsPage = Loadable(lazy(() => import('views/tickets/waiting-tickets')));
 const CreateTicketPage = Loadable(lazy(() => import('views/tickets/create')));
@@ -17,11 +18,14 @@ const TicketDetailPage = Loadable(lazy(() => import('views/tickets/ticket-detail
 
 // partner management
 const UpdatePartnerPage = Loadable(lazy(() => import('views/partner-management/update-partner')));
-const UpdateUserPage = Loadable(lazy(() => import('views/user-management/update')));
 const PartnerPage = Loadable(lazy(() => import('views/partner-management/partner')));
 const SubPartnerPage = Loadable(lazy(() => import('views/partner-management/sub-partner')));
 const PosPage = Loadable(lazy(() => import('views/partner-management/pos')));
 const RepaymentControlPage = Loadable(lazy(() => import('views/partner-management/repaymentcontrol')));
+
+// user management
+const UserPage = Loadable(lazy(() => import('views/user-management/user-list')));
+const UpdateUserPage = Loadable(lazy(() => import('views/user-management/update')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -46,12 +50,12 @@ const MainRoutes = {
             element: <MyTicketsPage />
         },
         {
-            path: '/waiting-tickets',
-            element: <WaitingTicketsPage />
+            path: '/kanban-ticket',
+            element: <KanbanTicketPage />
         },
         {
-            path: `/waiting-tickets/:ticketID`,
-            element: <TicketDetailPage />
+            path: '/waiting-tickets',
+            element: <WaitingTicketsPage />
         },
         {
             path: '/tickets/create-ticket',
@@ -88,6 +92,10 @@ const MainRoutes = {
         {
             path: `/partner/:partnerId`,
             element: <UpdatePartnerPage />
+        },
+        {
+            path: `/user`,
+            element: <UserPage />
         },
         {
             path: `/user/create`,
