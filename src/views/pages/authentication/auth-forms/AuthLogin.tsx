@@ -66,8 +66,8 @@ const AuthLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
                 }}
                 validationSchema={Yup.object().shape({
                     email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-                    password: Yup.string().max(255).required('Password is required'),
-                    token: Yup.string().required().nullable()
+                    password: Yup.string().max(255).required('Password is required')
+                    // token: Yup.string().required().nullable()
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting, setFieldValue }) => {
                     try {

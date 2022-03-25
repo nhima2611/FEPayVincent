@@ -55,6 +55,9 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
                 setSession(serviceToken);
                 const response = await axios.get('/v1/auth');
                 const { data } = response.data;
+                const resPer = await axios.get(`/v1/permissions?role_code=${data.role}`);
+                data.permissions = _.get(resPer, 'data.data', []);
+
                 dispatch({
                     type: LOGIN,
                     payload: {

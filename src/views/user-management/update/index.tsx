@@ -101,7 +101,9 @@ const UpdatePartnerPage = ({ ...others }) => {
                     'group_id',
                     'sub_group_id',
                     'role',
-                    'password'
+                    'password',
+                    'partner_id',
+                    'user_type'
                 ]) as any;
                 payload.sub_group_id = payload.position === 'Manager' ? '0' : payload.sub_group_id;
                 userService

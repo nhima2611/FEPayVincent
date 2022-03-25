@@ -22,7 +22,7 @@ const UserPage = () => {
         data: dataTable,
         refetch: refetchTable
     } = useQuery(
-        ['sub_user_table', queryPageIndex, queryPageSize, searchTerm, sortByObject, filters],
+        ['user_table', queryPageIndex, queryPageSize, searchTerm, sortByObject, filters],
         () => {
             const page_size = `per_page=${queryPageSize}&page=${queryPageIndex + 1}`;
             const search = searchTerm?.length === 0 ? '' : `&keyword=${searchTerm}`;

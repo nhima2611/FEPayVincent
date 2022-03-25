@@ -24,7 +24,6 @@ const MenuList = () => {
                 );
         }
     });
-
     return <>{navItems}</>;
 };
 
