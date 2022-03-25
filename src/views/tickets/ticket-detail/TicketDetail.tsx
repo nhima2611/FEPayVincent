@@ -38,12 +38,20 @@ const TicketDetail = ({ data, onSaveChanges, onClickAssignee, onClickSupporter, 
     const isManager = [ROLE.SUPER_ADMIN, ROLE.CARD_MANAGER, ROLE.LOAN_MANAGER].includes(user?.role as any);
     const isStaff = [ROLE.DISBURSEMENT_STAFF, ROLE.REPAYMENT_STAFF].includes(user?.role as any);
 
-    const statusData = isStaff ? _.pick(lastStatusType, ['2', '3', '4', '5']) : lastStatusType;
     const isSolvedRejectCancel = [4, 5, 6].includes(data?.status) && isPartner;
+    const isRevertedAndPartner = [3].includes(data?.status) && isPartner;
+    const statusData = isStaff
+        ? _.pick(lastStatusType, ['2', '3', '4', '5'])
+        : isRevertedAndPartner
+        ? _.pick(lastStatusType, ['2', '3'])
+        : _.omit(lastStatusType, ['0']);
 
-    const [selected, setSelected] = useState<any>({ action: 0 });
+    const [selected, setSelected] = useState<any>({});
 
     const handleSubmit = () => {
+        if (isRevertedAndPartner) {
+            onSaveChanges?.(selected);
+        }
         if (isPartner) return;
         if (selected.action === 0 && selected.status === data.status) return;
         onSaveChanges?.({ ...selected, transaction_type: data.transaction_type, issue_type: data.issue_type });
@@ -86,7 +94,14 @@ const TicketDetail = ({ data, onSaveChanges, onClickAssignee, onClickSupporter, 
                                     textToHighlight={`Ticket ID: ${data?.id}`}
                                 />
 
-                                {isPartner ? (
+                                {isRevertedAndPartner ? (
+                                    <FESelectDetail
+                                        title="Status"
+                                        data={statusData}
+                                        status={data?.status}
+                                        onDataSelect={(val) => setSelected({ ...selected, ...val })}
+                                    />
+                                ) : isPartner ? (
                                     <Highlighter
                                         highlightStyle={{ ...styles.ticket, fontWeight: 'bold' }}
                                         unhighlightStyle={styles.ticket}
@@ -102,6 +117,7 @@ const TicketDetail = ({ data, onSaveChanges, onClickAssignee, onClickSupporter, 
                                         onDataSelect={(val) => setSelected({ ...selected, ...val })}
                                     />
                                 )}
+
                                 {isPartner ? (
                                     <Highlighter
                                         highlightStyle={{ ...styles.ticket, fontWeight: 'bold' }}
@@ -126,7 +142,7 @@ const TicketDetail = ({ data, onSaveChanges, onClickAssignee, onClickSupporter, 
 
                         <Grid item>
                             <Stack direction="row" alignItems="center" spacing={2}>
-                                {isPartner && (
+                                {isPartner && data?.status === 1 && (
                                     <Button
                                         variant="contained"
                                         sx={{ background: '#FF0015' }}
@@ -259,7 +275,7 @@ const TicketDetail = ({ data, onSaveChanges, onClickAssignee, onClickSupporter, 
                             justifyContent="space-between"
                             style={{ height: 60, background: '#27AE60', borderTop: 1, borderTopLeftRadius: 14, padding: 16 }}
                         >
-                            <Typography sx={{ color: 'white', fontWeight: 'bold' }}>Detail</Typography>
+                            <Typography sx={{ color: 'white', fontWeight: 'bold' }}>Details</Typography>
                             {!isPartner && (
                                 <Button variant="outlined" onClick={handleClick} sx={{ borderColor: '#fff' }}>
                                     <IconUserPlus color="white" />

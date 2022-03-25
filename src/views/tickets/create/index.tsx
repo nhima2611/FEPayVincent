@@ -1,5 +1,6 @@
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
+import toastService from 'services/core/toast.service';
 import ticketsServices from 'services/tickets-services';
 import { CreateTicketModel } from 'types/ticket';
 import toastify from 'utils/toastify';
@@ -9,11 +10,11 @@ const CreateTicketPage = () => {
     const navi = useNavigate();
     const mCreateTicket = useMutation((data: CreateTicketModel) => ticketsServices.createTicket(data), {
         onSuccess: (res) => {
-            toastify.showToast('success', 'Upload Success!');
+            toastify.showToast('success', 'Create Success!');
             navi(-1);
         },
         onError: (err: any) => {
-            toastify.showToast('error', err.message);
+            toastify.showToast('error', err.message || err);
         }
     });
 
@@ -29,9 +30,15 @@ const CreateTicketPage = () => {
         _.forEach(_.omit(values, 'attachments'), (item, key) => {
             formData.append(`${key}`, key === 'transaction_date' ? moment(item).format('DD/MM/YYYY') : item);
         });
-        mCreateTicket.mutate(formData);
+        return toastService.showConfirm({
+            onConfirm: async () => {
+                mCreateTicket.mutate(formData);
+            },
+            title: 'Are you sure submit this ticket?',
+            icon: 'warning'
+        });
     };
-    return <CreateOrEditTicket onSubmit={onSubmit} onCancel={() => navi(-1)} />;
+    return <CreateOrEditTicket onSubmit={onSubmit} onCancel={() => navi(-1)} loading={mCreateTicket.isLoading} />;
 };
 
 export default CreateTicketPage;

@@ -55,7 +55,7 @@ const lastStatusType = {
     3: 'Reverted',
     4: 'Solved',
     5: 'Rejected',
-    6: 'Cancel'
+    6: 'Canceled'
 };
 
 const getColorAndNameStatus = (status: number) => {
@@ -86,7 +86,7 @@ const getColorAndNameStatus = (status: number) => {
             color = '#FF0015';
             name = 'Rejected';
             break;
-        case STATUS.CANCEL:
+        case STATUS.CANCELED:
             color = '#F2994A';
             name = 'Cancel';
             break;
@@ -157,7 +157,7 @@ const columnsData: any[] = [
     },
     {
         id: columnIdsData.column7,
-        title: STATUS_NAME.CANCEL,
+        title: STATUS_NAME.CANCELED,
         itemIds: [],
         color: '#F2994A'
     }

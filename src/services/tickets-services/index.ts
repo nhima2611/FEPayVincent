@@ -1,5 +1,12 @@
 import { BaseApiService } from 'services/core/baseApi.service';
-import { AddAttachmentModel, AddDescriptionModel, CreateTicketModel, AssignToModel, EditTicketModel } from 'types/ticket';
+import {
+    AddAttachmentModel,
+    AddDescriptionModel,
+    CreateTicketModel,
+    AssignToModel,
+    EditTicketModel,
+    UpdateStatusAndActionModel
+} from 'types/ticket';
 import axiosServices from 'utils/axios';
 
 class TicketService extends BaseApiService {
@@ -44,6 +51,10 @@ class TicketService extends BaseApiService {
 
     assignTo = (data: AssignToModel) => {
         return axiosServices.post('v1/tickets/assigneesandsupporters', data);
+    };
+
+    updateStatusTicket = (model: UpdateStatusAndActionModel, ticket_id: number) => {
+        return axiosServices.put(`v1/tickets/${ticket_id}`, model);
     };
 }
 

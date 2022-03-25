@@ -1,29 +1,26 @@
 // material-ui
 import { Box, Grid } from '@mui/material';
 import ActionKanbanOrList from 'components/ActionKanbanOrList';
-import { lastStatusType } from 'constants/tickets';
+import { refLoading } from 'components/Loading';
+import PreviewTable, { refPreviewTable } from 'components/PreviewTable';
+import { STATUS } from 'constants/status';
 import TableContext from 'contexts/TableContext';
 import React, { useContext, useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import toastService from 'services/core/toast.service';
 import ticketsServices from 'services/tickets-services';
 // project imports
-import { useDispatch, useSelector } from 'store';
-import { getColumns, getColumnsOrder, getItems, setMode } from 'store/slices/kanban';
+import { useDispatch } from 'store';
 import { openDrawer } from 'store/slices/menu';
+import { AssignToModel } from 'types/ticket';
 import MainCard from 'ui-component/cards/MainCard';
 import eventEmitter from 'utils/eventEmitter';
 import toastify from 'utils/toastify';
-import Board from 'components/kanban';
-import TicketList from './list';
 import AssignToDialog, { refAssignTo } from '../components/AssignToDialog';
-import { AssignToModel } from 'types/ticket';
-import { STATUS } from 'constants/status';
-import PreviewTable, { refPreviewTable } from 'components/PreviewTable';
-import { refLoading } from 'components/Loading';
+import TicketList from './list';
 
-export default function MyTicketsPage() {
+export default function WaitingTicketsPage() {
     const dispatchs = useDispatch();
     const [{ queryPageIndex, queryPageSize, sortByObject, filters, selectedIds, resetState }, dispatch] = useContext(TableContext);
 
@@ -34,16 +31,6 @@ export default function MyTicketsPage() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    useEffect(() => {
-        dispatchs(getColumnsOrder());
-        // dispatch(getItems());
-        // dispatch(getUsersListStyle1());
-        // dispatch(getProfiles());
-        // dispatch(getComments());
-        // dispatch(getUserStory());
-        // dispatch(getUserStoryOrder());
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
     const navi = useNavigate();
 
     const onClickRowItem = (row) => {
@@ -54,8 +41,6 @@ export default function MyTicketsPage() {
             navi(`/tickets/${row.values?.ticket_id?.toString()}`);
         }
     };
-
-    const { mode } = useSelector((state) => state.kanban);
 
     const [searchTerm, setSearchTerm] = useState('');
 
@@ -85,21 +70,9 @@ export default function MyTicketsPage() {
             keepPreviousData: true,
             // staleTime: Infinity
             onError: (err: any) => {
-                toastify.showToast('error', err.message);
+                toastify.showToast('error', err.message || err);
             },
             onSuccess: (res) => {
-                const d = _(res.data?.data)
-                    .groupBy('last_status')
-                    .map((items, status) => ({ status: _.get(lastStatusType, [_.toNumber(status)]), value: _.map(items, 'ticket_id') }))
-                    .value()
-                    .reduce((obj, param) => {
-                        obj[param.status] = param.value;
-                        return obj;
-                    }, {});
-
-                dispatchs(getColumns(d));
-                dispatchs(getItems(res.data?.data));
-
                 dispatch({
                     type: 'TOTAL_COUNT_CHANGED',
                     payload: res.data?.meta?.pagination?.total
@@ -229,6 +202,7 @@ export default function MyTicketsPage() {
     const onClickAssignee = () => {
         refAssignTo.current?.handleClickOpen({ title: 'Assignee' });
     };
+
     const onClickSupporter = () => {
         refAssignTo.current?.handleClickOpen({ title: 'Supporter' });
     };
@@ -252,6 +226,8 @@ export default function MyTicketsPage() {
         });
     };
 
+    const onClickTransfer = () => navi('/kanban-ticket');
+
     if (mVerifyImportFile.isLoading) {
         refLoading.current?.handleToggle();
     }
@@ -263,7 +239,7 @@ export default function MyTicketsPage() {
                     <MainCard contentSX={{ p: 2 }}>
                         <ActionKanbanOrList
                             onClickDownload={onClickDownload}
-                            onClickTransfer={() => dispatchs(setMode())}
+                            onClickTransfer={onClickTransfer}
                             urlAddTicket="/tickets/create-ticket"
                             onUploadFile={onVerifyImport}
                             onClickTrash={onClickTrash}
@@ -271,16 +247,12 @@ export default function MyTicketsPage() {
                             onClickSupporter={onClickSupporter}
                             title="Waiting Ticket"
                         />
-                        {mode === 'kanban' ? (
-                            <Board />
-                        ) : (
-                            <TicketList
-                                onClickRowItem={onClickRowItem}
-                                loading={isLoading}
-                                data={dataTable?.data?.data}
-                                cols={dataTable?.data?.cols}
-                            />
-                        )}
+                        <TicketList
+                            onClickRowItem={onClickRowItem}
+                            loading={isLoading}
+                            data={dataTable?.data?.data}
+                            cols={dataTable?.data?.cols}
+                        />
                         <AssignToDialog onSubmit={onSubmitAssignTo} loading={mAssignTo.isLoading} />
                         <PreviewTable onSubmit={onUploadFile} loading={mUploadFile.isLoading} />
                     </MainCard>

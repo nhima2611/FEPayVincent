@@ -1,4 +1,4 @@
-import { DatePicker, LocalizationProvider } from '@mui/lab';
+import { DatePicker, LoadingButton, LocalizationProvider } from '@mui/lab';
 // material-ui
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { Box, Button, Grid, IconButton, InputAdornment, Stack, styled, TextField, Typography } from '@mui/material';
@@ -37,7 +37,7 @@ const validationSchema = yup.object({
     transaction_date: yup.string().required('Transaction Date is Required'),
     transaction_amount: yup.string().typeError('Transaction Amount must be a number').required('Transaction Amount is Required'),
     contract_number: yup.string().required('Contract Number is Required'),
-    wrong_transaction: yup.number().required('Wrong Transaction is Required'),
+    product_type: yup.number().required('Wrong Product Type is Required'),
     right_contract_number: yup.string().required('Right Contract Number is Required'),
     right_product_type: yup.number().when('issue_type', { is: 3, then: yup.number().required('Right Product Type is Required') }),
     requester_national_id: yup
@@ -59,6 +59,7 @@ interface Props {
     onSubmit: (values: any) => void;
     onCancel?: () => void;
     data?: any;
+    loading: boolean;
 }
 
 export const initialValues = {
@@ -70,7 +71,7 @@ export const initialValues = {
     transaction_date: new Date(),
     transaction_amount: '',
     contract_number: '',
-    wrong_transaction: 0,
+    product_type: 0,
     right_contract_number: '',
     right_amount: '',
     right_product_type: 0,
@@ -81,7 +82,7 @@ export const initialValues = {
     attachments: []
 };
 
-const CreateOrEditTicket = ({ onSubmit, onCancel, data }: Props) => {
+const CreateOrEditTicket = ({ onSubmit, onCancel, data, loading }: Props) => {
     const formik = useFormik({
         initialValues,
         validationSchema,
@@ -178,7 +179,7 @@ const CreateOrEditTicket = ({ onSubmit, onCancel, data }: Props) => {
 
                     <Grid item xs={12} md={3}>
                         <FEDropDown
-                            name="wrong_transaction"
+                            name="product_type"
                             formik={formik}
                             title="Product Type of Wrong Contract"
                             data={productTypeWrongContractNumberType}
@@ -245,22 +246,24 @@ const CreateOrEditTicket = ({ onSubmit, onCancel, data }: Props) => {
                         <Button variant="contained" sx={{ background: '#999999' }} onClick={onCancel}>
                             Cancel
                         </Button>
-                        <Button
+                        <LoadingButton
+                            loading={loading}
                             variant="contained"
                             sx={{ marginX: 1, background: '#2F80ED' }}
                             type="submit"
                             onClick={() => handleSubmit({ status: 0 })}
                         >
                             Save as Draft
-                        </Button>
-                        <Button
+                        </LoadingButton>
+                        <LoadingButton
+                            loading={loading}
                             sx={{ background: '#27AE60' }}
                             variant="contained"
                             type="submit"
                             onClick={() => handleSubmit({ status: 1 })}
                         >
                             Submit
-                        </Button>
+                        </LoadingButton>
                     </Grid>
                 </Grid>
             </form>

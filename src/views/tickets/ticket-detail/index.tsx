@@ -33,21 +33,24 @@ const TicketDetailPage = () => {
         };
     }, []);
 
-    const mUpdateTicket = useMutation((model: UpdateStatusAndActionModel) => ticketsServices.updatePut(model), {
-        onSuccess: (res) => {
-            qTicketDetail.refetch();
-            toastify.showToast('success', 'Update Success!');
-            navi(-1);
-        },
-        onError: (err: any) => {
-            toastify.showToast('error', err.message || err);
+    const mUpdateTicket = useMutation(
+        (model: UpdateStatusAndActionModel) => ticketsServices.updateStatusTicket(model, _.toNumber(ticketID)),
+        {
+            onSuccess: (res) => {
+                qTicketDetail.refetch();
+                toastify.showToast('success', 'Update Success!');
+                navi(-1);
+            },
+            onError: (err: any) => {
+                toastify.showToast('error', err.message || err);
+            }
         }
-    });
+    );
 
     const onSaveChanges = (model: any) => {
         return toastService.showConfirm({
             onConfirm: async () => {
-                mUpdateTicket.mutate({ ...model, id: ticketID });
+                mUpdateTicket.mutate(model);
             },
             title: 'Are you sure change it?',
             icon: 'warning'

@@ -283,8 +283,8 @@ const FETable = ({
                 component="div"
                 rowsPerPageOptions={[10, 20, 50]}
                 count={pageOptions.length}
-                rowsPerPage={pageSize}
-                page={pageIndex}
+                rowsPerPage={queryPageSize}
+                page={queryPageIndex}
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
