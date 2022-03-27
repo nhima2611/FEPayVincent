@@ -38,13 +38,13 @@ const TicketDetail = ({ data, onSaveChanges, onClickAssignee, onClickSupporter, 
     const isManager = [ROLE.SUPER_ADMIN, ROLE.CARD_MANAGER, ROLE.LOAN_MANAGER].includes(user?.role as any);
     const isStaff = [ROLE.DISBURSEMENT_STAFF, ROLE.REPAYMENT_STAFF].includes(user?.role as any);
 
-    const isSolvedRejectCancel = [4, 5, 6].includes(data?.status) && isPartner;
+    const isSolvedRejectCancel = [4, 5, 6].includes(data?.status);
     const isRevertedAndPartner = [3].includes(data?.status) && isPartner;
     const statusData = isStaff
         ? _.pick(lastStatusType, ['2', '3', '4', '5'])
         : isRevertedAndPartner
         ? _.pick(lastStatusType, ['2', '3'])
-        : _.omit(lastStatusType, ['0']);
+        : _.omit(lastStatusType, ['0', '1', '6']);
 
     const [selected, setSelected] = useState<any>({});
 
@@ -277,8 +277,13 @@ const TicketDetail = ({ data, onSaveChanges, onClickAssignee, onClickSupporter, 
                         >
                             <Typography sx={{ color: 'white', fontWeight: 'bold' }}>Details</Typography>
                             {!isPartner && (
-                                <Button variant="outlined" onClick={handleClick} sx={{ borderColor: '#fff' }}>
-                                    <IconUserPlus color="white" />
+                                <Button
+                                    disabled={isSolvedRejectCancel}
+                                    variant="outlined"
+                                    onClick={handleClick}
+                                    sx={{ borderColor: '#fff' }}
+                                >
+                                    <IconUserPlus color={isSolvedRejectCancel ? '#333333' : 'white'} />
                                 </Button>
                             )}
                             <Menu
