@@ -1,16 +1,19 @@
 // material-ui
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import ReplayIcon from '@mui/icons-material/Replay';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { LoadingButton } from '@mui/lab';
 import {
     Alert,
+    Button,
     FormControl,
     FormHelperText,
     Grid,
     IconButton,
     InputAdornment,
     InputLabel,
+    Link,
     OutlinedInput,
     Stepper,
     Typography
@@ -21,6 +24,7 @@ import { Formik } from 'formik';
 import useAuth from 'hooks/useAuth';
 import useScriptRef from 'hooks/useScriptRef';
 import React, { useState } from 'react';
+import Countdown from 'react-countdown';
 import { useNavigate } from 'react-router-dom';
 import toastService from 'services/core/toast.service';
 import Swal from 'sweetalert2';
@@ -42,7 +46,7 @@ const AuthForgotPassword = ({ ...others }) => {
     const [verify, setVerify] = useState<number>(0);
     const [emailState, setEmail] = useState<string>('');
 
-    const { resetPassword, forgotPassword } = useAuth();
+    const { resetPassword, forgotPassword, verifyCode } = useAuth();
     const onSubmitStep1 = (email: string) => {
         setLoading(true);
         setErrorAlerts(null);
@@ -53,14 +57,51 @@ const AuthForgotPassword = ({ ...others }) => {
                     if (!res.data.success) {
                         setErrorAlerts(
                             <Alert severity="error" className="mb-4">
-                                {res.message} !
+                                {res.data.message} !
                             </Alert>
                         );
                     } else {
                         toastService.toast('success', 'Check mail for verify code', 'top');
-
                         setVerify(res.data.verify_code);
                         setEmail(email);
+                        if (activeStep !== 1) {
+                            setActiveStep(1);
+                        }
+                    }
+                })
+                .catch((err) => {
+                    setLoading(false);
+                    setErrorAlerts(
+                        <Alert severity="error" className="mb-4">
+                            {err.data.message} !
+                        </Alert>
+                    );
+                });
+        } catch (err: any) {
+            setLoading(false);
+            setErrorAlerts(
+                <Alert severity="error" className="mb-4">
+                    {err.message} !
+                </Alert>
+            );
+        }
+    };
+    const onSubmitStep2 = (code: number) => {
+        setLoading(true);
+        setErrorAlerts(null);
+        try {
+            verifyCode({ email: emailState, verify_code: code })
+                .then((res) => {
+                    setLoading(false);
+                    if (!res.data.success) {
+                        setErrorAlerts(
+                            <Alert severity="error" className="mb-4">
+                                {res.data.message} !
+                            </Alert>
+                        );
+                    } else {
+                        toastService.toast('success', res.data.message, 'top');
+                        setVerify(code);
                         setActiveStep((prevActiveStep) => prevActiveStep + 1);
                     }
                 })
@@ -77,18 +118,6 @@ const AuthForgotPassword = ({ ...others }) => {
             setErrorAlerts(
                 <Alert severity="error" className="mb-4">
                     {err.message} !
-                </Alert>
-            );
-        }
-    };
-    const onSubmitStep2 = (code: number) => {
-        setErrorAlerts(null);
-        if (code.toString() === verify.toString()) {
-            setActiveStep((prevActiveStep) => prevActiveStep + 1);
-        } else {
-            setErrorAlerts(
-                <Alert severity="error" className="mb-4">
-                    Verify not match !
                 </Alert>
             );
         }
@@ -143,12 +172,14 @@ const AuthForgotPassword = ({ ...others }) => {
             );
         }
     };
+    const reSubmitStep1 = () => onSubmitStep1(emailState);
+
     const renderStep = (step: number) => {
         switch (step) {
             case 0:
                 return <Step1 loading={loading} onSubmit={onSubmitStep1} />;
             case 1:
-                return <Step2 loading={loading} onSubmit={onSubmitStep2} />;
+                return <Step2 loading={loading} onSubmit={onSubmitStep2} reSubmitStep1={reSubmitStep1} />;
             case 2:
                 return <Step3 loading={loading} onSubmit={onSubmitStep3} />;
             default:
@@ -223,7 +254,7 @@ const Step1 = ({ onSubmit, loading }: { onSubmit: (res) => void; loading: boolea
     );
 };
 
-const Step2 = ({ onSubmit, loading }: { onSubmit: (res) => void; loading: boolean }) => {
+const Step2 = ({ onSubmit, loading, reSubmitStep1 }: { onSubmit: (res) => void; loading: boolean; reSubmitStep1: () => void }) => {
     const theme = useTheme();
     return (
         <Formik
@@ -232,7 +263,11 @@ const Step2 = ({ onSubmit, loading }: { onSubmit: (res) => void; loading: boolea
                 submit: null
             }}
             validationSchema={Yup.object().shape({
-                verify: Yup.string().required()
+                verify: Yup.string()
+                    .required('Verify code is required')
+                    .max(5, 'Verify code must be at most 5 characters')
+                    .min(5, 'Verify code must be at most 5 characters')
+                    .length(5, 'Verify code must be at most 5 characters')
             })}
             onSubmit={(values, { setErrors, setStatus, setSubmitting }) => {
                 onSubmit(_.get(values, 'verify'));
@@ -244,13 +279,36 @@ const Step2 = ({ onSubmit, loading }: { onSubmit: (res) => void; loading: boolea
                         <InputLabel htmlFor="outlined-adornment-verify-forgot">Verify Code</InputLabel>
                         <OutlinedInput
                             id="outlined-adornment-verify-forgot"
-                            type="number"
+                            type="text"
                             value={values.verify}
                             name="verify"
                             onBlur={handleBlur}
                             onChange={handleChange}
                             label="Verify Code"
-                            placeholder="xxxxxx"
+                            inputProps={{ maxLength: 5 }}
+                            placeholder="xxxxx"
+                            endAdornment={
+                                <Countdown
+                                    date={Date.now() + 60000 * 5}
+                                    renderer={({ minutes, seconds, completed, formatted }) => (
+                                        <>
+                                            {!Boolean(loading) && (
+                                                <div>
+                                                    {/* {zeroPad(minutes)}:{zeroPad(seconds) */}
+                                                    {Boolean(completed) ? (
+                                                        <Button onClick={(e) => reSubmitStep1()}>
+                                                            {' '}
+                                                            <ReplayIcon /> Resend
+                                                        </Button>
+                                                    ) : (
+                                                        `${formatted.minutes}:${formatted.seconds}`
+                                                    )}
+                                                </div>
+                                            )}
+                                        </>
+                                    )}
+                                />
+                            }
                         />
                         {touched.verify && errors.verify && (
                             <FormHelperText error id="standard-weight-helper-text-verify-forgot">
@@ -258,7 +316,12 @@ const Step2 = ({ onSubmit, loading }: { onSubmit: (res) => void; loading: boolea
                             </FormHelperText>
                         )}
                     </FormControl>
-
+                    <FormHelperText>
+                        Email didn&apos;t arrive.{' '}
+                        <Link onClick={(e) => reSubmitStep1()} color="secondary" sx={{ cursor: 'pointer' }}>
+                            Resend!
+                        </Link>
+                    </FormHelperText>
                     <Box sx={{ mt: 2 }}>
                         <AnimateButton>
                             <LoadingButton
@@ -432,4 +495,4 @@ const Step3 = ({ onSubmit, loading }: { onSubmit: (res) => void; loading: boolea
     );
 };
 
-export default AuthForgotPassword;
+export default React.memo(AuthForgotPassword);
