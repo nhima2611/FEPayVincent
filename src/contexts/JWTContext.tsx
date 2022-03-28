@@ -115,6 +115,11 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
         return response;
     };
 
+    const verifyCode = async (body: { verify_code: number; email: string }) => {
+        const response = await axios.post('/verifyCode', body);
+        return response;
+    };
+
     const resetPassword = async (body: { verify_code: number; email: string; password: string; confirm_password: string }) => {
         const response = await axios.post('/verifyChangePassword', body);
         return response;
@@ -127,7 +132,7 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
     }
 
     return (
-        <JWTContext.Provider value={{ ...state, login, logout, register, resetPassword, forgotPassword, updateProfile }}>
+        <JWTContext.Provider value={{ ...state, login, logout, register, resetPassword, forgotPassword, verifyCode, updateProfile }}>
             {children}
         </JWTContext.Provider>
     );
