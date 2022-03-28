@@ -45,6 +45,7 @@ export type TicketDetailModel = {
     transaction_type: 1 | 2;
     updated_at: Date | string;
     ticket_logs: any[];
+    ticket_id: string;
     attachments: any[];
 };
 

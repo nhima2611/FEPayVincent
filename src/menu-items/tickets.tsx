@@ -8,14 +8,14 @@ export const tickets: any = {
     icon: IconTicket,
     children: [
         {
-            id: 'my_tickets',
+            id: 'tickets',
             title: <FormattedMessage id="my_tickets" />,
             type: 'item',
             url: '/tickets',
             breadcrumbs: false
         },
         {
-            id: 'waiting_tickets',
+            id: 'waiting-tickets',
             title: <FormattedMessage id="waiting_tickets" />,
             type: 'item',
             url: '/waiting-tickets',

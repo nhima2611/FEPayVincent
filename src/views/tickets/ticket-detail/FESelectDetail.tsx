@@ -7,8 +7,9 @@ interface Props {
     status?: any;
     data: any;
     onDataSelect?: (val: any) => void;
+    disabled?: boolean;
 }
-const FESelectDetail = ({ title, status, data = {}, onDataSelect }: Props) => {
+const FESelectDetail = ({ title, status, data = {}, onDataSelect, disabled }: Props) => {
     const [anchorEl, setAnchorEl] = useState<any>(null);
     const [val, setVal] = useState<any>();
 
@@ -35,7 +36,7 @@ const FESelectDetail = ({ title, status, data = {}, onDataSelect }: Props) => {
     return (
         <Stack direction="row" spacing={1.5} alignItems="center">
             <Typography sx={{ fontWeight: 700, color: '#4C4C4C' }}>{title}:</Typography>
-            <Button sx={{ padding: 0, color: '#999999' }} onClick={handleClick} endIcon={<IconCaretDown />}>
+            <Button sx={{ padding: 0, color: '#999999' }} onClick={handleClick} endIcon={<IconCaretDown />} disabled={disabled}>
                 {_.get(data, [val], 'Choose')}
             </Button>
             <Menu

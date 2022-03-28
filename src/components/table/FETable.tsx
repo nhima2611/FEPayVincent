@@ -27,6 +27,7 @@ interface Props {
     disableCheckbox?: boolean;
     manualSortBy?: boolean;
     manualPagination?: boolean;
+    hiddenColumns?: string[];
 }
 export const refFETable = createRef<any>();
 const FETable = ({
@@ -37,7 +38,8 @@ const FETable = ({
     rowId = '',
     disableCheckbox,
     manualSortBy = true,
-    manualPagination = true
+    manualPagination = true,
+    hiddenColumns = []
 }: Props) => {
     const filterTypes = React.useMemo(
         () => ({
@@ -85,7 +87,8 @@ const FETable = ({
             data,
             initialState: {
                 pageIndex: queryPageIndex,
-                pageSize: queryPageSize
+                pageSize: queryPageSize,
+                hiddenColumns
             },
             manualSortBy,
             disableSortRemove: true,
@@ -264,7 +267,7 @@ const FETable = ({
                                 >
                                     {row.cells.map((cell) => {
                                         return (
-                                            <TableCell {...cell.getCellProps()} sx={{ padding: 0.5 }}>
+                                            <TableCell {...cell.getCellProps()} sx={{ padding: 0.5, wordBreak: 'break-all' }}>
                                                 {cell.render('Cell')}
                                             </TableCell>
                                         );

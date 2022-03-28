@@ -12,7 +12,7 @@ import {
     transactionType
 } from 'constants/tickets';
 import { useFormik } from 'formik';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useDropzone } from 'react-dropzone';
 // project imports
 import { gridSpacing } from 'store/constant';
@@ -27,10 +27,13 @@ import FETextField from 'components/forms/FETextField';
 const validationSchema = yup.object({
     transaction_type: yup.string().required('Transaction Type is Required'),
     issue_type: yup.string().required('Issue Type is Required'),
-    sub_issue_type: yup.number().when('issue_type', { is: 3, then: yup.number().required('Sub Issue Type is Required') }),
+    sub_issue_type: yup.number().when('issue_type', {
+        is: (v: string) => v === '3',
+        then: yup.number().required('Sub Issue Type is Required').positive('Sub Issue Type is Required')
+    }),
     right_amount: yup.string().when('issue_type', {
-        is: 2,
-        then: yup.number().typeError('Right Amount must be a number').required('Right Amount Number is Required')
+        is: (v: string) => v === '2',
+        then: yup.string().typeError('Right Amount must be a number').required('Right Amount Number is Required')
     }),
     requested_by: yup.string().required('Requested By is Required'),
     ref_number: yup.string().required('Ref Number is Required'),
@@ -38,8 +41,14 @@ const validationSchema = yup.object({
     transaction_amount: yup.string().typeError('Transaction Amount must be a number').required('Transaction Amount is Required'),
     contract_number: yup.string().required('Contract Number is Required'),
     product_type: yup.number().required('Wrong Product Type is Required'),
-    right_contract_number: yup.string().required('Right Contract Number is Required'),
-    right_product_type: yup.number().when('issue_type', { is: 3, then: yup.number().required('Right Product Type is Required') }),
+    right_contract_number: yup.string().when('issue_type', {
+        is: (v: string) => v === '3',
+        then: yup.string().required('Right Contract Number is Required')
+    }),
+    right_product_type: yup.number().when('issue_type', {
+        is: (v: string) => v === '3',
+        then: yup.number().required('Right Product Type is Required').positive('Right Product Type is Required')
+    }),
     requester_national_id: yup
         .string()
         .matches(/^(\d{9}|\d{12})$/, "Requested's Nation ID to match 9 or 12 digits only")
@@ -69,7 +78,7 @@ export const initialValues = {
     requested_by: 1,
     ref_number: '',
     transaction_date: new Date(),
-    transaction_amount: '',
+    transaction_amount: 0,
     contract_number: '',
     product_type: 0,
     right_contract_number: '',
@@ -96,9 +105,16 @@ const CreateOrEditTicket = ({ onSubmit, onCancel, data, loading }: Props) => {
         }
     }, [data]);
 
+    const first = useRef(true);
     useEffect(() => {
+        if (first.current) {
+            first.current = false;
+            return;
+        }
+
         if (formik.values.issue_type !== 3) {
             formik.setFieldValue('sub_issue_type', 0);
+            formik.setFieldValue('right_contract_number', '');
             formik.setFieldValue('right_product_type', 0);
         }
         if (formik.values.issue_type !== 2) {
@@ -109,6 +125,8 @@ const CreateOrEditTicket = ({ onSubmit, onCancel, data, loading }: Props) => {
     const handleSubmit = ({ status }) => {
         if (!formik.isValid) return;
         formik.setFieldValue('status', status);
+        formik.setFieldValue('transaction_amount', transaction_amount.value());
+        formik.setFieldValue('right_amount', right_amount.value() || 0);
     };
 
     const onDropFile = (files: any) => {
@@ -121,6 +139,9 @@ const CreateOrEditTicket = ({ onSubmit, onCancel, data, loading }: Props) => {
     };
 
     const { getRootProps, getInputProps } = useDropzone({ onDrop: onDropFile, maxFiles: 5 });
+
+    const transaction_amount = numeral(formik.values.transaction_amount);
+    const right_amount = numeral(formik.values.right_amount);
 
     return (
         <MainCard title={_.isEmpty(data) ? 'Create Ticket' : 'Edit Ticket'}>
@@ -167,7 +188,7 @@ const CreateOrEditTicket = ({ onSubmit, onCancel, data, loading }: Props) => {
                             formik={formik}
                             title="Transaction Amount"
                             name="transaction_amount"
-                            value={numeral(formik.values.transaction_amount).format('0,0')}
+                            value={transaction_amount.format('0,0')}
                             InputProps={{
                                 endAdornment: <InputAdornment position="end">VND</InputAdornment>
                             }}
@@ -186,10 +207,24 @@ const CreateOrEditTicket = ({ onSubmit, onCancel, data, loading }: Props) => {
                         />
                     </Grid>
                     <Grid item xs={12} md={3}>
-                        <FETextField formik={formik} title="Right Contract Number" name="right_contract_number" />
+                        <FETextField
+                            formik={formik}
+                            title="Right Contract Number"
+                            name="right_contract_number"
+                            disabled={formik.values.issue_type !== 3}
+                        />
                     </Grid>
                     <Grid item xs={12} md={3}>
-                        <FETextField formik={formik} title="Right Amount" name="right_amount" disabled={formik.values.issue_type !== 2} />
+                        <FETextField
+                            formik={formik}
+                            title="Right Amount"
+                            name="right_amount"
+                            value={right_amount.format('0,0')}
+                            InputProps={{
+                                endAdornment: <InputAdornment position="end">VND</InputAdornment>
+                            }}
+                            disabled={formik.values.issue_type !== 2}
+                        />
                     </Grid>
                     <Grid item xs={12} md={3}>
                         <FEDropDown

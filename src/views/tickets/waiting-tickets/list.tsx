@@ -66,7 +66,7 @@ const WaitingList = ({ data = [], loading, cols = [], onClickRowItem }) => {
                               <div
                                   style={{
                                       color: isStatusType ? getColorAndNameStatus(value)?.color : 'black',
-                                      maxHeight: 40,
+                                      maxHeight: 65,
                                       overflow: 'hidden'
                                   }}
                               >
@@ -91,7 +91,14 @@ const WaitingList = ({ data = [], loading, cols = [], onClickRowItem }) => {
             {loading ? (
                 <div>loading...</div>
             ) : (
-                <FETable rowId="ticket_id" showCustomFilter onClickRowItem={onClickRowItem} data={productsData} columns={productsColumns} />
+                <FETable
+                    hiddenColumns={['id']}
+                    rowId="id"
+                    showCustomFilter
+                    onClickRowItem={onClickRowItem}
+                    data={productsData}
+                    columns={productsColumns}
+                />
             )}
         </MainCard>
     );

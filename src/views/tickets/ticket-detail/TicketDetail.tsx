@@ -91,7 +91,7 @@ const TicketDetail = ({ data, onSaveChanges, onClickAssignee, onClickSupporter, 
                                     unhighlightStyle={styles.ticket}
                                     searchWords={['Ticket ID: ']}
                                     autoEscape
-                                    textToHighlight={`Ticket ID: ${data?.id}`}
+                                    textToHighlight={`Ticket ID: ${data?.ticket_id}`}
                                 />
 
                                 {isRevertedAndPartner ? (
@@ -100,6 +100,7 @@ const TicketDetail = ({ data, onSaveChanges, onClickAssignee, onClickSupporter, 
                                         data={statusData}
                                         status={data?.status}
                                         onDataSelect={(val) => setSelected({ ...selected, ...val })}
+                                        disabled={isSolvedRejectCancel}
                                     />
                                 ) : isPartner ? (
                                     <Highlighter
@@ -115,6 +116,7 @@ const TicketDetail = ({ data, onSaveChanges, onClickAssignee, onClickSupporter, 
                                         data={statusData}
                                         status={data?.status}
                                         onDataSelect={(val) => setSelected({ ...selected, ...val })}
+                                        disabled={isSolvedRejectCancel}
                                     />
                                 )}
 
@@ -135,6 +137,7 @@ const TicketDetail = ({ data, onSaveChanges, onClickAssignee, onClickSupporter, 
                                         title="Action"
                                         data={actionTicketTypes}
                                         onDataSelect={(val) => setSelected({ ...selected, ...val })}
+                                        disabled={isSolvedRejectCancel}
                                     />
                                 )}
                             </Stack>
