@@ -43,7 +43,7 @@ const ForgotPassword = () => {
                                             </Grid>
                                             <Grid item xs={12}>
                                                 <Typography variant="caption" fontSize="16px" textAlign="center">
-                                                    Enter your email address below and we&apos;ll send you password reset link.
+                                                    Enter your email address below and we&apos;ll send verify code to reset password.
                                                 </Typography>
                                             </Grid>
                                         </Grid>
