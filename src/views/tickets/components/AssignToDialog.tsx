@@ -16,7 +16,7 @@ import React, { useEffect, useImperativeHandle, useState } from 'react';
 import * as yup from 'yup';
 
 const validationSchema = yup.object({
-    emails: yup.array().required('Email is Required')
+    emails: yup.array().min(1, 'Please choose user to assign').required('Email is Required')
 });
 
 export const refAssignTo = React.createRef<any>();
@@ -107,7 +107,12 @@ const AssignToDialog = ({ onSubmit, loading }) => {
                                     label="Emails"
                                     placeholder="Favorites"
                                     fullWidth
-                                    helperText={formik.values.type === 2 && 'Maximum 3 supporter'}
+                                    error={Boolean(formik.errors.emails)}
+                                    helperText={
+                                        Boolean(formik.errors.emails)
+                                            ? formik.errors.emails
+                                            : formik.values.type === 2 && 'Maximum 3 supporter'
+                                    }
                                 />
                             )}
                         />

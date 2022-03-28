@@ -20,7 +20,7 @@ export const partnerManagement = {
                     url: '/partner'
                 },
                 {
-                    id: 'sub_partner',
+                    id: 'sub-partner',
                     title: <FormattedMessage id="sub_partner" />,
                     type: 'item',
                     url: '/sub-partner'
@@ -34,7 +34,7 @@ export const partnerManagement = {
             ]
         },
         {
-            id: 'repayment_control',
+            id: 'repaymentcontrol',
             title: <FormattedMessage id="repayment_control" />,
             type: 'item',
             url: '/repaymentcontrol',
@@ -42,7 +42,7 @@ export const partnerManagement = {
             breadcrumbs: false
         },
         {
-            id: 'disbursement_control',
+            id: 'disbursement-control',
             title: <FormattedMessage id="disbursement_control" />,
             type: 'item',
             url: '#',
