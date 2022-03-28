@@ -1,5 +1,4 @@
 // assets
-import faker from '@faker-js/faker';
 import { Box, Button, Grid, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import FEDatePickerField from 'components/forms/FEDatePickerField';
@@ -207,7 +206,7 @@ const FEUpdatePartnerFrm = ({
                                                     inputProps={{ disabled: isEdit }}
                                                 />
                                             </Grid>
-                                            <Grid item xs={12} md={5}>
+                                            <Grid item xs={12} md>
                                                 <FEDateRangePickerField
                                                     formik={formik}
                                                     label="Contract Duration"
@@ -277,10 +276,10 @@ const FEUpdatePartnerFrm = ({
                                 />
                             </Grid>
                             <Grid item xs={12} md={6}>
-                                <FETextField formik={formik} title="Address" name="address" />
+                                <FETextField formik={formik} title="Address" name="address" multiline rows={4} />
                             </Grid>
                             <Grid item xs={12} md={6}>
-                                <FETextField formik={formik} title="Street" name="address2" />
+                                <FETextField formik={formik} title="Street" name="address2" multiline rows={4} />
                             </Grid>
 
                             {!Boolean(isEdit) && (
