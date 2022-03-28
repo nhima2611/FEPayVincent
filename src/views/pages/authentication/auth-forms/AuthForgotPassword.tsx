@@ -289,7 +289,7 @@ const Step2 = ({ onSubmit, loading, reSubmitStep1 }: { onSubmit: (res) => void; 
                             placeholder="xxxxx"
                             endAdornment={
                                 <Countdown
-                                    date={Date.now() + 6000}
+                                    date={Date.now() + 60000 * 5}
                                     renderer={({ minutes, seconds, completed, formatted }) => (
                                         <>
                                             {!Boolean(loading) && (
