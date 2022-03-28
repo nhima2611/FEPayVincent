@@ -39,9 +39,9 @@ export default function WaitingTicketsPage() {
     const onClickRowItem = (row) => {
         const { original } = row;
         if (original.last_status === 0) {
-            navi(`edit-ticket/${row.values?.ticket_id?.toString()}`);
+            navi(`edit-ticket/${row.values?.id?.toString()}`);
         } else {
-            navi(`/tickets/${row.values?.ticket_id?.toString()}`);
+            navi(`/tickets/${row.values?.id?.toString()}`);
         }
     };
 
