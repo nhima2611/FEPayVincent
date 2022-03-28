@@ -40,7 +40,7 @@ const initialValues: IFormProps = {
     name: '',
     email: '',
     phone: '',
-    code: faker.internet.password(),
+    code: '',
     address: '',
     address2: '',
     ward: '',
@@ -52,7 +52,7 @@ const initialValues: IFormProps = {
     contract_to: new Date(),
     created_contract_date: new Date(),
     fullname: '',
-    password: faker.internet.password(),
+    password: '',
     status: 1,
     partner_id: 1
 };
@@ -93,7 +93,7 @@ const FEUpdatePartnerFrm = ({
                 .trim()
                 .required('Phone is required')
                 .matches(/^\d+$/, 'Phone is not in correct format'),
-            code: Yup.string(),
+            code: Yup.string().required('Code is required'),
             address: Yup.string().required('Address is required'),
             address2: Yup.string().required('Street is required'),
             ward: Yup.string().required('Ward is required'),
@@ -104,8 +104,8 @@ const FEUpdatePartnerFrm = ({
             contract_from: Yup.date().required(),
             contract_to: Yup.date().required(),
             created_contract_date: Yup.date().required(),
-            fullname: isEdit ? Yup.string() : Yup.string().required('Fullname is required'),
-            password: isEdit ? Yup.string() : Yup.string().max(255).required('Pasword is required')
+            fullname: isEdit ? Yup.string() : Yup.string().required('Fullname is required')
+            // password: isEdit ? Yup.string() : Yup.string().max(255).required('Pasword is required')
         }),
         onSubmit,
         onReset: (props) => {
@@ -152,8 +152,8 @@ const FEUpdatePartnerFrm = ({
                                         <Grid item xs={12}>
                                             <MainCard
                                                 sx={{
-                                                    border: '1px solid #E5E5E5 !important',
-                                                    my: 3
+                                                    border: '1px solid #E5E5E5 !important'
+                                                    // my: 3
                                                 }}
                                             >
                                                 <Box
@@ -188,36 +188,43 @@ const FEUpdatePartnerFrm = ({
                                             </MainCard>
                                         </Grid>
                                     )}
+                                    <Grid item xs={12} md>
+                                        <FETextField formik={formik} title="Code" name="code" disabled={isEdit} />
+                                    </Grid>
                                     <Grid item xs={12} md sx={{ display: isEdit ? 'none' : 'initial' }}>
                                         <FETextField formik={formik} title="Partner" name="name" disabled={isEdit} />
                                     </Grid>
                                     <Grid item xs={12} md>
                                         <FETextField formik={formik} title="Contract Number" name="contract_number" disabled={isEdit} />
                                     </Grid>
-                                    <Grid item xs={12} md>
-                                        <FEDatePickerField
-                                            formik={formik}
-                                            label="Create Contract Date"
-                                            name="created_contract_date"
-                                            inputProps={{ disabled: isEdit }}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} md={4}>
-                                        <FEDateRangePickerField
-                                            formik={formik}
-                                            label="Contract Duration"
-                                            nameFrom="contract_from"
-                                            nameTo="contract_to"
-                                            inputProps={{ disabled: isEdit }}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} md>
-                                        <FEDatePickerField
-                                            formik={formik}
-                                            label="Sign Contract Date"
-                                            name="sign_contract_date"
-                                            inputProps={{ disabled: isEdit }}
-                                        />
+                                    <Grid xs={12} item>
+                                        <Grid container spacing={2}>
+                                            <Grid item xs={12} md>
+                                                <FEDatePickerField
+                                                    formik={formik}
+                                                    label="Create Contract Date"
+                                                    name="created_contract_date"
+                                                    inputProps={{ disabled: isEdit }}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={12} md={5}>
+                                                <FEDateRangePickerField
+                                                    formik={formik}
+                                                    label="Contract Duration"
+                                                    nameFrom="contract_from"
+                                                    nameTo="contract_to"
+                                                    inputProps={{ disabled: isEdit }}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={12} md>
+                                                <FEDatePickerField
+                                                    formik={formik}
+                                                    label="Sign Contract Date"
+                                                    name="sign_contract_date"
+                                                    inputProps={{ disabled: isEdit }}
+                                                />
+                                            </Grid>
+                                        </Grid>
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -294,9 +301,9 @@ const FEUpdatePartnerFrm = ({
                                             <Grid item xs={12} md>
                                                 <FETextField formik={formik} title="Phone" name="phone" />
                                             </Grid>
-                                            <Grid item xs={12} md>
+                                            {/* <Grid item xs={12} md>
                                                 <FETextField formik={formik} title="Password" name="password" />
-                                            </Grid>
+                                            </Grid> */}
                                         </Grid>
                                     </Grid>
                                 </>
