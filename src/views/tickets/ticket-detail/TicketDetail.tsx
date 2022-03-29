@@ -3,6 +3,7 @@ import { IconUserPlus } from '@tabler/icons';
 import { ROLE } from 'constants/auth';
 import {
     actionTicketTypes,
+    getColorAndNameStatus,
     issueType,
     lastStatusType,
     productTypeRightContractNumberType,
@@ -102,10 +103,10 @@ const TicketDetail = ({ data, onSaveChanges, onClickAssignee, onClickSupporter, 
                                         onDataSelect={(val) => setSelected({ ...selected, ...val })}
                                         disabled={isSolvedRejectCancel}
                                     />
-                                ) : isPartner ? (
+                                ) : isPartner || isSolvedRejectCancel ? (
                                     <Highlighter
                                         highlightStyle={{ ...styles.ticket, fontWeight: 'bold' }}
-                                        unhighlightStyle={styles.ticket}
+                                        unhighlightStyle={{ ...styles.ticket, color: getColorAndNameStatus(data?.status).color }}
                                         searchWords={['Status: ']}
                                         autoEscape
                                         textToHighlight={`Status: ${_.get(lastStatusType, [data?.status])}`}
