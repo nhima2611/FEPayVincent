@@ -55,7 +55,7 @@ const UserPage = () => {
     );
 
     const onClickRowItem = (row) => {
-        navi(row.values?.user_id?.toString());
+        navi(row.id?.toString());
     };
 
     const handleSearch = _.debounce(
@@ -85,6 +85,11 @@ const UserPage = () => {
     const onUploadFile = () => {};
     const onClickTrash = () => {};
     const onClickUser = () => {};
+
+    const onEdit = (row) => {
+        navi(row.id?.toString());
+    };
+    const onDelete = () => {};
     return (
         <Box sx={{ display: 'flex' }}>
             <Grid container>
@@ -103,6 +108,8 @@ const UserPage = () => {
                             loading={isLoading}
                             data={dataTable?.data?.data}
                             cols={dataTable?.data?.cols}
+                            onEdit={onEdit}
+                            onDelete={onDelete}
                         />
                     </MainCard>
                 </Grid>

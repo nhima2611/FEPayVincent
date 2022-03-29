@@ -40,7 +40,8 @@ export const DatePickerColumnFilter = ({ column: { filterValue, setFilter } }) =
                                 onFocus={onFocus}
                                 onBlur={onBlur}
                                 style={{ border: 'none', outline: 'none', width: 100 }}
-                                {...inputProps}
+                                value={moment(filterValue).format('DD/MM/YYYY')}
+                                disabled
                             />
                             {InputProps?.endAdornment}
                         </Stack>

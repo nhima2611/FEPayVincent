@@ -3,6 +3,7 @@ import { IconUserPlus } from '@tabler/icons';
 import { ROLE } from 'constants/auth';
 import {
     actionTicketTypes,
+    getColorAndNameStatus,
     issueType,
     lastStatusType,
     productTypeRightContractNumberType,
@@ -12,7 +13,7 @@ import {
     transactionType
 } from 'constants/tickets';
 import useAuth from 'hooks/useAuth';
-import { createRef, SyntheticEvent, useImperativeHandle, useState } from 'react';
+import { createRef, SyntheticEvent, useEffect, useImperativeHandle, useState } from 'react';
 import Highlighter from 'react-highlight-words';
 import { TicketDetailModel } from 'types/ticket';
 import MainCard from 'ui-component/cards/MainCard';
@@ -47,6 +48,11 @@ const TicketDetail = ({ data, onSaveChanges, onClickAssignee, onClickSupporter, 
         : _.omit(lastStatusType, ['0', '1', '6']);
 
     const [selected, setSelected] = useState<any>({});
+    const isSolvedRejectCancelSelected = [4, 5, 6].includes(selected?.status);
+
+    useEffect(() => {
+        setSelected({ ...selected, action: 0 });
+    }, [isSolvedRejectCancelSelected]);
 
     const handleSubmit = () => {
         if (isRevertedAndPartner) {
@@ -102,10 +108,10 @@ const TicketDetail = ({ data, onSaveChanges, onClickAssignee, onClickSupporter, 
                                         onDataSelect={(val) => setSelected({ ...selected, ...val })}
                                         disabled={isSolvedRejectCancel}
                                     />
-                                ) : isPartner ? (
+                                ) : isPartner || isSolvedRejectCancel ? (
                                     <Highlighter
                                         highlightStyle={{ ...styles.ticket, fontWeight: 'bold' }}
-                                        unhighlightStyle={styles.ticket}
+                                        unhighlightStyle={{ ...styles.ticket, color: getColorAndNameStatus(data?.status).color }}
                                         searchWords={['Status: ']}
                                         autoEscape
                                         textToHighlight={`Status: ${_.get(lastStatusType, [data?.status])}`}
@@ -134,10 +140,11 @@ const TicketDetail = ({ data, onSaveChanges, onClickAssignee, onClickSupporter, 
                                     />
                                 ) : (
                                     <FESelectDetail
+                                        status={selected.action}
                                         title="Action"
                                         data={actionTicketTypes}
                                         onDataSelect={(val) => setSelected({ ...selected, ...val })}
-                                        disabled={isSolvedRejectCancel}
+                                        disabled={isSolvedRejectCancel || isSolvedRejectCancelSelected}
                                     />
                                 )}
                             </Stack>
@@ -203,7 +210,7 @@ const TicketDetail = ({ data, onSaveChanges, onClickAssignee, onClickSupporter, 
                                 unhighlightStyle={styles.ticket}
                                 searchWords={['Product: ']}
                                 autoEscape
-                                textToHighlight={`Product: ${'Card'}`}
+                                textToHighlight={`Product: ${_.get(productTypes, [data?.product_type])}`}
                             />
                         </div>
                     </Stack>
@@ -337,8 +344,8 @@ const TicketDetail = ({ data, onSaveChanges, onClickAssignee, onClickSupporter, 
                             <FEItemDetail title="Transaction Type" value={_.get(transactionType, [data?.transaction_type])} />
                             <FEItemDetail title="Issue Type" value={_.get(issueType, [data?.issue_type])} />
                             <FEItemDetail title="Sub Issue Type" value={_.get(subIssueType, [data?.sub_issue_type])} />
-                            <FEItemDetail title="Product Type" value={_.get(productTypes, [data?.issue_type])} />
-                            <FEItemDetail title="Requested by" value={_.get(requestedBy, [data?.issue_type])} />
+                            <FEItemDetail title="Product Type" value={_.get(productTypes, [data?.product_type])} />
+                            <FEItemDetail title="Requested by" value={_.get(requestedBy, [data?.requested_by])} />
                             <Typography sx={{ fontWeight: 'bold', color: '#27AE60' }}>Tracking:</Typography>
                             <FEItemDetail title="Created Date" value={moment(data?.created_at).format('DD/MM/YYYY - HH:mm')} />
                             <FEItemDetail title="Updated Date" value={moment(data?.updated_at).format('DD/MM/YYYY - HH:mm')} />

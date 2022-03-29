@@ -47,7 +47,6 @@ const WaitingList = ({ data = [], loading, cols = [], onClickRowItem }) => {
                       const dateSelect = ['created_date', 'last_status_date'].includes(key);
                       const isStatusType = ['last_status'].includes(key);
                       const WIDTH_130 = [
-                          'ticket_id',
                           'contract_id',
                           'ref_number',
                           'created_date',
@@ -56,7 +55,7 @@ const WaitingList = ({ data = [], loading, cols = [], onClickRowItem }) => {
                           'product_type'
                       ].includes(key);
                       const WIDTH_160 = ['transaction_type'].includes(key);
-                      const WIDTH_190 = ['issue_type'].includes(key);
+                      const WIDTH_190 = ['ticket_id', 'issue_type'].includes(key);
 
                       return {
                           Header: startCase(camelCase(key)),

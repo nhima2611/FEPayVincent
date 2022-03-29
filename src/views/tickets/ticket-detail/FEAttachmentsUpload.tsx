@@ -4,6 +4,7 @@ import useAuth from 'hooks/useAuth';
 import { useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useMutation } from 'react-query';
+import toastService from 'services/core/toast.service';
 import ticketsServices from 'services/tickets-services';
 import { AddAttachmentModel } from 'types/ticket';
 import eventEmitter from 'utils/eventEmitter';
@@ -53,7 +54,13 @@ const FEAttachmentsUpload = ({ ticketId, disabled }) => {
 
         formData.append('ticket_id', ticketId);
 
-        mUploadFile.mutate(formData);
+        return toastService.showConfirm({
+            onConfirm: async () => {
+                mUploadFile.mutate(formData);
+            },
+            title: 'Are you sure to upload this file?',
+            icon: 'warning'
+        });
     };
 
     const filess = files.map((file: any, index: number) => (
