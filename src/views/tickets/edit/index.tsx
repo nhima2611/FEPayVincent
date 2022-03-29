@@ -22,7 +22,7 @@ const EditTicketPage = () => {
     });
 
     const onSubmit = (values: any) => {
-        const { attachments } = values;
+        const { attachments, status } = values;
         const formData: any = new FormData();
 
         const dd: any = [];
@@ -47,7 +47,7 @@ const EditTicketPage = () => {
             onConfirm: async () => {
                 mEditTicket.mutate(formData);
             },
-            title: 'Are you sure submit this ticket?',
+            title: status === 0 ? ' Are you sure to save this ticket as draft?' : 'Are you sure submit this ticket?',
             icon: 'warning'
         });
     };

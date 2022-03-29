@@ -32,6 +32,8 @@ const UserList = ({ data = [], loading, cols = [], onClickRowItem }) => {
                               Filter: ''
                           };
                       }
+                      const isDateType = ['created_date'].includes(key);
+
                       return {
                           Header: startCase(camelCase(key)),
                           accessor: key,
@@ -42,7 +44,7 @@ const UserList = ({ data = [], loading, cols = [], onClickRowItem }) => {
                                       overflow: 'hidden'
                                   }}
                               >
-                                  {value}
+                                  {isDateType ? moment(value).format('DD/MM/YYYY hh:mm A') : value}
                               </div>
                           ),
                           Filter: ''
