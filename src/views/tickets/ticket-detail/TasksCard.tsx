@@ -37,7 +37,7 @@ const TasksCard = ({ data = [] }: { data: any[] }) => (
                     <Grid item xs={12}>
                         <Grid container spacing={2} alignItems="center">
                             <Grid item>
-                                <Avatar color="primary" size="sm">
+                                <Avatar color="primary" sx={{ width: 24, height: 24, left: 9 }}>
                                     <QueryBuilderOutlinedIcon />
                                 </Avatar>
                             </Grid>
