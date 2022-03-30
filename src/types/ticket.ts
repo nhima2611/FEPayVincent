@@ -20,6 +20,7 @@ export type TicketItem = {
     issue_type?: 'Cancel transaction' | 'Adjust Amount' | 'Adjust Contract Number' | 'System Issue';
     product_type?: 'Loan' | 'Card' | 'Banca';
     requested_by?: string;
+    id?: number;
 };
 
 export type TicketDetailModel = {
