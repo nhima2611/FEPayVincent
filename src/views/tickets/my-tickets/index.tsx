@@ -175,9 +175,10 @@ export default function MyTicketsPage() {
             _.filter(dataTable?.data?.data, (item) =>
                 _.keys(selectedIds)
                     .map((it) => _.toNumber(it))
-                    .includes(item.ticket_id)
+                    .includes(item.id)
             ),
-            (it) => [STATUS.NEW, STATUS.PROCESSING, STATUS.REJECTED, STATUS.REVERTED, STATUS.SOLVED].includes(it.last_status)
+            (it) =>
+                [STATUS.NEW, STATUS.PROCESSING, STATUS.REJECTED, STATUS.REVERTED, STATUS.SOLVED, STATUS.CANCELED].includes(it.last_status)
         );
 
         if (checkStatus) return toastify.showToast('error', 'Can not delete');

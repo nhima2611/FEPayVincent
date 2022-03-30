@@ -182,5 +182,6 @@ export {
     columnsData,
     actionTicketTypes,
     productTypeRightContractNumberType,
-    productTypeWrongContractNumberType
+    productTypeWrongContractNumberType,
+    columnIdsData
 };

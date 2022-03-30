@@ -56,6 +56,10 @@ class TicketService extends BaseApiService {
     updateStatusTicket = (model: UpdateStatusAndActionModel, ticket_id: number) => {
         return axiosServices.put(`v1/tickets/${ticket_id}`, model);
     };
+
+    getUser = () => {
+        return axiosServices.get(`v1/users?is_staff=1`);
+    };
 }
 
 export default new TicketService();

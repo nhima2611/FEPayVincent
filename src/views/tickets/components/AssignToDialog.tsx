@@ -12,7 +12,9 @@ import {
     TextField
 } from '@mui/material';
 import { useFormik } from 'formik';
-import React, { useEffect, useImperativeHandle, useState } from 'react';
+import React, { useEffect, useImperativeHandle, useMemo, useState } from 'react';
+import { useQuery } from 'react-query';
+import ticketsServices from 'services/tickets-services';
 import * as yup from 'yup';
 
 const validationSchema = yup.object({
@@ -63,6 +65,10 @@ const AssignToDialog = ({ onSubmit, loading }) => {
         [open]
     );
 
+    const qGetUser = useQuery('qGetUser', () => ticketsServices.getUser());
+
+    const dd = useMemo(() => _.map(qGetUser.data?.data?.data, (it) => ({ email: it.email, name: it.name })), [qGetUser.data]);
+
     const LIMIT = formik.values.type === 1 ? 1 : 3;
 
     return (
@@ -77,7 +83,7 @@ const AssignToDialog = ({ onSubmit, loading }) => {
                             value={formik.values.emails}
                             onChange={(e, newVal) => formik.setFieldValue('emails', newVal)}
                             multiple
-                            options={top100Films}
+                            options={dd}
                             getOptionDisabled={(option) => formik.values.emails?.length >= LIMIT}
                             disableCloseOnSelect
                             getOptionLabel={(option) => option.email}

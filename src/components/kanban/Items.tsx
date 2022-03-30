@@ -113,9 +113,9 @@ const Items = ({ item, index, columnColor }: Props) => {
 
     const onClickRowItem = (ticket: TicketItem) => {
         if (ticket.last_status === 0) {
-            navi(`edit-ticket/${ticket?.ticket_id?.toString()}`);
+            navi(`edit-ticket/${ticket?.id?.toString()}`);
         } else {
-            navi(`/tickets/${ticket?.ticket_id?.toString()}`);
+            navi(`/tickets/${ticket?.id?.toString()}`);
         }
     };
 

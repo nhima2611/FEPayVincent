@@ -8,7 +8,8 @@ import { dispatch } from '../index';
 // types
 import { DefaultRootStateProps } from 'types';
 import { KanbanColumn, KanbanComment, KanbanItem, KanbanUserStory } from 'types/kanban';
-import { columnsData, columnsOrderData } from 'constants/tickets';
+import { columnIdsData, columnsData, columnsOrderData } from 'constants/tickets';
+import { ROLE } from 'constants/auth';
 
 // ----------------------------------------------------------------------
 
@@ -200,11 +201,38 @@ export function getColumns(d?: any) {
     };
 }
 
-export function getColumnsOrder() {
+export function getColumnsOrder(user: any) {
     return async () => {
         try {
             // const response = await axios.get('/api/kanban/columns-order');
-            dispatch(slice.actions.getColumnsOrderSuccess(columnsOrderData));
+            const isSuperAdmin = [ROLE.SUPER_ADMIN].includes(user?.role as any);
+            const isManager = [
+                ROLE.REPAYMENT_MANAGER,
+                ROLE.CARD_MANAGER,
+                ROLE.LOAN_MANAGER,
+                ROLE.BANCA_MANAGER,
+                ROLE.TICKET_MANAGER,
+                ROLE.DISBURSEMENT_S_MANAGER
+            ].includes(user?.role as any);
+            const isStaff = [ROLE.TICKET_STAFF, ROLE.PARTNER_STAFF, ROLE.REPAYMENT_STAFF, ROLE.DISBURSEMENT_STAFF].includes(
+                user?.role as any
+            );
+
+            const d = isSuperAdmin
+                ? _.filter(columnsOrderData, (o) => !o.includes(columnIdsData.column1))
+                : isManager || isStaff
+                ? _.filter(columnsOrderData, (o) =>
+                      [
+                          columnIdsData.column2,
+                          columnIdsData.column3,
+                          columnIdsData.column4,
+                          columnIdsData.column5,
+                          columnIdsData.column6
+                      ].includes(o)
+                  )
+                : columnsOrderData;
+
+            dispatch(slice.actions.getColumnsOrderSuccess(d));
         } catch (error) {
             dispatch(slice.actions.hasError(error));
         }
