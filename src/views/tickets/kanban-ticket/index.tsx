@@ -2,6 +2,7 @@ import { Box, Grid } from '@mui/material';
 import ActionKanbanOrList from 'components/ActionKanbanOrList';
 import Board from 'components/kanban';
 import { lastStatusType } from 'constants/tickets';
+import useAuth from 'hooks/useAuth';
 import { useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { useNavigate } from 'react-router-dom';
@@ -13,9 +14,10 @@ import MainCard from 'ui-component/cards/MainCard';
 const KanbanTicketPage = () => {
     const dispatch = useDispatch();
     const navi = useNavigate();
+    const { user } = useAuth();
 
     useEffect(() => {
-        dispatch(getColumnsOrder());
+        dispatch(getColumnsOrder(user));
         // dispatch(getItems());
         // dispatch(getUsersListStyle1());
         // dispatch(getProfiles());
