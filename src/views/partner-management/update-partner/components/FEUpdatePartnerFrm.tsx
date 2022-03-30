@@ -93,7 +93,9 @@ const FEUpdatePartnerFrm = ({
                 .trim()
                 .required('Phone is required')
                 .matches(/^\d+$/, 'Phone is not in correct format'),
-            code: Yup.string().required('Code is required'),
+            code: Yup.string()
+                .matches(/^(?!.*\d.*\d)[^\W_]{3}$/, "Requested's Nation ID to match 3 digits only")
+                .required('Code is required'),
             address: Yup.string().required('Address is required'),
             address2: Yup.string().required('Street is required'),
             ward: Yup.string().required('Ward is required'),
@@ -189,7 +191,13 @@ const FEUpdatePartnerFrm = ({
                                         </Grid>
                                     )}
                                     <Grid item xs={12} md>
-                                        <FETextField formik={formik} title="Code" name="code" disabled={isEdit} />
+                                        <FETextField
+                                            formik={formik}
+                                            title="Partner ID"
+                                            name="code"
+                                            disabled={isEdit}
+                                            inputProps={{ maxLength: 3, style: { textTransform: 'uppercase' } }}
+                                        />
                                     </Grid>
                                     <Grid item xs={12} md sx={{ display: isEdit ? 'none' : 'initial' }}>
                                         <FETextField formik={formik} title="Partner" name="name" disabled={isEdit} />
