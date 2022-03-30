@@ -222,7 +222,13 @@ export function getColumnsOrder(user: any) {
                 ? _.filter(columnsOrderData, (o) => !o.includes(columnIdsData.column1))
                 : isManager || isStaff
                 ? _.filter(columnsOrderData, (o) =>
-                      [columnIdsData.column2, columnIdsData.column3, columnIdsData.column4, columnIdsData.column6].includes(o)
+                      [
+                          columnIdsData.column2,
+                          columnIdsData.column3,
+                          columnIdsData.column4,
+                          columnIdsData.column5,
+                          columnIdsData.column6
+                      ].includes(o)
                   )
                 : columnsOrderData;
 
