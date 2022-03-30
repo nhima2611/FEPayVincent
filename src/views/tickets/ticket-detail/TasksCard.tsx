@@ -1,7 +1,6 @@
 import QueryBuilderOutlinedIcon from '@mui/icons-material/QueryBuilderOutlined';
 // material-ui
-import { Box, Grid, Stack, Typography } from '@mui/material';
-import { IconPoint } from '@tabler/icons';
+import { Box, Grid, Tooltip, Typography } from '@mui/material';
 import { map } from 'lodash';
 // third party
 import PerfectScrollbar from 'react-perfect-scrollbar';
@@ -44,14 +43,21 @@ const TasksCard = ({ data = [] }: { data: any[] }) => (
                             </Grid>
                             <Grid item xs zeroMinWidth>
                                 <Grid container justifyContent="space-between" spacing={2}>
-                                    <Grid item xs={12} md={6}>
-                                        <Typography noWrap sx={{ fontSize: 10 }}>{`${item?.user_fullname} ${item?.content}`}</Typography>
+                                    <Grid item xs={12} md={8}>
+                                        <Tooltip title={`${item?.user_fullname} ${item?.content}`}>
+                                            <Typography
+                                                noWrap
+                                                sx={{ fontSize: 10 }}
+                                            >{`${item?.user_fullname} ${item?.content}`}</Typography>
+                                        </Tooltip>
                                     </Grid>
 
-                                    <Grid item xs={12} md={6}>
-                                        <Typography noWrap sx={{ fontSize: 10, textAlign: 'right' }}>
-                                            {moment(item?.created_at).format('DD/MM/YYYY - HH:mm a')}
-                                        </Typography>
+                                    <Grid item xs={12} md={4}>
+                                        <Tooltip title={moment(item?.created_at).format('DD/MM/YYYY - HH:mm a')}>
+                                            <Typography noWrap sx={{ fontSize: 10, textAlign: 'right' }}>
+                                                {moment(item?.created_at).format('DD/MM/YYYY - HH:mm a')}
+                                            </Typography>
+                                        </Tooltip>
                                     </Grid>
                                 </Grid>
                             </Grid>
