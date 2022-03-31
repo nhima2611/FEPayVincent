@@ -84,7 +84,6 @@ const UserPage = () => {
     const onClickDownload = () => {};
     const onUploadFile = () => {};
     const onClickTrash = () => {};
-    const onClickUser = () => {};
 
     const onEdit = (row) => {
         navi(row.id?.toString());
@@ -97,7 +96,6 @@ const UserPage = () => {
                     <MainCard contentSX={{ p: 2 }}>
                         <ActionPartner
                             onClickDownload={onClickDownload}
-                            onClickUser={onClickUser}
                             urlAddTicket="create"
                             onUploadFile={onUploadFile}
                             onClickTrash={onClickTrash}

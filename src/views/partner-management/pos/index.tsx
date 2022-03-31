@@ -78,7 +78,6 @@ const PosPage = () => {
     const onClickDownload = () => {};
     const onUploadFile = () => {};
     const onClickTrash = () => {};
-    const onClickUser = () => {};
     return (
         <Box sx={{ display: 'flex' }}>
             <Grid container>
@@ -86,7 +85,6 @@ const PosPage = () => {
                     <MainCard contentSX={{ p: 2 }}>
                         <ActionPartner
                             onClickDownload={onClickDownload}
-                            onClickUser={onClickUser}
                             urlAddTicket=""
                             onUploadFile={onUploadFile}
                             onClickTrash={onClickTrash}

@@ -347,9 +347,9 @@ const TicketDetail = ({ data, onSaveChanges, onClickAssignee, onClickSupporter, 
                             <FEItemDetail title="Product Type" value={_.get(productTypes, [data?.product_type])} />
                             <FEItemDetail title="Requested by" value={_.get(requestedBy, [data?.requested_by])} />
                             <Typography sx={{ fontWeight: 'bold', color: '#27AE60' }}>Tracking:</Typography>
-                            <FEItemDetail title="Created Date" value={moment(data?.created_at).format('DD/MM/YYYY - HH:mm')} />
-                            <FEItemDetail title="Updated Date" value={moment(data?.updated_at).format('DD/MM/YYYY - HH:mm')} />
-                            <FEItemDetail title="Solved Date" value="-" />
+                            <FEItemDetail title="Created Date" value={moment(data?.created_at).format('DD/MM/YYYY - HH:mm A')} />
+                            <FEItemDetail title="Updated Date" value={moment(data?.updated_at).format('DD/MM/YYYY - HH:mm A')} />
+                            <FEItemDetail title="Solved Date" value={moment(data?.solved_date).format('DD/MM/YYYY - HH:mm A')} />
                             <Typography sx={{ fontWeight: 'bold', color: '#27AE60' }}>Activity Logs:</Typography>
                             <TasksCard data={data?.ticket_logs} />
                         </Box>

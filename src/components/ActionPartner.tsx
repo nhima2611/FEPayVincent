@@ -33,7 +33,7 @@ const Input = styled('input')({
     display: 'none'
 });
 
-const ActionPartner = ({ onClickUser, urlAddTicket, onClickDownload, onUploadFile, onClickTrash, title = 'Partner List' }) => {
+const ActionPartner = ({ urlAddTicket, onClickDownload, onUploadFile, onClickTrash, title = 'Partner List' }) => {
     const theme = useTheme();
     const { user } = useAuth();
 
@@ -79,12 +79,6 @@ const ActionPartner = ({ onClickUser, urlAddTicket, onClickDownload, onUploadFil
                 <Tooltip title="Delete">
                     <Button onClick={onClickTrash} sx={{ ...styles.btn, minWidth: 36, padding: 0 }} variant="outlined">
                         <IconTrash size={18} />
-                    </Button>
-                </Tooltip>
-
-                <Tooltip title="Toggle Mode">
-                    <Button sx={{ ...styles.btn, minWidth: 36, padding: 0 }} variant="outlined" onClick={onClickUser}>
-                        <IconUser size={18} />
                     </Button>
                 </Tooltip>
 

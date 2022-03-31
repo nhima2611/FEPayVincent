@@ -263,7 +263,13 @@ const FETable = ({
                                     hover
                                     {...row.getRowProps()}
                                     onClick={() => onClickRowItem?.(row)}
-                                    sx={{ textDecoration: 'none', cursor: 'pointer' }}
+                                    sx={{
+                                        textDecoration: 'none',
+                                        cursor: 'pointer',
+                                        '&:hover': {
+                                            backgroundColor: `rgba(0, 131, 69, 0.05) !important`
+                                        }
+                                    }}
                                 >
                                     {row.cells.map((cell) => {
                                         return (

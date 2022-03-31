@@ -287,28 +287,28 @@ const Step2 = ({ onSubmit, loading, reSubmitStep1 }: { onSubmit: (res) => void; 
                             label="Verify Code"
                             inputProps={{ maxLength: 5 }}
                             placeholder="xxxxx"
-                            endAdornment={
-                                <Countdown
-                                    date={Date.now() + 60000 * 5}
-                                    renderer={({ minutes, seconds, completed, formatted }) => (
-                                        <>
-                                            {!Boolean(loading) && (
-                                                <div>
-                                                    {/* {zeroPad(minutes)}:{zeroPad(seconds) */}
-                                                    {Boolean(completed) ? (
-                                                        <Button onClick={(e) => reSubmitStep1()}>
-                                                            {' '}
-                                                            <ReplayIcon /> Resend
-                                                        </Button>
-                                                    ) : (
-                                                        `${formatted.minutes}:${formatted.seconds}`
-                                                    )}
-                                                </div>
-                                            )}
-                                        </>
-                                    )}
-                                />
-                            }
+                            // endAdornment={
+                            //     <Countdown
+                            //         date={Date.now() + 60000 * 5}
+                            //         renderer={({ minutes, seconds, completed, formatted }) => (
+                            //             <>
+                            //                 {!Boolean(loading) && (
+                            //                     <div>
+                            //                         {/* {zeroPad(minutes)}:{zeroPad(seconds) */}
+                            //                         {Boolean(completed) ? (
+                            //                             <Button onClick={(e) => reSubmitStep1()}>
+                            //                                 {' '}
+                            //                                 <ReplayIcon /> Resend
+                            //                             </Button>
+                            //                         ) : (
+                            //                             `${formatted.minutes}:${formatted.seconds}`
+                            //                         )}
+                            //                     </div>
+                            //                 )}
+                            //             </>
+                            //         )}
+                            //     />
+                            // }
                         />
                         {touched.verify && errors.verify && (
                             <FormHelperText error id="standard-weight-helper-text-verify-forgot">

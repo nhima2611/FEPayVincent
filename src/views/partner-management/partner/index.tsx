@@ -2,9 +2,10 @@ import { Box, Grid } from '@mui/material';
 import ActionPartner from 'components/ActionPartner';
 import TableContext from 'contexts/TableContext';
 import React, { useContext, useEffect, useState } from 'react';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import { useSearchParam } from 'react-use';
+import toastService from 'services/core/toast.service';
 import partnerServices from 'services/partner-services';
 import MainCard from 'ui-component/cards/MainCard';
 import eventEmitter from 'utils/eventEmitter';
@@ -56,9 +57,7 @@ const PartnerPage = () => {
     const navi = useNavigate();
 
     const onClickRowItem = (row) => {
-        console.log(row);
-
-        navi(row.values?.partner_id?.toString());
+        navi(row.values?.id?.toString());
     };
 
     const handleSearch = _.debounce(
@@ -86,10 +85,41 @@ const PartnerPage = () => {
         }
     }, [f]);
 
-    const onClickDownload = () => {};
+    const sIds: number[] = _.map(selectedIds, (value, key) => _.toNumber(key));
+
+    const mDownloadPartner = useMutation(({ ids }: { ids: number[] }) => partnerServices.downloadPartner(ids), {
+        onSuccess: (data) => {
+            const outputFilename = `${Date.now()}.xls`;
+            const url = window.URL.createObjectURL(new Blob([data.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', outputFilename);
+            document.body.appendChild(link);
+            link.click();
+
+            toastify.showToast('success', 'Download Success!');
+            eventEmitter.emit('DESELECT_ALL_ROWS', true);
+        },
+        onError: (err: any) => {
+            toastify.showToast('error', err.message);
+        }
+    });
+
+    const onClickDownload = () => {
+        if (!sIds.length) {
+            return toastify.showToast('warning', 'Please choose row!');
+        }
+        return toastService.showConfirm({
+            onConfirm: async () => {
+                mDownloadPartner.mutate({ ids: sIds });
+            },
+            title: 'Are you sure download it?',
+            icon: 'warning'
+        });
+    };
+
     const onUploadFile = () => {};
     const onClickTrash = () => {};
-    const onClickUser = () => {};
     return (
         <Box sx={{ display: 'flex' }}>
             <Grid container>
@@ -97,7 +127,6 @@ const PartnerPage = () => {
                     <MainCard contentSX={{ p: 2 }}>
                         <ActionPartner
                             onClickDownload={onClickDownload}
-                            onClickUser={onClickUser}
                             urlAddTicket="create"
                             onUploadFile={onUploadFile}
                             onClickTrash={onClickTrash}
