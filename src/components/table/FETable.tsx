@@ -147,8 +147,7 @@ const FETable = ({
 
     React.useEffect(() => {
         dispatch({ type: 'PAGE_SIZE_CHANGED', payload: pageSize });
-        gotoPage(0);
-    }, [pageSize, gotoPage]);
+    }, [pageSize]);
 
     React.useEffect(() => {
         if (selectedRowIds) {
@@ -174,6 +173,7 @@ const FETable = ({
                 type: 'FILTERS_CHANGED',
                 payload: filters
             });
+            dispatch({ type: 'PAGE_CHANGED', payload: 0 });
         }
     }, [filters]);
 

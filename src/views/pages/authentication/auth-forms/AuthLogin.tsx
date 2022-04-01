@@ -18,6 +18,7 @@ import {
 } from '@mui/material';
 // material-ui
 import { useTheme } from '@mui/material/styles';
+import { fetchToken } from 'firebase';
 import { Formik } from 'formik';
 import useAuth from 'hooks/useAuth';
 // project imports
@@ -43,8 +44,10 @@ const AuthLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
     const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
     const { borderRadius } = useConfig();
     const [checked, setChecked] = React.useState(true);
-
+    const [token, setToken] = React.useState<string>('');
     const { login } = useAuth();
+
+    fetchToken(setToken);
 
     const [showPassword, setShowPassword] = React.useState(false);
     const handleClickShowPassword = () => {
@@ -66,14 +69,14 @@ const AuthLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
                 }}
                 validationSchema={Yup.object().shape({
                     email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-                    password: Yup.string().max(255).required('Password is required'),
-                    token: Yup.string().required().nullable()
+                    password: Yup.string().max(255).required('Password is required')
+                    // token: Yup.string().required().nullable()
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting, setFieldValue }) => {
                     try {
-                        setFieldValue('token', '');
-                        recaptchaRef.current.reset();
-                        login(values.email, values.password)
+                        // setFieldValue('token', '');
+                        // recaptchaRef.current.reset();
+                        login(values.email, values.password, token)
                             .then((res) => {})
                             .catch((err) => {
                                 console.log(err);
@@ -195,7 +198,7 @@ const AuthLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
                             </Box>
                         )}
                         <FormControl fullWidth error={Boolean(touched.token && errors.token)} sx={{ ...theme.typography.customInput }}>
-                            <ReCAPTCHA
+                            {/* <ReCAPTCHA
                                 ref={recaptchaRef}
                                 onExpired={() => (recaptchaRef.current as any)?.reset()}
                                 sitekey={process.env.REACT_APP_SITE_KEY!}
@@ -204,7 +207,7 @@ const AuthLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
                                 }}
                                 size="normal"
                                 style={{ margin: '0 auto', display: 'table' }}
-                            />
+                            /> */}
                         </FormControl>
                         <Box sx={{ my: 2 }}>
                             <AnimateButton>

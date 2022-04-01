@@ -19,12 +19,12 @@ export const fetchToken = (setTokenFound) => {
         .then((currentToken) => {
             if (currentToken) {
                 console.log('current token for client: ', currentToken);
-                setTokenFound(true);
+                setTokenFound(currentToken);
                 // Track the token -> client mapping, by sending to backend server
                 // show on the UI that permission is secured
             } else {
                 console.log('No registration token available. Request permission to generate one.');
-                setTokenFound(false);
+                setTokenFound(currentToken);
                 // shows on the UI that permission is required
             }
         })

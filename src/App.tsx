@@ -1,6 +1,7 @@
 import Loading from 'components/Loading';
 import { JWTProvider as AuthProvider } from 'contexts/JWTContext';
 import { TableProvider } from 'contexts/TableContext';
+import { fetchToken, onMessageListener } from 'firebase';
 import { getToken, MessagePayload, onMessage } from 'firebase/messaging';
 import NavigationScroll from 'layout/NavigationScroll';
 import { useEffect } from 'react';
@@ -38,6 +39,19 @@ const App = () => {
     //             });
     //     });
     // }, [messaging]);
+
+    onMessageListener()
+        .then((payload) => {
+            // setNotification({ title: payload.notification.title, body: payload.notification.body });
+            // setShow(true);
+            console.log(payload, 'payload');
+        })
+        .catch((err) => console.log('failed: ', err));
+
+    const onShowNotificationClicked = () => {
+        // setNotification({ title: 'Notification', body: 'This is a test notification' });
+        // setShow(true);
+    };
 
     return (
         <ThemeCustomization>

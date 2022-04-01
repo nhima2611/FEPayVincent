@@ -2,7 +2,8 @@
 import axios from 'axios';
 
 const axiosServices = axios.create({
-    baseURL: process.env.REACT_APP_BASE_API_URL!
+    // baseURL: process.env.REACT_APP_BASE_API_URL!
+    baseURL: 'http://192.168.110.145:8000'
 });
 
 axiosServices.defaults.headers.common['App-Platform'] = 'WebApp';

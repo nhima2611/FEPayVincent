@@ -55,8 +55,8 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
                 setSession(serviceToken);
                 const response = await axios.get('/v1/auth');
                 const { data } = response.data;
-                const resPer = await axios.get(`/v1/permissions?role_code=${data.role}`);
-                data.permissions = _.get(resPer, 'data.data', []);
+                // const resPer = await axios.get(`/v1/permissions?role_code=${data.role}`);
+                // data.permissions = _.get(resPer, 'data.data', []);
 
                 dispatch({
                     type: LOGIN,
@@ -82,8 +82,8 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
         init();
     }, []);
 
-    const login = async (email: string, password: string) => {
-        const response = await axios.post('/auth', { email, password });
+    const login = async (email: string, password: string, device_key: string) => {
+        const response = await axios.post('/auth', { email, password, device_key });
         const { token } = response.data?.data;
         setSession(token);
         if (token) {
