@@ -59,7 +59,7 @@ const TicketDetail = ({ data, onSaveChanges, onClickAssignee, onClickSupporter, 
             onSaveChanges?.(selected);
         }
         if (isPartner) return;
-        if (selected.action === 0 && selected.status === data.status) return;
+        if (selected.action === 0 && selected.status === data?.status) return;
         onSaveChanges?.({ ...selected, transaction_type: data.transaction_type, issue_type: data.issue_type });
     };
 
