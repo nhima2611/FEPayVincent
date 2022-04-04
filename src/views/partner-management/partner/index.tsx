@@ -58,7 +58,7 @@ const PartnerPage = () => {
     const onClickRowItem = (row) => {
         console.log(row);
 
-        navi(row.values?.partner_id?.toString());
+        navi(row.values?.id?.toString());
     };
 
     const handleSearch = _.debounce(

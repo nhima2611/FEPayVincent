@@ -85,7 +85,7 @@ const PartnerList = ({ data = [], loading, cols = [], onClickRowItem }) => {
             {loading ? (
                 <div>loading...</div>
             ) : (
-                <FETable rowId="partner_id" onClickRowItem={onClickRowItem} data={productsData} columns={productsColumns} />
+                <FETable rowId="id" onClickRowItem={onClickRowItem} data={productsData} columns={productsColumns} />
             )}
         </MainCard>
     );

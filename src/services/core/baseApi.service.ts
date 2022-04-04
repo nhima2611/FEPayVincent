@@ -44,7 +44,7 @@ export abstract class BaseApiService {
             if (!payload.hasOwnProperty(key)) continue;
             const value = payload[key];
             // Check for string properties which look like dates.
-            if (moment(value, moment.ISO_8601).isValid()) {
+            if (typeof value === 'string' && moment(value, moment.ISO_8601).isValid() && !/^\d+$/.test(value)) {
                 payload[key] = moment(value).format('yyyy-MM-DD hh:mm:ss').toString();
             } else if (typeof value === 'object') {
                 // Recurse into object

@@ -100,11 +100,11 @@ const FEUpdatePartnerFrm = ({
             ward: Yup.string().required('Ward is required'),
             district: Yup.string().required('District is required'),
             province: Yup.string().required('City is required'),
-            contract_number: Yup.string().required('Contract Number is required'),
-            sign_contract_date: Yup.date().required(),
-            contract_from: Yup.date().required(),
-            contract_to: Yup.date().required(),
-            created_contract_date: Yup.date().required(),
+            contract_number: isEdit ? Yup.string() : Yup.string().required('Contract Number is required'),
+            sign_contract_date: isEdit ? Yup.date() : Yup.date().required(),
+            contract_from: isEdit ? Yup.date() : Yup.date().required(),
+            contract_to: isEdit ? Yup.date() : Yup.date().required(),
+            created_contract_date: isEdit ? Yup.date() : Yup.date().required(),
             fullname: isEdit ? Yup.string() : Yup.string().required('Fullname is required')
             // password: isEdit ? Yup.string() : Yup.string().max(255).required('Pasword is required')
         }),
