@@ -1,5 +1,4 @@
 // assets
-import faker from '@faker-js/faker';
 import { Box, Button, Grid, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import FEDatePickerField from 'components/forms/FEDatePickerField';
@@ -101,11 +100,11 @@ const FEUpdatePartnerFrm = ({
             ward: Yup.string().required('Ward is required'),
             district: Yup.string().required('District is required'),
             province: Yup.string().required('City is required'),
-            contract_number: Yup.string().required('Contract Number is required'),
-            sign_contract_date: Yup.date().required(),
-            contract_from: Yup.date().required(),
-            contract_to: Yup.date().required(),
-            created_contract_date: Yup.date().required(),
+            contract_number: isEdit ? Yup.string() : Yup.string().required('Contract Number is required'),
+            sign_contract_date: isEdit ? Yup.date() : Yup.date().required(),
+            contract_from: isEdit ? Yup.date() : Yup.date().required(),
+            contract_to: isEdit ? Yup.date() : Yup.date().required(),
+            created_contract_date: isEdit ? Yup.date() : Yup.date().required(),
             fullname: isEdit ? Yup.string() : Yup.string().required('Fullname is required')
             // password: isEdit ? Yup.string() : Yup.string().max(255).required('Pasword is required')
         }),
@@ -215,7 +214,7 @@ const FEUpdatePartnerFrm = ({
                                                     inputProps={{ disabled: isEdit }}
                                                 />
                                             </Grid>
-                                            <Grid item xs={12} md={5}>
+                                            <Grid item xs={12} md>
                                                 <FEDateRangePickerField
                                                     formik={formik}
                                                     label="Contract Duration"
@@ -285,10 +284,10 @@ const FEUpdatePartnerFrm = ({
                                 />
                             </Grid>
                             <Grid item xs={12} md={6}>
-                                <FETextField formik={formik} title="Address" name="address" />
+                                <FETextField formik={formik} title="Address" name="address" multiline rows={4} />
                             </Grid>
                             <Grid item xs={12} md={6}>
-                                <FETextField formik={formik} title="Street" name="address2" />
+                                <FETextField formik={formik} title="Street" name="address2" multiline rows={4} />
                             </Grid>
 
                             {!Boolean(isEdit) && (
