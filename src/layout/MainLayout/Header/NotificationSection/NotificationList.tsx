@@ -1,16 +1,17 @@
 // material-ui
-import { Avatar, Grid, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, Typography } from '@mui/material';
+import { Grid, List, ListItem, ListItemSecondaryAction, ListItemText, Typography } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
-import User1 from 'assets/images/users/user-round.svg';
-import { faker } from '@faker-js/faker';
+import { Box } from '@mui/system';
+import { useMemo } from 'react';
 
 // styles
 const ListItemWrapper = styled('div')(({ theme }) => ({
     cursor: 'pointer',
     padding: 16,
+    marginBottom: 8,
     borderRadius: '10px',
     '&:hover': {
-        background: theme.palette.mode === 'dark' ? theme.palette.dark.main : theme.palette.primary.light
+        background: theme.palette.primary.light
     },
     '& .MuiListItem-root': {
         padding: 0
@@ -19,33 +20,20 @@ const ListItemWrapper = styled('div')(({ theme }) => ({
 
 // ==============================|| NOTIFICATION LIST ITEM ||============================== //
 
-const NotificationList = ({ data = [] }) => {
+const NotificationList = ({ data, onClickItem }: { data: any; onClickItem: (item: any) => void }) => {
     const theme = useTheme();
 
     const chipSX = {
         height: 24,
         padding: '0 6px'
     };
-    const chipErrorSX = {
-        ...chipSX,
-        color: theme.palette.orange.dark,
-        backgroundColor: theme.palette.mode === 'dark' ? theme.palette.dark.main : theme.palette.orange.light,
-        marginRight: '5px'
-    };
-
-    const chipWarningSX = {
-        ...chipSX,
-        color: theme.palette.warning.dark,
-        backgroundColor: theme.palette.mode === 'dark' ? theme.palette.dark.main : theme.palette.warning.light
-    };
-
-    const chipSuccessSX = {
-        ...chipSX,
-        color: theme.palette.success.dark,
-        backgroundColor: theme.palette.mode === 'dark' ? theme.palette.dark.main : theme.palette.success.light,
-        height: 28
-    };
-
+    const newData = useMemo(
+        () =>
+            data.reduce((acc, cur) => {
+                return acc.concat(_.get(cur, 'data'));
+            }, []),
+        [data]
+    );
     return (
         <List
             sx={{
@@ -56,9 +44,6 @@ const NotificationList = ({ data = [] }) => {
                 [theme.breakpoints.down('md')]: {
                     maxWidth: 300
                 },
-                '& .MuiListItemSecondaryAction-root': {
-                    top: 22
-                },
                 '& .MuiDivider-root': {
                     my: 0
                 },
@@ -67,30 +52,32 @@ const NotificationList = ({ data = [] }) => {
                 }
             }}
         >
-            {_.map(data, (item) => (
-                <ListItemWrapper key={item}>
-                    <ListItem alignItems="center">
-                        <ListItemAvatar>
-                            <Avatar alt="John Doe" src={User1} />
-                        </ListItemAvatar>
-                        <ListItemText primary="Nguyen Van A submitted a ticket" />
+            {_.map(newData, (item) => (
+                <ListItemWrapper
+                    key={item.id}
+                    sx={{ backgroundColor: item.is_readed === 0 ? 'rgba(0, 131, 69, 0.05)' : '#fff' }}
+                    onClick={(e) => onClickItem(item)}
+                >
+                    <ListItem alignItems="center" sx={{ mb: 1 }}>
+                        <ListItemText primary={_.get(item, 'title', '')} />
                         <ListItemSecondaryAction>
-                            <Grid container justifyContent="flex-end">
-                                <Grid item xs={12}>
-                                    <Typography variant="caption" display="block" gutterBottom>
-                                        2 min ago
-                                    </Typography>
-                                </Grid>
-                            </Grid>
+                            <Typography variant="caption">{moment(_.get(item, 'created_at', new Date())).fromNow()}</Typography>
                         </ListItemSecondaryAction>
                     </ListItem>
-                    <Grid container direction="column" className="list-container">
-                        <Grid item xs={12} sx={{ pb: 2 }}>
-                            <Typography variant="subtitle2">{faker.lorem.paragraph()}</Typography>
+                    <Grid container direction="column">
+                        <Grid item xs={12}>
+                            <Typography variant="subtitle2">{_.get(item, 'message', '')}</Typography>
                         </Grid>
                     </Grid>
                 </ListItemWrapper>
             ))}
+            {Boolean(newData.length === 0) && (
+                <Box alignItems="center">
+                    <Typography variant="caption" fontStyle="italic">
+                        *Empty Notification
+                    </Typography>
+                </Box>
+            )}
         </List>
     );
 };

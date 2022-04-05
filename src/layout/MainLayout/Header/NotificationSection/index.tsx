@@ -1,8 +1,7 @@
 import {
     Avatar,
-    Button,
-    CardActions,
     Chip,
+    CircularProgress,
     ClickAwayListener,
     Divider,
     Grid,
@@ -11,7 +10,8 @@ import {
     Stack,
     Tab,
     Tabs,
-    useMediaQuery
+    useMediaQuery,
+    Link
 } from '@mui/material';
 import Box from '@mui/material/Box';
 // material-ui
@@ -24,8 +24,7 @@ import * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
 // third-party
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import { useQuery } from 'react-query';
-import { Link } from 'react-router-dom';
+import { useInfiniteQuery, useMutation } from 'react-query';
 import notificationServices from 'services/notification-services';
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
@@ -65,6 +64,7 @@ const NotificationSection = () => {
     const theme = useTheme();
     const matchesXs = useMediaQuery(theme.breakpoints.down('md'));
     const [open, setOpen] = useState(false);
+    const [countNoti, setCountNoti] = useState(0);
     const anchorRef = useRef<any>(null);
 
     const handleToggle = () => {
@@ -90,9 +90,61 @@ const NotificationSection = () => {
 
     const handleChangeTab = (event, newValue) => {
         setTabValue(newValue);
+        if (newValue === 0) qNotifications.refetch();
+        if (newValue === 1) qNotificationUnreads.refetch();
     };
+    const qNotificationUnreads = useInfiniteQuery(
+        'qNotificationUnreads',
+        ({ pageParam = 1 }) =>
+            notificationServices.getAll(`page=${pageParam}&is_readed=0`).then((res) => {
+                setCountNoti(_.get(res, 'data.meta.pagination.total'));
+                return _.get(res, 'data');
+            }),
+        {
+            getNextPageParam: (lastPage, pages) => {
+                const currentPage: number = _.get(lastPage, 'meta.pagination.current_page');
+                const totalPage: number = _.get(lastPage, 'meta.pagination.total_pages');
+                if (currentPage === totalPage) return null;
+                return currentPage + 1;
+            }
+        }
+    );
+    const qNotifications = useInfiniteQuery(
+        'qNotifications',
+        ({ pageParam = 1 }) =>
+            notificationServices.getAll(`page=${pageParam}`).then((res) => {
+                setCountNoti(_.get(res, 'data.meta.pagination.total'));
+                return _.get(res, 'data');
+            }),
+        {
+            getNextPageParam: (lastPage, pages) => {
+                const currentPage: number = _.get(lastPage, 'meta.pagination.current_page');
+                const totalPage: number = _.get(lastPage, 'meta.pagination.total_pages');
+                if (currentPage === totalPage) return null;
+                return currentPage + 1;
+            }
+        }
+    );
 
-    const qNotifications = useQuery('qNotifications', () => notificationServices.getAll());
+    const mRead = useMutation((id: number | any) => notificationServices.updatePut({ id, is_readed: 1 }), {
+        onSuccess: (data) => {
+            if (tabValue === 0) qNotifications.refetch();
+            if (tabValue === 1) qNotificationUnreads.refetch();
+        },
+        onError: (err: any) => {
+            console.log(err);
+        }
+    });
+
+    const mReadAll = useMutation(() => notificationServices.readAll(), {
+        onSuccess: (data) => {
+            if (tabValue === 0) qNotifications.refetch();
+            if (tabValue === 1) qNotificationUnreads.refetch();
+        },
+        onError: (err: any) => {
+            console.log(err);
+        }
+    });
 
     return (
         <>
@@ -160,7 +212,7 @@ const NotificationSection = () => {
                                                             <Typography variant="subtitle1">Notification</Typography>
                                                             <Chip
                                                                 size="small"
-                                                                label={qNotifications.data?.data?.data?.length}
+                                                                label={countNoti}
                                                                 sx={{
                                                                     color: theme.palette.background.default,
                                                                     bgcolor: theme.palette.warning.dark
@@ -169,42 +221,91 @@ const NotificationSection = () => {
                                                         </Stack>
                                                     </Grid>
                                                     <Grid item>
-                                                        <Typography component={Link} to="#" variant="subtitle2" color="primary">
-                                                            Mark as all read
-                                                        </Typography>
+                                                        <Link
+                                                            component="button"
+                                                            variant="body2"
+                                                            onClick={(e) => {
+                                                                mReadAll.mutate();
+                                                            }}
+                                                        >
+                                                            <Typography variant="subtitle2" color="primary">
+                                                                Mark as all read
+                                                            </Typography>
+                                                        </Link>
                                                     </Grid>
                                                 </Grid>
                                             </Grid>
                                             <Grid item xs={12}>
-                                                <PerfectScrollbar
-                                                    style={{ height: '100%', maxHeight: 'calc(100vh - 205px)', overflowX: 'hidden' }}
-                                                >
-                                                    <Grid container direction="column" spacing={2}>
-                                                        <Grid item xs={12}>
-                                                            <Box sx={{ width: '100%' }}>
-                                                                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                                                                    <Tabs
-                                                                        value={tabValue}
-                                                                        onChange={handleChangeTab}
-                                                                        aria-label="basic tabs example"
-                                                                    >
-                                                                        <Tab label="All" {...a11yProps(0)} />
-                                                                        <Tab label="Unread" {...a11yProps(1)} />
-                                                                    </Tabs>
-                                                                </Box>
-                                                                <TabPanel value={tabValue} index={0}>
-                                                                    <NotificationList data={qNotifications.data?.data?.data} />
-                                                                </TabPanel>
-                                                                <TabPanel value={tabValue} index={1}>
-                                                                    <NotificationList data={qNotifications.data?.data?.data} />
-                                                                </TabPanel>
+                                                <Grid container direction="column" spacing={2}>
+                                                    <Grid item xs={12}>
+                                                        <Box sx={{ width: '100%' }}>
+                                                            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                                                                <Tabs
+                                                                    value={tabValue}
+                                                                    onChange={handleChangeTab}
+                                                                    aria-label="basic tabs example"
+                                                                >
+                                                                    <Tab label="All" {...a11yProps(0)} />
+                                                                    <Tab label="Unread" {...a11yProps(1)} />
+                                                                </Tabs>
                                                             </Box>
-                                                        </Grid>
-                                                        <Grid item xs={12} p={0}>
-                                                            <Divider sx={{ my: 0 }} />
-                                                        </Grid>
+                                                            <PerfectScrollbar
+                                                                style={{
+                                                                    height: '100%',
+                                                                    maxHeight: 'calc(100vh - 220px)',
+                                                                    overflowX: 'hidden'
+                                                                }}
+                                                                onYReachEnd={(e) =>
+                                                                    qNotifications.hasNextPage && tabValue === 0
+                                                                        ? qNotifications.fetchNextPage()
+                                                                        : {}
+                                                                }
+                                                            >
+                                                                <TabPanel value={tabValue} index={0}>
+                                                                    <NotificationList
+                                                                        data={_.get(qNotifications, 'data.pages', [])}
+                                                                        onClickItem={(item) => {
+                                                                            !Boolean(item.is_readed) && mRead.mutate(item.id);
+                                                                            console.log(item);
+                                                                        }}
+                                                                    />
+                                                                    {Boolean(
+                                                                        qNotifications.isFetching && !qNotifications.isFetchingNextPage
+                                                                    ) && <CircularProgress />}
+                                                                </TabPanel>
+                                                            </PerfectScrollbar>
+                                                            <PerfectScrollbar
+                                                                style={{
+                                                                    height: '100%',
+                                                                    maxHeight: 'calc(100vh - 220px)',
+                                                                    overflowX: 'hidden'
+                                                                }}
+                                                                onYReachEnd={(e) =>
+                                                                    qNotificationUnreads.hasNextPage && tabValue === 1
+                                                                        ? qNotificationUnreads.fetchNextPage()
+                                                                        : {}
+                                                                }
+                                                            >
+                                                                <TabPanel value={tabValue} index={1}>
+                                                                    <NotificationList
+                                                                        data={_.get(qNotificationUnreads, 'data.pages', [])}
+                                                                        onClickItem={(item) => {
+                                                                            !Boolean(item.is_readed) && mRead.mutate(item.id);
+                                                                            console.log(item);
+                                                                        }}
+                                                                    />
+                                                                    {Boolean(
+                                                                        qNotificationUnreads.isFetching &&
+                                                                            !qNotificationUnreads.isFetchingNextPage
+                                                                    ) && <CircularProgress />}
+                                                                </TabPanel>
+                                                            </PerfectScrollbar>
+                                                        </Box>
                                                     </Grid>
-                                                </PerfectScrollbar>
+                                                    <Grid item xs={12} p={0}>
+                                                        <Divider sx={{ my: 0 }} />
+                                                    </Grid>
+                                                </Grid>
                                             </Grid>
                                         </Grid>
                                         {/* <Divider />
@@ -224,4 +325,4 @@ const NotificationSection = () => {
     );
 };
 
-export default NotificationSection;
+export default React.memo(NotificationSection);

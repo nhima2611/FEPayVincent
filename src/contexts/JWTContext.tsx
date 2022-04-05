@@ -66,15 +66,11 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
                     }
                 });
             } else {
-                dispatch({
-                    type: LOGOUT
-                });
+                logout();
             }
         } catch (err) {
             console.error(err);
-            dispatch({
-                type: LOGOUT
-            });
+            logout();
         }
     };
 
@@ -97,15 +93,13 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
     const register = async (body: any) => {
         // todo: this flow need to be recode as it not verified
         const id = chance.bb_pin();
-        console.log(id);
-
         const response = await axios.post('/register', body);
-        console.log(response);
-
         return response;
     };
 
-    const logout = () => {
+    const logout = async () => {
+        const response = axios.get('/v1/auth/logout');
+
         setSession(null);
         dispatch({ type: LOGOUT });
     };

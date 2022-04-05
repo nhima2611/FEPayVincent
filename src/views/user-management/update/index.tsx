@@ -126,7 +126,6 @@ const UpdatePartnerPage = ({ ...others }) => {
                 const payload = _.pick(values, [
                     'id',
                     'status',
-
                     'fullname',
                     'email',
                     'phone',

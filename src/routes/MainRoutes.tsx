@@ -1,4 +1,5 @@
 // project imports
+import { ROLE } from 'constants/auth';
 import MainLayout from 'layout/MainLayout';
 import { lazy } from 'react';
 import { Navigate } from 'react-router-dom';
@@ -39,71 +40,93 @@ const MainRoutes = {
     children: [
         {
             path: '/',
-            element: <Navigate to="/dashboard" replace />
+            element: <Navigate to="/tickets" />,
+            roles: [ROLE.PARTNER, ROLE.PARTNER_STAFF]
+        },
+        {
+            path: '/',
+            element: <Navigate to="/dashboard" />,
+            roles: [ROLE.SUPER_ADMIN]
         },
         {
             path: '/dashboard',
-            element: <DashboardDefault />
+            element: <DashboardDefault />,
+            roles: [ROLE.SUPER_ADMIN]
         },
         {
             path: '/tickets',
-            element: <MyTicketsPage />
+            element: <MyTicketsPage />,
+            roles: [ROLE.SUPER_ADMIN, ROLE.PARTNER, ROLE.PARTNER_STAFF]
         },
         {
             path: '/kanban-ticket',
-            element: <KanbanTicketPage />
+            element: <KanbanTicketPage />,
+            roles: [ROLE.SUPER_ADMIN, ROLE.PARTNER, ROLE.PARTNER_STAFF]
         },
         {
             path: '/waiting-tickets',
-            element: <WaitingTicketsPage />
+            element: <WaitingTicketsPage />,
+            roles: [ROLE.SUPER_ADMIN]
         },
         {
             path: '/tickets/create-ticket',
-            element: <CreateTicketPage />
+            element: <CreateTicketPage />,
+            roles: [ROLE.SUPER_ADMIN, ROLE.PARTNER, ROLE.PARTNER_STAFF]
         },
         {
             path: '/tickets/edit-ticket/:ticket_id',
-            element: <EditTicketPage />
+            element: <EditTicketPage />,
+            roles: [ROLE.SUPER_ADMIN, ROLE.PARTNER, ROLE.PARTNER_STAFF]
         },
         {
             path: `/tickets/:ticketID`,
-            element: <TicketDetailPage />
+            element: <TicketDetailPage />,
+            roles: [ROLE.SUPER_ADMIN, ROLE.PARTNER, ROLE.PARTNER_STAFF]
         },
         {
             path: `/repaymentcontrol`,
-            element: <RepaymentControlPage />
+            element: <RepaymentControlPage />,
+            roles: [ROLE.SUPER_ADMIN]
         },
         {
             path: `/partner`,
-            element: <PartnerPage />
+            element: <PartnerPage />,
+            roles: [ROLE.SUPER_ADMIN]
         },
         {
             path: `/sub-partner`,
-            element: <SubPartnerPage />
+            element: <SubPartnerPage />,
+            roles: [ROLE.SUPER_ADMIN]
         },
         {
             path: `/pos`,
-            element: <PosPage />
+            element: <PosPage />,
+            roles: [ROLE.SUPER_ADMIN]
         },
         {
             path: `/partner/create`,
-            element: <UpdatePartnerPage />
+            element: <UpdatePartnerPage />,
+            roles: [ROLE.SUPER_ADMIN]
         },
         {
             path: `/partner/:partnerId`,
-            element: <UpdatePartnerPage />
+            element: <UpdatePartnerPage />,
+            roles: [ROLE.SUPER_ADMIN]
         },
         {
             path: `/user`,
-            element: <UserPage />
+            element: <UserPage />,
+            roles: [ROLE.SUPER_ADMIN, ROLE.PARTNER]
         },
         {
             path: `/user/create`,
-            element: <UpdateUserPage />
+            element: <UpdateUserPage />,
+            roles: [ROLE.SUPER_ADMIN, ROLE.PARTNER]
         },
         {
             path: `/user/:id`,
-            element: <UpdateUserPage />
+            element: <UpdateUserPage />,
+            roles: [ROLE.SUPER_ADMIN, ROLE.PARTNER]
         }
     ]
 };
