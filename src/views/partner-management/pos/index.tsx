@@ -54,7 +54,7 @@ const PosPage = () => {
     const navi = useNavigate();
 
     const onClickRowItem = (row) => {
-        // navi(row.values?.ticket_id?.toString());
+        navi(row.values?.id?.toString());
     };
 
     const handleSearch = _.debounce(
@@ -85,7 +85,7 @@ const PosPage = () => {
                     <MainCard contentSX={{ p: 2 }}>
                         <ActionPartner
                             onClickDownload={onClickDownload}
-                            urlAddTicket=""
+                            urlAddTicket="create"
                             onUploadFile={onUploadFile}
                             onClickTrash={onClickTrash}
                             title="Sub Partner List"

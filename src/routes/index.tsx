@@ -1,5 +1,4 @@
 import useAuth from 'hooks/useAuth';
-import { useEffect, useState } from 'react';
 import { Navigate, useRoutes } from 'react-router-dom';
 import AuthenticationRoutes from './AuthenticationRoutes';
 import LoginRoutes from './LoginRoutes';
@@ -11,7 +10,7 @@ import MainRoutes from './MainRoutes';
 export default function ThemeRoutes() {
     const { user } = useAuth();
     return useRoutes([
-        user
+        user && user.user_type === 2
             ? {
                   path: MainRoutes.path,
                   element: MainRoutes.element,

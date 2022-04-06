@@ -39,7 +39,9 @@ const NavGroup = ({ item }: NavGroupProps) => {
         if (user?.user_type === 2) {
             if (user?.role === ROLE.PARTNER) setChildrenItem([userManagement, menuTicket]);
             else setChildrenItem([menuTicket]);
-        } else setChildrenItem([dashboard, partnerManagement, userManagement, menuTicket, ...childrenItem]);
+        } else if (user?.role === ROLE.SUPER_ADMIN) {
+            setChildrenItem([dashboard, partnerManagement, userManagement, menuTicket, ...childrenItem]);
+        } else setChildrenItem([menuTicket]);
     }, []);
 
     // menu list collapse & items

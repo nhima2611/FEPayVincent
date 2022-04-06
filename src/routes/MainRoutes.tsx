@@ -23,6 +23,7 @@ const PartnerPage = Loadable(lazy(() => import('views/partner-management/partner
 const SubPartnerPage = Loadable(lazy(() => import('views/partner-management/sub-partner')));
 const UpdateSubPartnerPage = Loadable(lazy(() => import('views/partner-management/update-sub-partner')));
 const PosPage = Loadable(lazy(() => import('views/partner-management/pos')));
+const UpdatePOSPage = Loadable(lazy(() => import('views/partner-management/update-pos')));
 const RepaymentControlPage = Loadable(lazy(() => import('views/partner-management/repaymentcontrol')));
 
 // user management
@@ -44,11 +45,11 @@ const MainRoutes = {
             element: <Navigate to="/tickets" />,
             roles: [ROLE.PARTNER, ROLE.PARTNER_STAFF]
         },
-        {
-            path: '/',
-            element: <Navigate to="/dashboard" />,
-            roles: [ROLE.SUPER_ADMIN]
-        },
+        // {
+        //     path: '/',
+        //     element: <Navigate to="/dashboard" />,
+        //     roles: [ROLE.SUPER_ADMIN]
+        // },
         {
             path: '/dashboard',
             element: <DashboardDefault />,
@@ -110,6 +111,16 @@ const MainRoutes = {
         {
             path: `/pos`,
             element: <PosPage />,
+            roles: [ROLE.SUPER_ADMIN]
+        },
+        {
+            path: `/pos/create`,
+            element: <UpdatePOSPage />,
+            roles: [ROLE.SUPER_ADMIN]
+        },
+        {
+            path: `/pos/:id`,
+            element: <UpdatePOSPage />,
             roles: [ROLE.SUPER_ADMIN]
         },
         {

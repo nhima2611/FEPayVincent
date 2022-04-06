@@ -1,4 +1,4 @@
-import { IconButton, Menu, MenuItem } from '@mui/material';
+import { Chip, IconButton, Menu, MenuItem } from '@mui/material';
 import { IconDotsVertical } from '@tabler/icons';
 import FETable from 'components/table/FETable';
 import { camelCase, startCase } from 'lodash';
@@ -31,6 +31,9 @@ const PosList = ({ data = [], loading, cols = [], onClickRowItem }) => {
                               Filter: ''
                           };
                       }
+
+                      const isDateType = ['created_date', 'limitation_duration'].includes(key);
+                      const isStatus = ['status'].includes(key);
                       return {
                           Header: startCase(camelCase(key)),
                           accessor: key,
@@ -41,7 +44,18 @@ const PosList = ({ data = [], loading, cols = [], onClickRowItem }) => {
                                       overflow: 'hidden'
                                   }}
                               >
-                                  {value}
+                                  {isDateType ? (
+                                      moment(value).format('DD/MM/YYYY hh:mm A')
+                                  ) : isStatus ? (
+                                      <Chip
+                                          label={Boolean(value) ? 'Actived' : 'Deactive'}
+                                          color={Boolean(value) ? 'primary' : 'error'}
+                                          size="small"
+                                          variant="filled"
+                                      />
+                                  ) : (
+                                      value
+                                  )}
                               </div>
                           ),
                           Filter: ''
@@ -84,7 +98,7 @@ const PosList = ({ data = [], loading, cols = [], onClickRowItem }) => {
             {loading ? (
                 <div>loading...</div>
             ) : (
-                <FETable rowId="ID" onClickRowItem={onClickRowItem} data={productsData} columns={productsColumns} />
+                <FETable rowId="id" onClickRowItem={onClickRowItem} data={productsData} columns={productsColumns} />
             )}
         </MainCard>
     );

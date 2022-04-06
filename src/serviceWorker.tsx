@@ -1,12 +1,3 @@
-import { FIREBASE_API } from 'config';
-import { getAnalytics } from 'firebase/analytics';
-import { initializeApp } from 'firebase/app';
-import { getMessaging } from 'firebase/messaging';
-
-export const firebaseApp = initializeApp(FIREBASE_API);
-export const analytics = getAnalytics(firebaseApp);
-export const messaging = getMessaging(firebaseApp);
-
 const isLocalhost = Boolean(
     window.location.hostname === 'localhost' ||
         // [::1] is the IPv6 localhost address.
