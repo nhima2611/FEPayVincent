@@ -141,6 +141,9 @@ const FEUpdatePOSFrm = ({
                                     <Grid item xs={12} md={4}>
                                         <FETextField formik={formik} title="POS Name" name="name" />
                                     </Grid>
+                                    <Grid item xs={12} md={4}>
+                                        <FETextField formik={formik} title="Store Code" name="name" />
+                                    </Grid>
                                 </Grid>
                             </Grid>
                             <Grid item xs={12} md={4}>
