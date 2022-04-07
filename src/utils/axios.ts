@@ -5,6 +5,7 @@ const axiosServices = axios.create({
     baseURL: process.env.REACT_APP_BASE_API_URL! // => Product
     // baseURL: 'http://192.168.110.145:8000' // => Paul
     // baseURL: 'http://192.168.110.58:8000/' // => Tom
+    // baseURL: 'http://192.168.110.123:8000/' // => Kay
 });
 
 axiosServices.defaults.headers.common['App-Platform'] = 'WebApp';

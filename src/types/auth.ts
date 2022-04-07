@@ -1,6 +1,5 @@
 // third-party
 import firebase from 'firebase/compat/app';
-
 // project imports
 import { UserProfile } from 'types/user-profile';
 
@@ -37,6 +36,7 @@ export type JWTContextType = {
     user?: UserProfile | null | undefined;
     logout: () => void;
     login: (email: string, password: string, device_key: string) => Promise<any>;
+    loginAzure: (tokenAzure: string, device_key: string) => Promise<any>;
     register: (body: any) => Promise<any>;
     forgotPassword: (email: string) => Promise<any>;
     resetPassword: (body: { verify_code: number; email: string; password: string; confirm_password: string }) => Promise<any>;

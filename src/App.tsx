@@ -1,3 +1,5 @@
+import { PublicClientApplication } from '@azure/msal-browser';
+import { MsalProvider } from '@azure/msal-react';
 import Loading from 'components/Loading';
 import { JWTProvider as AuthProvider } from 'contexts/JWTContext';
 import { TableProvider } from 'contexts/TableContext';
@@ -12,9 +14,10 @@ import Snackbar from 'ui-component/extended/Snackbar';
 // project imports
 import Locales from 'ui-component/Locales';
 import RTLLayout from 'ui-component/RTLLayout';
+import { msalConfig } from 'utils/authAzureConfig';
 
 // ==============================|| APP ||============================== //
-
+const msalInstance = new PublicClientApplication(msalConfig);
 const App = () => {
     onMessageListener()
         .then((payload: MessagePayload) => {
@@ -36,22 +39,24 @@ const App = () => {
     return (
         <ThemeCustomization>
             {/* RTL layout */}
-            <RTLLayout>
-                <Locales>
-                    <NavigationScroll>
-                        <AuthProvider>
-                            <TableProvider>
-                                <>
-                                    <Routes />
-                                    <Snackbar />
-                                    <ToastContainer />
-                                    <Loading />
-                                </>
-                            </TableProvider>
-                        </AuthProvider>
-                    </NavigationScroll>
-                </Locales>
-            </RTLLayout>
+            <MsalProvider instance={msalInstance}>
+                <RTLLayout>
+                    <Locales>
+                        <NavigationScroll>
+                            <AuthProvider>
+                                <TableProvider>
+                                    <>
+                                        <Routes />
+                                        <Snackbar />
+                                        <ToastContainer />
+                                        <Loading />
+                                    </>
+                                </TableProvider>
+                            </AuthProvider>
+                        </NavigationScroll>
+                    </Locales>
+                </RTLLayout>
+            </MsalProvider>
         </ThemeCustomization>
     );
 };

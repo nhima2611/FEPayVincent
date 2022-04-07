@@ -90,6 +90,16 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
         return response;
     };
 
+    const loginAzure = async (tokenAzure: string, device_key: string) => {
+        const response = await axios.post('/authByAzure', { device_key }, { headers: { Authorization: `Bearer ${tokenAzure}` } });
+        const { token } = response.data?.data;
+        setSession(token);
+        if (token) {
+            init();
+        }
+        return response;
+    };
+
     const register = async (body: any) => {
         // todo: this flow need to be recode as it not verified
         const id = chance.bb_pin();
@@ -126,7 +136,9 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
     }
 
     return (
-        <JWTContext.Provider value={{ ...state, login, logout, register, resetPassword, forgotPassword, verifyCode, updateProfile }}>
+        <JWTContext.Provider
+            value={{ ...state, login, logout, register, resetPassword, forgotPassword, verifyCode, updateProfile, loginAzure }}
+        >
             {children}
         </JWTContext.Provider>
     );
