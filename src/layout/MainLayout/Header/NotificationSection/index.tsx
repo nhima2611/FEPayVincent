@@ -1,17 +1,18 @@
 import {
     Avatar,
+    Badge,
     Chip,
     CircularProgress,
     ClickAwayListener,
     Divider,
     Grid,
+    Link,
     Paper,
     Popper,
     Stack,
     Tab,
     Tabs,
-    useMediaQuery,
-    Link
+    useMediaQuery
 } from '@mui/material';
 import Box from '@mui/material/Box';
 // material-ui
@@ -120,6 +121,7 @@ const NotificationSection = () => {
             getNextPageParam: (lastPage, pages) => {
                 const currentPage: number = _.get(lastPage, 'meta.pagination.current_page');
                 const totalPage: number = _.get(lastPage, 'meta.pagination.total_pages');
+
                 if (currentPage === totalPage) return null;
                 return currentPage + 1;
             }
@@ -145,7 +147,6 @@ const NotificationSection = () => {
             console.log(err);
         }
     });
-
     return (
         <>
             <Box
@@ -176,7 +177,15 @@ const NotificationSection = () => {
                     onClick={handleToggle}
                     color="inherit"
                 >
-                    <IconBell stroke={1.5} size="1.3rem" />
+                    <Badge
+                        color="error"
+                        variant="dot"
+                        invisible={
+                            !_.some(_.flattenDeep(_.get(qNotifications, 'data.pages', []).map((item) => item.data)), ['is_readed', 0])
+                        }
+                    >
+                        <IconBell stroke={1.5} size="1.3rem" />
+                    </Badge>
                 </Avatar>
             </Box>
 
