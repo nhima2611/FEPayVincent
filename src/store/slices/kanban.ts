@@ -10,6 +10,7 @@ import { DefaultRootStateProps } from 'types';
 import { KanbanColumn, KanbanComment, KanbanItem, KanbanUserStory } from 'types/kanban';
 import { columnIdsData, columnsData, columnsOrderData } from 'constants/tickets';
 import { ROLE } from 'constants/auth';
+// import { async } from '@firebase/util';
 
 // ----------------------------------------------------------------------
 
@@ -166,6 +167,10 @@ const slice = createSlice({
         getUserStoryOrderSuccess(state, action) {
             state.userStoryOrder = action.payload;
         }
+        // UPDATE PROFILE
+        // updateProfileSuccess(state,action) {
+        //     state.profiles = action.payload;
+        // }
     }
 });
 
@@ -483,3 +488,14 @@ export function deleteStory(storyId: string, userStory: KanbanUserStory[], userS
         }
     };
 }
+
+// EditProfile
+
+// export function editProfile(fullname, status, email, address, phone) {
+//     return async () => {
+//         try {
+//             const response = await axios.post(`partners/{id}`, { fullname, status, email, address, phone });
+//             dispatch(slice.actions.updateProfileSuccess);
+//         } catch (error) {}
+//     };
+// }

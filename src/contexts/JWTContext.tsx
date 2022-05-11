@@ -114,6 +114,11 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
         dispatch({ type: LOGOUT });
     };
 
+    const changePassword = async ({ current_password, new_password, new_password_confirm }) => {
+        const response = await axios.post('/v1/auth/changePassword', { current_password, new_password, new_password_confirm });
+        return response;
+    };
+
     const forgotPassword = async (email: string) => {
         const response = await axios.post('/forgotPassword', { email });
         return response;
@@ -128,7 +133,11 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
         const response = await axios.post('/verifyChangePassword', body);
         return response;
     };
-
+    // const getProfileById = async (body: { fullName: string; email: string; phone: number; status: number }, id) => {
+    //     const response = await axios.get(`/partners/${id}`);
+    //     console.log(response);
+    //     return response;
+    // };
     const updateProfile = () => {};
 
     if (state.isInitialized !== undefined && !state.isInitialized) {
@@ -137,7 +146,18 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
 
     return (
         <JWTContext.Provider
-            value={{ ...state, login, logout, register, resetPassword, forgotPassword, verifyCode, updateProfile, loginAzure }}
+            value={{
+                ...state,
+                login,
+                logout,
+                register,
+                changePassword,
+                resetPassword,
+                forgotPassword,
+                verifyCode,
+                updateProfile,
+                loginAzure
+            }}
         >
             {children}
         </JWTContext.Provider>

@@ -42,8 +42,8 @@ const ProfileSection = () => {
         new Date().getHours() < 12
             ? { title: 'Good Morning', bgUrl: 'url(images/morning.jpg)', color: '#000' }
             : new Date().getHours() < 18
-            ? { title: 'Good Afternoon', bgUrl: 'url(images/afternoon.jpg)', color: '#fff' }
-            : { title: 'Good Evening', bgUrl: 'url(images/night.jpg)', color: '#fff' };
+                ? { title: 'Good Afternoon', bgUrl: 'url(images/afternoon.jpg)', color: '#fff' }
+                : { title: 'Good Evening', bgUrl: 'url(images/night.jpg)', color: '#fff' };
 
     const [sdm, setSdm] = useState(true);
     const [value, setValue] = useState('');
@@ -61,6 +61,9 @@ const ProfileSection = () => {
         } catch (err) {
             console.error(err);
         }
+    };
+    const profilePage = () => {
+        window.location.href = '/userProfile';
     };
     const handleListItemClick = (event: React.MouseEvent<HTMLDivElement>, index: number, route: string = '') => {
         setSelectedIndex(index);
@@ -275,14 +278,12 @@ const ProfileSection = () => {
                                                     <ListItemButton
                                                         sx={{ borderRadius: `${borderRadius}px` }}
                                                         selected={selectedIndex === 0}
-                                                        onClick={(event: React.MouseEvent<HTMLDivElement>) =>
-                                                            handleListItemClick(event, 0, '/user/account-profile/profile1')
-                                                        }
+                                                        onClick={profilePage}
                                                     >
                                                         <ListItemIcon>
                                                             <IconSettings stroke={1.5} size="1.3rem" />
                                                         </ListItemIcon>
-                                                        <ListItemText primary={<Typography variant="body2">Account Settings</Typography>} />
+                                                        <ListItemText primary={<Typography variant="body2">Account Profile</Typography>} />
                                                     </ListItemButton>
                                                     {/* <ListItemButton
                                                         sx={{ borderRadius: `${borderRadius}px` }}

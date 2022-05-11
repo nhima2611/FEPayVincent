@@ -37,6 +37,9 @@ export type UserProfile = {
     token?: string;
     partner_id?: number;
     user_type?: number;
+    last_login?: string;
+    position?: string;
+    partner?: any;
 };
 
 export type Profile = {

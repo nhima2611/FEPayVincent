@@ -38,6 +38,7 @@ export type JWTContextType = {
     login: (email: string, password: string, device_key: string) => Promise<any>;
     loginAzure: (tokenAzure: string, device_key: string) => Promise<any>;
     register: (body: any) => Promise<any>;
+    changePassword: (body: { current_password: string; new_password: string; new_password_confirm: string; email: string }) => Promise<any>;
     forgotPassword: (email: string) => Promise<any>;
     resetPassword: (body: { verify_code: number; email: string; password: string; confirm_password: string }) => Promise<any>;
     verifyCode: (body: { verify_code: number; email: string }) => Promise<any>;

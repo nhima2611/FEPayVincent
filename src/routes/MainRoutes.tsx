@@ -30,6 +30,8 @@ const RepaymentControlPage = Loadable(lazy(() => import('views/partner-managemen
 const UserPage = Loadable(lazy(() => import('views/user-management/user-list')));
 const UpdateUserPage = Loadable(lazy(() => import('views/user-management/update')));
 
+// profile page
+const ProfilePage = Loadable(lazy(() => import('views/profile')));
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -42,7 +44,7 @@ const MainRoutes = {
     children: [
         {
             path: '/',
-            element: <Navigate to="/tickets" />,
+            element: <WaitingTicketsPage />,
             roles: [ROLE.PARTNER, ROLE.PARTNER_STAFF]
         },
         // {
@@ -50,6 +52,11 @@ const MainRoutes = {
         //     element: <Navigate to="/dashboard" />,
         //     roles: [ROLE.SUPER_ADMIN]
         // },
+        {
+            path: '/userProfile',
+            element: <ProfilePage />,
+            roles: [ROLE.SUPER_ADMIN, ROLE.PARTNER, ROLE.PARTNER_STAFF]
+        },
         {
             path: '/dashboard',
             element: <DashboardDefault />,
