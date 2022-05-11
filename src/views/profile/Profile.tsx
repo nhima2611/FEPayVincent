@@ -82,7 +82,7 @@ function createData(name, calories, fat, color) {
 // ==============================|| PROFILE 1 - PROFILE ||============================== //
 
 const Profile1 = () => {
-    const { user } = useAuth();
+    const { user, getProfilePartnerById } = useAuth();
     const theme = useTheme();
     const rowsDetail = [
         createData('Full Name', ':', user?.fullname!, null),
@@ -126,16 +126,8 @@ const Profile1 = () => {
 
     //     editProfile();
     // };
-    const fetch = async (id) => {
-        try {
-            const res = await axios.get(`https://payment-api2.neotime.vn/v1/users`);
-            console.log(res.data);
-        } catch (error) {
-            console.log(error);
-        }
-    };
     useEffect(() => {
-        fetch(user?.id);
+        getProfilePartnerById(Number(user?.id));
     }, []);
 
     return (
@@ -253,95 +245,95 @@ const Profile1 = () => {
             </Grid>
 
             <Grid item lg={4} xs={12} />
-            {/* {user?.partner ? ( */}
-            <Grid item lg={8} xs={12}>
-                <Grid container direction="column" spacing={gridSpacing}>
-                    <Grid item xs={12}>
-                        <SubCard
-                            title="Partner Infomation Edit"
-                            secondary={
-                                <AnimateButton>
-                                    <Button variant="contained">Update Profile</Button>
-                                </AnimateButton>
-                            }
-                        >
-                            <form onSubmit={(e) => console.log(1)}>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={12}>
-                                        <Stack direction="row" alignItems="center">
-                                            <Grid item xs={8}>
-                                                <Stack spacing={1}>
-                                                    <InputLabel sx={{ color: theme.palette.primary.main, fontWeight: '600' }}>
-                                                        Full Name
-                                                    </InputLabel>
-                                                    <Grid item xs={7}>
+            {user?.partner_id != 0 ? (
+                <Grid item lg={8} xs={12}>
+                    <Grid container direction="column" spacing={gridSpacing}>
+                        <Grid item xs={12}>
+                            <SubCard
+                                title="Partner Infomation Edit"
+                                secondary={
+                                    <AnimateButton>
+                                        <Button variant="contained">Update Profile</Button>
+                                    </AnimateButton>
+                                }
+                            >
+                                <form onSubmit={(e) => console.log(1)}>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12}>
+                                            <Stack direction="row" alignItems="center">
+                                                <Grid item xs={8}>
+                                                    <Stack spacing={1}>
+                                                        <InputLabel sx={{ color: theme.palette.primary.main, fontWeight: '600' }}>
+                                                            Full Name
+                                                        </InputLabel>
+                                                        <Grid item xs={7}>
+                                                            <TextField
+                                                                type="text"
+                                                                id="outlined-basic7"
+                                                                name="fullName"
+                                                                size="small"
+                                                                fullWidth
+                                                                value={fullName}
+                                                                onChange={(e) => setFullName(e.target.value)}
+                                                            />
+                                                        </Grid>
+                                                    </Stack>
+                                                </Grid>
+                                                <Grid item xs={2}>
+                                                    <Stack spacing={1}>
+                                                        <InputLabel sx={{ color: theme.palette.primary.main, fontWeight: '600' }}>
+                                                            Status
+                                                        </InputLabel>
                                                         <TextField
                                                             type="text"
                                                             id="outlined-basic7"
-                                                            name="fullName"
+                                                            name="status"
                                                             size="small"
+                                                            value={active != '1' ? 'Active' : 'Deactive'}
+                                                            disabled
                                                             fullWidth
-                                                            value={fullName}
-                                                            onChange={(e) => setFullName(e.target.value)}
                                                         />
-                                                    </Grid>
-                                                </Stack>
-                                            </Grid>
-                                            <Grid item xs={2}>
-                                                <Stack spacing={1}>
-                                                    <InputLabel sx={{ color: theme.palette.primary.main, fontWeight: '600' }}>
-                                                        Status
-                                                    </InputLabel>
-                                                    <TextField
-                                                        type="text"
-                                                        id="outlined-basic7"
-                                                        name="status"
-                                                        size="small"
-                                                        value={active != '1' ? 'Active' : 'Deactive'}
-                                                        disabled
-                                                        fullWidth
-                                                    />
-                                                </Stack>
-                                            </Grid>
-                                        </Stack>
+                                                    </Stack>
+                                                </Grid>
+                                            </Stack>
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <Stack direction="row" alignItems="center">
+                                                <Grid item xs={8}>
+                                                    <Stack spacing={1}>
+                                                        <InputLabel sx={{ color: theme.palette.primary.main, fontWeight: '600' }}>
+                                                            Email
+                                                        </InputLabel>
+                                                        <Grid item xs={7}>
+                                                            <TextField
+                                                                type="text"
+                                                                id="outlined-basic7"
+                                                                name="fullName"
+                                                                size="small"
+                                                                fullWidth
+                                                                value={fullName}
+                                                                onChange={(e) => setFullName(e.target.value)}
+                                                            />
+                                                        </Grid>
+                                                    </Stack>
+                                                </Grid>
+                                                <Grid item xs={3}>
+                                                    <Stack spacing={1}>
+                                                        <InputLabel sx={{ color: theme.palette.primary.main, fontWeight: '600' }}>
+                                                            Phone
+                                                        </InputLabel>
+                                                        <TextField type="text" id="outlined-basic7" name="status" size="small" fullWidth />
+                                                    </Stack>
+                                                </Grid>
+                                            </Stack>
+                                        </Grid>
                                     </Grid>
-                                    <Grid item xs={12}>
-                                        <Stack direction="row" alignItems="center">
-                                            <Grid item xs={8}>
-                                                <Stack spacing={1}>
-                                                    <InputLabel sx={{ color: theme.palette.primary.main, fontWeight: '600' }}>
-                                                        Email
-                                                    </InputLabel>
-                                                    <Grid item xs={7}>
-                                                        <TextField
-                                                            type="text"
-                                                            id="outlined-basic7"
-                                                            name="fullName"
-                                                            size="small"
-                                                            fullWidth
-                                                            value={fullName}
-                                                            onChange={(e) => setFullName(e.target.value)}
-                                                        />
-                                                    </Grid>
-                                                </Stack>
-                                            </Grid>
-                                            <Grid item xs={3}>
-                                                <Stack spacing={1}>
-                                                    <InputLabel sx={{ color: theme.palette.primary.main, fontWeight: '600' }}>
-                                                        Phone
-                                                    </InputLabel>
-                                                    <TextField type="text" id="outlined-basic7" name="status" size="small" fullWidth />
-                                                </Stack>
-                                            </Grid>
-                                        </Stack>
-                                    </Grid>
-                                </Grid>
-                            </form>
-                        </SubCard>
+                                </form>
+                            </SubCard>
+                        </Grid>
                     </Grid>
                 </Grid>
-            </Grid>
-            {/* ) : null} */}
+            ) : null}
         </Grid>
     );
 };

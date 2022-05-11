@@ -133,11 +133,10 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
         const response = await axios.post('/verifyChangePassword', body);
         return response;
     };
-    // const getProfileById = async (body: { fullName: string; email: string; phone: number; status: number }, id) => {
-    //     const response = await axios.get(`/partners/${id}`);
-    //     console.log(response);
-    //     return response;
-    // };
+    const getProfilePartnerById = async (id: number) => {
+        const response = await axios.get(`/v1/partners/${id}`);
+        return response;
+    };
     const updateProfile = () => {};
 
     if (state.isInitialized !== undefined && !state.isInitialized) {
@@ -155,6 +154,7 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
                 resetPassword,
                 forgotPassword,
                 verifyCode,
+                getProfilePartnerById,
                 updateProfile,
                 loginAzure
             }}

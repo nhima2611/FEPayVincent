@@ -41,6 +41,7 @@ export type JWTContextType = {
     changePassword: (body: { current_password: string; new_password: string; new_password_confirm: string; email: string }) => Promise<any>;
     forgotPassword: (email: string) => Promise<any>;
     resetPassword: (body: { verify_code: number; email: string; password: string; confirm_password: string }) => Promise<any>;
+    getProfilePartnerById: (id: number) => Promise<any>;
     verifyCode: (body: { verify_code: number; email: string }) => Promise<any>;
     updateProfile: VoidFunction;
 };
